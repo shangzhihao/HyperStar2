@@ -1,0 +1,59 @@
+package fu.mi.fitting.domains;
+
+import com.google.common.collect.Sets;
+import org.apache.commons.math3.ml.clustering.Clusterable;
+
+import java.util.Random;
+import java.util.Set;
+
+/**
+ * Created by shangzhihao on 3/10/16.
+ *
+ * this class is used for distribution fitting,
+ * object of this class is a sample.
+ */
+public class SampleItem implements Clusterable {
+    /**
+     * id indicate every sample,
+     * we can know which group the sample is in after clustering.
+     */
+    public int id;
+    /**
+     * value of sample
+     */
+    public double value;
+    private Set<Integer> ids = Sets.newHashSet();
+
+    /**
+     * @param id sample id
+     * @param value sample value
+     */
+    public SampleItem(int id, double value){
+        this.id = id;
+        this.value = value;
+    }
+
+    /**
+     * return a sample object with random id
+     * @param value sample value
+     */
+    public SampleItem(double value){
+        Random rnd = new Random(System.currentTimeMillis());
+        int rid = rnd.nextInt();
+        while (ids.contains(rid)){
+            rid = rnd.nextInt();
+        }
+        this.id = rid;
+        this.value = value;
+
+    }
+
+    /**
+     * return sample value for clustering
+     * @return sample value
+     */
+    @Override
+    public double[] getPoint() {
+        return new double[]{value};
+    }
+}
