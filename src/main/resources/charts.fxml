@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<TabPane xmlns:fx="http://javafx.com/fxml/1"
+         tabClosingPolicy="UNAVAILABLE"
+         xmlns="http://javafx.com/javafx/8.0.65"
+         fx:controller="fu.mi.fitting.controllers.ChartsController">
+    <Tab fx:id="pdfTab" text="PDF ">
+        <AnchorPane fx:id="pdfPane"/>
+    </Tab>
+    <Tab fx:id="cdfTab" text="CDF">
+        <AnchorPane fx:id="cdfPane"/>
+    </Tab>
+    <Tab fx:id="momTab" text="Moment">
+        <AnchorPane fx:id="momPane"/>
+    </Tab>
+</TabPane>

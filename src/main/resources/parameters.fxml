@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.65"
+      fx:controller="fu.mi.fitting.controllers.ParameterController">
+    <Button onAction="#loadSamples" text="Load Samples"/>
+    <Label text="Parameters:">
+        <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </VBox.margin>
+    </Label>
+    <HBox prefHeight="49.0">
+        <children>
+            <Label text="Fitter:">
+                <HBox.margin>
+                    <Insets right="10.0"/>
+                </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="fitterChoice" prefWidth="150.0"/>
+        </children>
+        <VBox.margin>
+            <Insets bottom="10.0" top="10.0"/>
+        </VBox.margin>
+    </HBox>
+    <Button fx:id="fitBtn" mnemonicParsing="false" onAction="#fitDistribution" prefHeight="25.0" prefWidth="48.0"
+            text="Fit">
+        <VBox.margin>
+            <Insets left="30.0"/>
+        </VBox.margin>
+    </Button>
+</VBox>
