@@ -1,4 +1,4 @@
-package fu.mi.fitting.domains;
+package fu.mi.fitting.sample;
 
 import com.google.common.collect.Sets;
 import org.apache.commons.math3.ml.clustering.Clusterable;

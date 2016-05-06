@@ -523,7 +523,7 @@ public class FXGraphics2D extends Graphics2D {
      * Maps a line join code from AWT to the corresponding JavaFX
      * StrokeLineJoin enum value.
      *
-     * @param c the line join code.
+     * @param j the line join code.
      * @return A JavaFX line join value.
      */
     private StrokeLineJoin awtToJavaFXLineJoin(int j) {

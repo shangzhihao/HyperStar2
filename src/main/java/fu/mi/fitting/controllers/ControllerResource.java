@@ -9,7 +9,7 @@ import javafx.stage.Stage;
  * they can communicate.
  */
 public class ControllerResource {
-    private static final ControllerResource controllers = new ControllerResource();
+    private static final ControllerResource INSTANCE = new ControllerResource();
     public MainController mainController;
     public ParameterController parameterController;
     public ChartsController chartsController;
@@ -19,7 +19,7 @@ public class ControllerResource {
     }
 
     public static ControllerResource getInstance() {
-        return controllers;
+        return INSTANCE;
     }
 
 }

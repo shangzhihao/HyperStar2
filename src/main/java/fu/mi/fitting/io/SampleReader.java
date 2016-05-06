@@ -1,7 +1,7 @@
 package fu.mi.fitting.io;
 
 
-import fu.mi.fitting.domains.SampleCollection;
+import fu.mi.fitting.sample.SampleCollection;
 
 import java.io.File;
 

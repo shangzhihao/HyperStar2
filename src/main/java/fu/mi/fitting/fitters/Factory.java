@@ -1,9 +1,8 @@
 package fu.mi.fitting.fitters;
 
 
-import fu.mi.fitting.domains.SampleCollection;
-import fu.mi.fitting.fitters.HyperErlangFitter;
-import static fu.mi.fitting.fitters.FitterType.*;
+import fu.mi.fitting.sample.SampleCollection;
+
 /**
  * Created by shang on 4/11/2016.
  */

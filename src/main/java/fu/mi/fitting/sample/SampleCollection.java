@@ -1,8 +1,11 @@
-package fu.mi.fitting.domains;
+package fu.mi.fitting.sample;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
+import fu.mi.fitting.parameters.ChartsParameters;
 import org.apache.commons.math3.stat.StatUtils;
+import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.statistics.HistogramType;
 
 import java.util.List;
 
@@ -11,8 +14,8 @@ import java.util.List;
  *
  * this is a wrapper of List of SampleItem
  * I create this class just for convenience
- * of calculate mean and variance of samples
- *
+ * of calculate mean and variance of samples,
+ * and convert samples to different type
  */
 public class SampleCollection {
     /**
@@ -41,6 +44,18 @@ public class SampleCollection {
     }
     public double[] asDoubleArray(){
         return Doubles.toArray(values);
+    }
+
+    /**
+     * @param key the series key (null not permitted).
+     * @return the HistogramDataset
+     */
+    public HistogramDataset asHistogramDataset(String key) {
+        int bins = ChartsParameters.getInstance().getBins();
+        HistogramDataset sampleHistogramDataset = new HistogramDataset();
+        sampleHistogramDataset.setType(HistogramType.SCALE_AREA_TO_1);
+        sampleHistogramDataset.addSeries(key, asDoubleArray(), bins);
+        return sampleHistogramDataset;
     }
     /**
      * @return mean of samples

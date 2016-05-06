@@ -1,5 +1,6 @@
 package fu.mi.fitting.controllers;
 
+import fu.mi.fitting.sample.SampleCollection;
 import javafx.fxml.FXML;
 
 /**
@@ -7,8 +8,18 @@ import javafx.fxml.FXML;
  */
 public class MainController {
 
+    private SampleCollection sampleCollection;
+
     @FXML
     public void initialize() {
         ControllerResource.getInstance().mainController = this;
+    }
+
+    public SampleCollection getSampleCollection() {
+        return sampleCollection;
+    }
+
+    public void setSampleCollection(SampleCollection sampleCollection) {
+        this.sampleCollection = sampleCollection;
     }
 }

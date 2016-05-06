@@ -2,7 +2,7 @@ package fu.mi.fitting.fitters;
 
 
 import fu.mi.fitting.distributions.Erlang;
-import fu.mi.fitting.domains.SampleCollection;
+import fu.mi.fitting.sample.SampleCollection;
 
 /**
  * Created by shangzhihao on 3/10/16.

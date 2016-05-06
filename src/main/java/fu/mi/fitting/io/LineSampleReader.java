@@ -3,8 +3,8 @@ package fu.mi.fitting.io;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import fu.mi.fitting.domains.SampleCollection;
-import fu.mi.fitting.domains.SampleItem;
+import fu.mi.fitting.sample.SampleCollection;
+import fu.mi.fitting.sample.SampleItem;
 
 import java.io.File;
 import java.util.List;

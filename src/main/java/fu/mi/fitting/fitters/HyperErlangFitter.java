@@ -2,11 +2,10 @@ package fu.mi.fitting.fitters;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-
 import fu.mi.fitting.distributions.Erlang;
 import fu.mi.fitting.distributions.HyperErlang;
-import fu.mi.fitting.domains.SampleCollection;
-import fu.mi.fitting.domains.SampleItem;
+import fu.mi.fitting.sample.SampleCollection;
+import fu.mi.fitting.sample.SampleItem;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
@@ -28,14 +27,14 @@ import java.util.List;
  */
 public class HyperErlangFitter implements Fitter {
 
-    private int maxLoop = 500;
     public int branch = 8;
     public SampleCollection samples;
     public List<Erlang> erlangs = Lists.newArrayList();
     public List<ErlangFitter> fitters = Lists.newArrayList();
     public FitterType ErlangFitterType = FitterType.MOMERLANG;
-    private Factory factory = new Factory();
     Logger logger = LoggerFactory.getLogger(HyperErlang.class);
+    private int maxLoop = 500;
+    private Factory factory = new Factory();
 
     public HyperErlangFitter(SampleCollection samples){
         this.samples = samples;
