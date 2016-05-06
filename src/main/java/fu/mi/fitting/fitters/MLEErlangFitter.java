@@ -18,8 +18,10 @@ import fu.mi.fitting.sample.SampleCollection;
  */
 public class MLEErlangFitter extends ErlangFitter{
 
-    public MLEErlangFitter(SampleCollection samples){
-        this.samples = samples;
+    private static final String FITTER_NAME = "MaxLikelihoodErlang";
+
+    MLEErlangFitter(SampleCollection sc) {
+        super(sc);
     }
 
     protected Erlang fitFloor(){
@@ -49,8 +51,12 @@ public class MLEErlangFitter extends ErlangFitter{
         double meanOfLog = log/samples.data.size();
         double s = logOfmean - meanOfLog;
         double res = (s-3)*(s-3) + 24*s;
-        res = Math.sqrt(res) + 3 -s;
+        res = Math.sqrt(res) + 3 - s;
         return res/(12*s);
     }
 
+    @Override
+    public String getName() {
+        return FITTER_NAME;
+    }
 }

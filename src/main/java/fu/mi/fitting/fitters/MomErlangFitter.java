@@ -20,9 +20,12 @@ import fu.mi.fitting.sample.SampleCollection;
 
 public class MomErlangFitter extends ErlangFitter{
 
-    public MomErlangFitter(SampleCollection samples){
-        this.samples = samples;
+    private static final String FITTER_NAME = "MomentErlang";
+
+    MomErlangFitter(SampleCollection sc) {
+        super(sc);
     }
+
     /**
      * get floor(shape) distribution
      */
@@ -48,5 +51,10 @@ public class MomErlangFitter extends ErlangFitter{
         double rate = mean/var;
         long shape = (long)Math.ceil(mean*rate);
         return new Erlang(shape, rate);
+    }
+
+    @Override
+    public String getName() {
+        return FITTER_NAME;
     }
 }

@@ -9,8 +9,11 @@ import fu.mi.fitting.sample.SampleCollection;
  *
  * fit erlang distribution
  */
-public abstract class ErlangFitter implements Fitter<Erlang> {
-    public SampleCollection samples;
+public abstract class ErlangFitter extends Fitter<Erlang> {
+    ErlangFitter(SampleCollection sc) {
+        super(sc);
+    }
+
     @Override
     public Erlang fit() {
         Erlang floorRes = fitFloor();

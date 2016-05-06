@@ -25,21 +25,29 @@ import java.util.List;
  * until either convergence is reached or
  * a maximum number of 100 rounds has elapsed.
  */
-public class HyperErlangFitter implements Fitter {
+public class HyperErlangFitter extends Fitter {
 
+    private static final String FITTER_NAME = "Hyper-Erlang";
     public int branch = 8;
-    public SampleCollection samples;
     public List<Erlang> erlangs = Lists.newArrayList();
     public List<ErlangFitter> fitters = Lists.newArrayList();
-    public FitterType ErlangFitterType = FitterType.MOMERLANG;
     Logger logger = LoggerFactory.getLogger(HyperErlang.class);
     private int maxLoop = 500;
-    private Factory factory = new Factory();
+    private Class erlangFitterClass = MLEErlangFitter.class;
 
-    public HyperErlangFitter(SampleCollection samples){
-        this.samples = samples;
+    HyperErlangFitter(SampleCollection sc) {
+        super(sc);
     }
 
+    private ErlangFitter getErlangFitter() {
+        ErlangFitter res = null;
+        try {
+            res = (ErlangFitter) erlangFitterClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
     @Override
     public RealDistribution fit() {
         KMeansPlusPlusClusterer<SampleItem> clusterer = new KMeansPlusPlusClusterer<>(branch);
@@ -51,7 +59,7 @@ public class HyperErlangFitter implements Fitter {
         for(int i=0, n=clusterRes.size(); i<n; i++){
             cluster = clusterRes.get(i);
             sc = new SampleCollection(cluster.getPoints());
-            fitters.add(i, (ErlangFitter) factory.getFitter(ErlangFitterType, sc));
+            fitters.add(i, FitterFactory.getErlangFitter(sc));
         }
         // step 2
         // fit every group
@@ -89,6 +97,11 @@ public class HyperErlangFitter implements Fitter {
         HyperErlang res = new HyperErlang();
         res.pro2dist = pro2dist;
         return res;
+    }
+
+    @Override
+    public String getName() {
+        return FITTER_NAME;
     }
 
     /**

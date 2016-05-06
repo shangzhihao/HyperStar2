@@ -8,10 +8,12 @@ import org.jfree.chart.plot.PlotOrientation;
 
 /**
  * Created by shang on 5/6/2016.
+ * PDF chart will be displayed in the PDF tab.
  */
 public class PDFChart {
+    // TODO make sure sc is not null
     SampleCollection sc;
-    JFreeChart histogram = ChartFactory.createHistogram(null, "x", "pdf(x)",
+    JFreeChart histogram = ChartFactory.createHistogram(null, "x", "histogram",
             sc.asHistogramDataset(""), PlotOrientation.VERTICAL,
             true, true, true);
 
