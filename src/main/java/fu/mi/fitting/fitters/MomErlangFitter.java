@@ -20,7 +20,8 @@ import fu.mi.fitting.sample.SampleCollection;
 
 public class MomErlangFitter extends ErlangFitter{
 
-    private static final String FITTER_NAME = "MomentErlang";
+    public static final String FITTER_NAME = "MomentErlang";
+    public static final String DISPLAY_NAME = "Erlang";
 
     MomErlangFitter(SampleCollection sc) {
         super(sc);

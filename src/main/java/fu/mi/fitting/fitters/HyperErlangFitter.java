@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import fu.mi.fitting.distributions.Erlang;
 import fu.mi.fitting.distributions.HyperErlang;
+import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import fu.mi.fitting.sample.SampleItem;
 import org.apache.commons.math3.distribution.RealDistribution;
@@ -27,7 +28,8 @@ import java.util.List;
  */
 public class HyperErlangFitter extends Fitter {
 
-    private static final String FITTER_NAME = "Hyper-Erlang";
+    public static final String FITTER_NAME = "Hyper-Erlang";
+    public static final String DISPLAY_NAME = "Hyper-Erlang";
     public int branch = 8;
     public List<Erlang> erlangs = Lists.newArrayList();
     public List<ErlangFitter> fitters = Lists.newArrayList();
@@ -50,6 +52,7 @@ public class HyperErlangFitter extends Fitter {
     }
     @Override
     public RealDistribution fit() {
+        branch = FitParameters.getInstance().getBranch();
         KMeansPlusPlusClusterer<SampleItem> clusterer = new KMeansPlusPlusClusterer<>(branch);
         List<CentroidCluster<SampleItem>> clusterRes = clusterer.cluster(samples.data);
         CentroidCluster<SampleItem> cluster;
@@ -59,7 +62,7 @@ public class HyperErlangFitter extends Fitter {
         for(int i=0, n=clusterRes.size(); i<n; i++){
             cluster = clusterRes.get(i);
             sc = new SampleCollection(cluster.getPoints());
-            fitters.add(i, FitterFactory.getErlangFitter(sc));
+            fitters.add(i, (ErlangFitter) FitterFactory.getFitterByName(MomErlangFitter.FITTER_NAME, sc));
         }
         // step 2
         // fit every group

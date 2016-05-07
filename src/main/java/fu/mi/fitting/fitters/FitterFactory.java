@@ -9,17 +9,22 @@ import fu.mi.fitting.sample.SampleCollection;
 public class FitterFactory {
     private static FitParameters fitParameters = FitParameters.getInstance();
 
-    public static ErlangFitter getErlangFitter(SampleCollection sc) {
-        Class erlangFitterClass = fitParameters.getErlangFitterClass();
-        if (erlangFitterClass == MLEErlangFitter.class) {
-            return new MLEErlangFitter(sc);
-        } else if (erlangFitterClass == MomErlangFitter.class) {
-            return new MomErlangFitter(sc);
-        }
-        return new MomErlangFitter(sc);
-    }
+
 
     public static HyperErlangFitter getHyperErlangFitter(SampleCollection sc) {
         return new HyperErlangFitter(sc);
+    }
+
+    public static Fitter getFitterByName(String fitterName, SampleCollection sc) {
+        switch (fitterName) {
+            case ExponentialFitter.FITTER_NAME:
+                return new ExponentialFitter(sc);
+            case MomErlangFitter.FITTER_NAME:
+                return new MomErlangFitter(sc);
+            case HyperErlangFitter.FITTER_NAME:
+                return new HyperErlangFitter(sc);
+            default:
+                return new HyperErlangFitter(sc);
+        }
     }
 }

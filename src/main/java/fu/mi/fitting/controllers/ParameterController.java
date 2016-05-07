@@ -1,8 +1,6 @@
 package fu.mi.fitting.controllers;
 
-import fu.mi.fitting.distributions.HyperErlang;
-import fu.mi.fitting.fitters.FitterFactory;
-import fu.mi.fitting.fitters.HyperErlangFitter;
+import fu.mi.fitting.fitters.*;
 import fu.mi.fitting.io.LineSampleReader;
 import fu.mi.fitting.io.SampleReader;
 import fu.mi.fitting.parameters.FitParameters;
@@ -10,7 +8,11 @@ import fu.mi.fitting.sample.SampleCollection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
+import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 import org.jfree.data.function.Function2D;
 
@@ -18,16 +20,33 @@ import java.io.File;
 
 /**
  * Created by shang on 5/6/2016.
+ * this controller reacts to the user input form the
+ * right side bar, most actions are controlled here.
  */
 public class ParameterController {
+
     private final ControllerResource controllerResource = ControllerResource.getInstance();
     private final FitParameters fitParameters = FitParameters.getInstance();
+    @FXML
+    ChoiceBox<String> fitterChoice;
+    @FXML
+    Button fitBtn;
 
     @FXML
     public void initialize() {
         controllerResource.parameterController = this;
+        fitterChoice.getItems().addAll(HyperErlangFitter.DISPLAY_NAME,
+                ExponentialFitter.DISPLAY_NAME, MomErlangFitter.DISPLAY_NAME);
+        fitterChoice.setTooltip(new Tooltip("select a distribution to fit"));
+        fitterChoice.getSelectionModel().selectFirst();
     }
 
+    /**
+     * execute when load sample button is clicked.
+     * read samples from selected file
+     *
+     * @param actionEvent click event
+     */
     public void loadSamples(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         File inputFile = fileChooser.showOpenDialog(controllerResource.stage);
@@ -39,7 +58,21 @@ public class ParameterController {
         controllerResource.chartsController.drawChart();
     }
 
-    public void fitDistribution(ActionEvent actionEvent) {
+    /**
+     * executed when fit button is clicked
+     *
+     * @param actionEvent click event
+     */
+    public void fitBtnAction(ActionEvent actionEvent) {
+        fitBtn.setDisable(true);
+        fitDistribution();
+        fitBtn.setDisable(false);
+    }
+
+    /**
+     * fit distribution with selected fitter and parameters
+     */
+    private void fitDistribution() {
         SampleCollection sc = controllerResource.mainController.getSampleCollection();
         if (sc == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -48,12 +81,20 @@ public class ParameterController {
             alert.showAndWait();
             return;
         }
-        HyperErlangFitter herFitter = FitterFactory.getHyperErlangFitter(sc);
-        herFitter.branch = fitParameters.getBranch();
-        HyperErlang res = (HyperErlang) herFitter.fit();
+        Fitter herFitter = FitterFactory.getFitterByName(fitParameters.getFitterName(), sc);
+        RealDistribution res = herFitter.fit();
         Function2D pdf = d -> res.density(d);
         double start = StatUtils.min(sc.asDoubleArray());
         double end = StatUtils.max(sc.asDoubleArray());
         controllerResource.chartsController.addPDF(pdf, start, end);
+    }
+
+    /**
+     * executed when select new fitter
+     *
+     * @param actionEvent select new item event
+     */
+    public void chooseFitter(ActionEvent actionEvent) {
+        fitParameters.setFitterName(fitterChoice.getValue());
     }
 }

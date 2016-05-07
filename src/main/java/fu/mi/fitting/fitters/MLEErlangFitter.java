@@ -18,7 +18,7 @@ import fu.mi.fitting.sample.SampleCollection;
  */
 public class MLEErlangFitter extends ErlangFitter{
 
-    private static final String FITTER_NAME = "MaxLikelihoodErlang";
+    public static final String FITTER_NAME = "MaxLikelihoodErlang";
 
     MLEErlangFitter(SampleCollection sc) {
         super(sc);
