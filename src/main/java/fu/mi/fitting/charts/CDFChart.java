@@ -22,7 +22,7 @@ public class CDFChart {
         Collections.sort(sampleList);
         double probabilityPerSample = 1.0 / sampleList.size();
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries cdfSeries = new XYSeries("CDF");
+        XYSeries cdfSeries = new XYSeries("Samples CDF");
         double probability;
         for (int i = 0; i < sampleList.size(); i++) {
             probability = probabilityPerSample * (i + 1);

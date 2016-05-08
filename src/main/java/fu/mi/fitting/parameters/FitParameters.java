@@ -14,7 +14,7 @@ import java.util.Map;
 public class FitParameters {
     private static final FitParameters INSTANCE = new FitParameters();
     // branch of Hyper-Erlang distribution
-    private int branch = 5;
+    private int branch = 2;
     private int kMeans = 10;
     private String erlangFitter = MomErlangFitter.DISPLAY_NAME;
     private String fitterName = HyperErlangFitter.DISPLAY_NAME;

@@ -3,14 +3,13 @@ package fu.mi.fitting.controllers;
 import fu.mi.fitting.fitters.*;
 import fu.mi.fitting.io.LineSampleReader;
 import fu.mi.fitting.io.SampleReader;
+import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.StatUtils;
@@ -31,6 +30,12 @@ public class ParameterController {
     ChoiceBox<String> fitterChoice;
     @FXML
     Button fitBtn;
+    @FXML
+    TextField binsTxt;
+    @FXML
+    TextField cdfPointsTxt;
+    @FXML
+    TextField pdfPointsTxt;
 
     @FXML
     public void initialize() {
@@ -96,5 +101,29 @@ public class ParameterController {
      */
     public void chooseFitter(ActionEvent actionEvent) {
         fitParameters.setFitterName(fitterChoice.getValue());
+    }
+
+    public void changeBins(Event event) {
+        try {
+            int bins = Integer.parseInt(binsTxt.getText());
+            ChartsParameters.getInstance().setBins(bins);
+        } catch (RuntimeException e) {
+        }
+    }
+
+    public void changePDFPoints(Event event) {
+        try {
+            int pdfPoints = Integer.parseInt(pdfPointsTxt.getText());
+            ChartsParameters.getInstance().setPdfPoints(pdfPoints);
+        } catch (RuntimeException e) {
+        }
+    }
+
+    public void changeCDFPoint(Event event) {
+        try {
+            int cdfPoints = Integer.parseInt(cdfPointsTxt.getText());
+            ChartsParameters.getInstance().setCdfPoints(cdfPoints);
+        } catch (RuntimeException e) {
+        }
     }
 }

@@ -81,9 +81,7 @@ public class ChartsController {
 
     public void addPDF(Function2D pdf, double start, double end) {
         XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(pdf, start, end,
-                chartsParameters.getPdfSteps(), PDF_LABEL);
+                chartsParameters.getPdfPoints(), PDF_LABEL);
         pdfChart.drawPDF(pdfDataset);
-
-
     }
 }
