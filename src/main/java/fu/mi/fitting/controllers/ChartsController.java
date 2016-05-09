@@ -4,6 +4,7 @@ import fu.mi.fitting.charts.CDFChart;
 import fu.mi.fitting.charts.MomentChart;
 import fu.mi.fitting.charts.PDFChart;
 import fu.mi.fitting.parameters.ChartsParameters;
+import fu.mi.fitting.parameters.Messages;
 import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import javafx.fxml.FXML;
@@ -33,7 +34,6 @@ public class ChartsController {
     Tab momTab;
     @FXML
     AnchorPane momPane;
-    private ControllerResource controllerResource = ControllerResource.getInstance();
     private ChartsParameters chartsParameters = ChartsParameters.getInstance();
     private SampleCollection sampleCollection;
     private PDFChart pdfChart = new PDFChart();
@@ -47,9 +47,13 @@ public class ChartsController {
 
     public void drawChart() {
         sampleCollection = SamplesParameters.getInstance().getLimitedSamples();
+        ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_HISTOGRAM);
         drawHistogram();
+        ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_CDF);
         drawCDF();
+        ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_PDF);
         drawMoment();
+        ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
     }
 
     private void drawMoment() {

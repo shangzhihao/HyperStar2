@@ -4,6 +4,7 @@ import fu.mi.fitting.sample.SampleCollection;
 
 /**
  * Created by shang on 5/9/2016.
+ * store samples and related parameters
  */
 public class SamplesParameters {
     private static final SamplesParameters INSTANCE = new SamplesParameters();
@@ -28,7 +29,9 @@ public class SamplesParameters {
     }
 
     public void setSize(int size) {
-        this.size = size;
+        if (size > 0 && size < 100) {
+            this.size = size;
+        }
     }
 
     public double getFrom() {
@@ -53,7 +56,7 @@ public class SamplesParameters {
 
     public void setOriginSamples(SampleCollection originSamples) {
         this.originSamples = originSamples;
-        this.setLimitedSamples(originSamples.subSampleCollection(100));
+        this.setLimitedSamples(originSamples.subSampleCollection(getSize()));
     }
 
     public SampleCollection getLimitedSamples() {

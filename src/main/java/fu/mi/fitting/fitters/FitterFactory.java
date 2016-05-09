@@ -1,20 +1,12 @@
 package fu.mi.fitting.fitters;
 
-import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 
 /**
  * Created by shang on 5/6/2016.
+ * create fitter from its fitter name
  */
 public class FitterFactory {
-    private static FitParameters fitParameters = FitParameters.getInstance();
-
-
-
-    public static HyperErlangFitter getHyperErlangFitter(SampleCollection sc) {
-        return new HyperErlangFitter(sc);
-    }
-
     public static Fitter getFitterByName(String fitterName, SampleCollection sc) {
         switch (fitterName) {
             case ExponentialFitter.FITTER_NAME:

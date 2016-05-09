@@ -7,7 +7,6 @@ import java.io.File;
 
 /**
  * Created by shangzhihao on 3/11/16.
- *
  * get samples from file
  */
 public abstract class SampleReader {

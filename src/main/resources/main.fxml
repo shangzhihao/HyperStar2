@@ -19,7 +19,7 @@
     </right>
     <bottom>
         <HBox prefHeight="0.0">
-            <Label text="status" fx:id="status"/>
+            <Label text="status" fx:id="statusLabel"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -13,6 +13,8 @@ public class ControllerResource {
     public MainController mainController;
     public ParameterController parameterController;
     public ChartsController chartsController;
+    public SampleController sampleController;
+    public ConfigurationController confController;
     public Stage stage;
 
     private ControllerResource() {
