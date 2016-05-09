@@ -31,6 +31,7 @@ public class SamplesParameters {
     public void setSize(int size) {
         if (size > 0 && size < 100) {
             this.size = size;
+            this.setLimitedSamples(originSamples.subSampleCollection(size));
         }
     }
 
@@ -40,6 +41,7 @@ public class SamplesParameters {
 
     public void setFrom(double from) {
         this.from = from;
+        setRange(from, to);
     }
 
     public double getTo() {
@@ -48,6 +50,7 @@ public class SamplesParameters {
 
     public void setTo(double to) {
         this.to = to;
+        setRange(from, to);
     }
 
     public SampleCollection getOriginSamples() {
@@ -67,4 +70,7 @@ public class SamplesParameters {
         this.limitedSamples = limitedSamples;
     }
 
+    public void setRange(double from, double to) {
+        this.setLimitedSamples(originSamples.subSampleCollection(from, to));
+    }
 }

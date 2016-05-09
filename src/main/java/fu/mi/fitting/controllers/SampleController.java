@@ -82,4 +82,13 @@ public class SampleController {
         ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
         ControllerResource.getInstance().chartsController.drawChart();
     }
+
+    public void rePlot(ActionEvent actionEvent) {
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
+        if (sc != null) {
+            ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
+            return;
+        }
+        ControllerResource.getInstance().chartsController.drawChart();
+    }
 }

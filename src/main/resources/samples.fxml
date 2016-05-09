@@ -13,7 +13,7 @@
         </rowConstraints>
         <children>
             <Button onAction="#loadSamples" text="Load Samples"/>
-            <Button mnemonicParsing="false" text="Replot" GridPane.columnIndex="1"/>
+            <Button mnemonicParsing="false" onAction="#rePlot" text="Replot" GridPane.columnIndex="1"/>
         </children>
     </GridPane>
     <TitledPane animated="false" text="Limit Data">

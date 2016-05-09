@@ -8,7 +8,6 @@ import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.StatUtils;
@@ -47,9 +46,7 @@ public class ParameterController {
     private void fitDistribution() {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText(Messages.NONE_SAMPLE_WARN);
-            alert.showAndWait();
+            ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }
         Fitter herFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);

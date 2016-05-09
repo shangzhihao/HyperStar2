@@ -1,6 +1,7 @@
 package fu.mi.fitting.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 
 /**
@@ -26,5 +27,11 @@ public class MainController {
      */
     public void setStatus(CharSequence charSequence) {
         statusLabel.setText(charSequence.toString());
+    }
+
+    public void showWarn(CharSequence message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setContentText(message.toString());
+        alert.showAndWait();
     }
 }
