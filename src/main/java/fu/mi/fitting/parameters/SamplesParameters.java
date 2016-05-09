@@ -2,6 +2,8 @@ package fu.mi.fitting.parameters;
 
 import fu.mi.fitting.sample.SampleCollection;
 
+import java.util.Collections;
+
 /**
  * Created by shang on 5/9/2016.
  * store samples and related parameters
@@ -14,8 +16,8 @@ public class SamplesParameters {
     private int size = 100;
     // sample range, samples in this range will be used in fitting
     // others samples will be ignored
-    private double from;
-    private double to;
+    private double from = Double.MAX_VALUE;
+    private double to = Double.MAX_VALUE;
 
     private SamplesParameters() {
     }
@@ -71,6 +73,12 @@ public class SamplesParameters {
     }
 
     public void setRange(double from, double to) {
+        if (new Double(from).equals(Double.MAX_VALUE)) {
+            from = Collections.max(originSamples.asDoubleList());
+        }
+        if (new Double(to).equals(Double.MAX_VALUE)) {
+            to = Collections.max(originSamples.asDoubleList());
+        }
         this.setLimitedSamples(originSamples.subSampleCollection(from, to));
     }
 }

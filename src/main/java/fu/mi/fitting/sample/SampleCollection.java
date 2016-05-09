@@ -98,7 +98,7 @@ public class SampleCollection {
     public SampleCollection subSampleCollection(double from, double to) {
         List<SampleItem> res = Lists.newArrayList();
         for (SampleItem sample : data) {
-            if (sample.value <= from && sample.value > to) {
+            if (sample.value < to && sample.value >= from) {
                 res.add(sample);
             }
         }

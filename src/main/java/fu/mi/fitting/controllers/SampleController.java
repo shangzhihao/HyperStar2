@@ -47,18 +47,22 @@ public class SampleController {
         }));
         // sample range changed listener
         sampleRangeFrom.textProperty().addListener((observable, oldValue, newValue) -> {
+            double from;
             try {
-                double from = Double.parseDouble(newValue);
-                SamplesParameters.getInstance().setFrom(from);
+                from = Double.parseDouble(newValue);
             } catch (Exception e) {
+                from = Double.MAX_VALUE;
             }
+            SamplesParameters.getInstance().setFrom(from);
         });
         sampleRangeTo.textProperty().addListener((observable, oldValue, newValue) -> {
+            double to;
             try {
-                double to = Double.parseDouble(newValue);
-                SamplesParameters.getInstance().setTo(to);
+                to = Double.parseDouble(newValue);
             } catch (Exception e) {
+                to = Double.MAX_VALUE;
             }
+            SamplesParameters.getInstance().setTo(to);
         });
     }
 
@@ -85,7 +89,7 @@ public class SampleController {
 
     public void rePlot(ActionEvent actionEvent) {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
-        if (sc != null) {
+        if (sc == null) {
             ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }

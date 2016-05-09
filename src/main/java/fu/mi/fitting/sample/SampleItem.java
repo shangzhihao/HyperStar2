@@ -12,7 +12,7 @@ import java.util.Set;
  * this class is used for distribution fitting,
  * object of this class is a sample.
  */
-public class SampleItem implements Clusterable {
+public class SampleItem implements Clusterable, Comparable {
     /**
      * id indicate every sample,
      * we can know which group the sample is in after clustering.
@@ -55,5 +55,15 @@ public class SampleItem implements Clusterable {
     @Override
     public double[] getPoint() {
         return new double[]{value};
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof SampleItem) {
+            Double v = ((SampleItem) o).value;
+            return v.compareTo(value);
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 }
