@@ -15,4 +15,5 @@ public class Messages {
     public static String DRAW_HISTOGRAM = "drawing histogram";
     public static String DRAW_CDF = "drawing cdf";
     public static String DRAW_PDF = "drawing pdf";
+    public static String PDF_LABEL = "pdf";
 }

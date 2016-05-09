@@ -5,7 +5,6 @@ import fu.mi.fitting.charts.MomentChart;
 import fu.mi.fitting.charts.PDFChart;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.Messages;
-import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -21,7 +20,6 @@ import org.jfree.data.xy.XYDataset;
  * chart controller, all chart is drawn by this class
  */
 public class ChartsController {
-    private final String PDF_LABEL = "pdf";
     @FXML
     Tab pdfTab;
     @FXML
@@ -46,7 +44,6 @@ public class ChartsController {
     }
 
     public void drawChart() {
-        sampleCollection = SamplesParameters.getInstance().getLimitedSamples();
         ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_HISTOGRAM);
         drawHistogram();
         ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_CDF);
@@ -86,7 +83,7 @@ public class ChartsController {
 
     public void addPDF(Function2D pdf, double start, double end) {
         XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(pdf, start, end,
-                chartsParameters.getPdfPoints(), PDF_LABEL);
+                chartsParameters.getPdfPoints(), Messages.PDF_LABEL);
         pdfChart.drawPDF(pdfDataset);
     }
 }

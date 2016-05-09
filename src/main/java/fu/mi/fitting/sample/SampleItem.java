@@ -60,8 +60,7 @@ public class SampleItem implements Clusterable, Comparable {
     @Override
     public int compareTo(Object o) {
         if (o instanceof SampleItem) {
-            Double v = ((SampleItem) o).value;
-            return v.compareTo(value);
+            return Double.compare(value, ((SampleItem) o).value);
         } else {
             throw new IllegalArgumentException();
         }
