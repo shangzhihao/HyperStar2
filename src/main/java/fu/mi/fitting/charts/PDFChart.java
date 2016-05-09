@@ -1,6 +1,6 @@
 package fu.mi.fitting.charts;
 
-import fu.mi.fitting.controllers.ControllerResource;
+import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -23,7 +23,7 @@ public class PDFChart {
     private JFreeChart histogram;
 
     public JFreeChart getHistogram(String histogramKey) {
-        sc = ControllerResource.getInstance().mainController.getSampleCollection();
+        sc = SamplesParameters.getInstance().getLimitedSamples();
         histogram = ChartFactory.createHistogram("", "samples", "histogram",
                 sc.asHistogramDataset(histogramKey),
                 PlotOrientation.VERTICAL,
@@ -32,7 +32,7 @@ public class PDFChart {
     }
 
     public void drawPDF(XYDataset pdfDataset) {
-        sc = ControllerResource.getInstance().mainController.getSampleCollection();
+        sc = SamplesParameters.getInstance().getLimitedSamples();
         XYPlot xyPlot = histogram.getXYPlot();
         xyPlot.setDataset(1, pdfDataset);
         xyPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);

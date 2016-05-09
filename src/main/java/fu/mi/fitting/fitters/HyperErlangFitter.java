@@ -29,7 +29,6 @@ import java.util.List;
 public class HyperErlangFitter extends Fitter {
 
     public static final String FITTER_NAME = "Hyper-Erlang";
-    public static final String DISPLAY_NAME = "Hyper-Erlang";
     public int branch = 8;
     public List<Erlang> erlangs = Lists.newArrayList();
     public List<ErlangFitter> fitters = Lists.newArrayList();

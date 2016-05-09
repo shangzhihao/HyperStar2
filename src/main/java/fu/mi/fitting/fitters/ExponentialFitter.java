@@ -7,8 +7,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * Created by shang on 5/7/2016.
  */
 public class ExponentialFitter extends Fitter<ExponentialDistribution> {
-    public static final String FITTER_NAME = "ExponentialFitter";
-    public static final String DISPLAY_NAME = "Exponential";
+    public static final String FITTER_NAME = "Exponential";
 
     ExponentialFitter(SampleCollection sc) {
         super(sc);

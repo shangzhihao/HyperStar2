@@ -1,6 +1,6 @@
 package fu.mi.fitting.charts;
 
-import fu.mi.fitting.controllers.ControllerResource;
+import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -17,7 +17,7 @@ public class CDFChart {
     private SampleCollection sc;
 
     public JFreeChart getCDFLineChart() {
-        sc = ControllerResource.getInstance().mainController.getSampleCollection();
+        sc = SamplesParameters.getInstance().getLimitedSamples();
         List<Double> sampleList = sc.asDoubleList();
         Collections.sort(sampleList);
         double probabilityPerSample = 1.0 / sampleList.size();

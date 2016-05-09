@@ -1,21 +1,16 @@
 package fu.mi.fitting.controllers;
 
 import fu.mi.fitting.fitters.*;
-import fu.mi.fitting.io.LineSampleReader;
-import fu.mi.fitting.io.SampleReader;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
+import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 import org.jfree.data.function.Function2D;
-
-import java.io.File;
 
 /**
  * Created by shang on 5/6/2016.
@@ -24,8 +19,6 @@ import java.io.File;
  */
 public class ParameterController {
 
-    private final ControllerResource controllerResource = ControllerResource.getInstance();
-    private final FitParameters fitParameters = FitParameters.getInstance();
     @FXML
     ChoiceBox<String> fitterChoice;
     @FXML
@@ -36,32 +29,73 @@ public class ParameterController {
     TextField cdfPointsTxt;
     @FXML
     TextField pdfPointsTxt;
+    @FXML
+    Slider sampleSizeSlider;
+    @FXML
+    TextField sampleRangeFrom;
+    @FXML
+    TextField sampleRangeTo;
+    @FXML
+    Label sampleSizeText;
 
     @FXML
     public void initialize() {
-        controllerResource.parameterController = this;
-        fitterChoice.getItems().addAll(HyperErlangFitter.DISPLAY_NAME,
-                ExponentialFitter.DISPLAY_NAME, MomErlangFitter.DISPLAY_NAME);
+        ControllerResource.getInstance().parameterController = this;
+        fitterChoice.getItems().addAll(HyperErlangFitter.FITTER_NAME,
+                ExponentialFitter.FITTER_NAME, MomErlangFitter.FITTER_NAME);
         fitterChoice.setTooltip(new Tooltip("select a distribution to fit"));
         fitterChoice.getSelectionModel().selectFirst();
+        addListener();
     }
 
-    /**
-     * execute when load sample button is clicked.
-     * read samples from selected file
-     *
-     * @param actionEvent click event
-     */
-    public void loadSamples(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        File inputFile = fileChooser.showOpenDialog(controllerResource.stage);
-        if (inputFile == null) {
-            return;
-        }
-        SampleReader sr = new LineSampleReader(inputFile);
-        controllerResource.mainController.setSampleCollection(sr.read());
-        controllerResource.chartsController.drawChart();
+    private void addListener() {
+        // number of histogram bins changed listener
+        binsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                int bins = Integer.parseInt(newValue);
+                ChartsParameters.getInstance().setBins(bins);
+            } catch (RuntimeException e) {
+            }
+        });
+        // number of pdf points changed listener
+        pdfPointsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                int bins = Integer.parseInt(newValue);
+                ChartsParameters.getInstance().setPdfPoints(bins);
+            } catch (RuntimeException e) {
+            }
+        });
+        // number of cdf points changed listener
+        cdfPointsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                int bins = Integer.parseInt(newValue);
+                ChartsParameters.getInstance().setCdfPoints(bins);
+            } catch (RuntimeException e) {
+            }
+        });
+        // sample size changed listener
+        sampleSizeSlider.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            int size = newValue.intValue();
+            sampleSizeText.setText(String.valueOf(size) + "%");
+            ChartsParameters.getInstance().setSampleSize(size);
+        }));
+        // sample range changed listener
+        sampleRangeFrom.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                double from = Double.parseDouble(newValue);
+                ChartsParameters.getInstance().setSampleFrom(from);
+            } catch (Exception e) {
+            }
+        });
+        sampleRangeTo.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                double to = Double.parseDouble(newValue);
+                ChartsParameters.getInstance().setSampleTo(to);
+            } catch (Exception e) {
+            }
+        });
     }
+
 
     /**
      * executed when fit button is clicked
@@ -78,20 +112,20 @@ public class ParameterController {
      * fit distribution with selected fitter and parameters
      */
     private void fitDistribution() {
-        SampleCollection sc = controllerResource.mainController.getSampleCollection();
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Warning");
             alert.setContentText("Please load samples first.");
             alert.showAndWait();
             return;
         }
-        Fitter herFitter = FitterFactory.getFitterByName(fitParameters.getFitterName(), sc);
+        Fitter herFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
         RealDistribution res = herFitter.fit();
         Function2D pdf = d -> res.density(d);
         double start = StatUtils.min(sc.asDoubleArray());
         double end = StatUtils.max(sc.asDoubleArray());
-        controllerResource.chartsController.addPDF(pdf, start, end);
+        ControllerResource.getInstance().chartsController.addPDF(pdf, start, end);
     }
 
     /**
@@ -100,30 +134,7 @@ public class ParameterController {
      * @param actionEvent select new item event
      */
     public void chooseFitter(ActionEvent actionEvent) {
-        fitParameters.setFitterName(fitterChoice.getValue());
+        FitParameters.getInstance().setFitterName(fitterChoice.getValue());
     }
 
-    public void changeBins(Event event) {
-        try {
-            int bins = Integer.parseInt(binsTxt.getText());
-            ChartsParameters.getInstance().setBins(bins);
-        } catch (RuntimeException e) {
-        }
-    }
-
-    public void changePDFPoints(Event event) {
-        try {
-            int pdfPoints = Integer.parseInt(pdfPointsTxt.getText());
-            ChartsParameters.getInstance().setPdfPoints(pdfPoints);
-        } catch (RuntimeException e) {
-        }
-    }
-
-    public void changeCDFPoint(Event event) {
-        try {
-            int cdfPoints = Integer.parseInt(cdfPointsTxt.getText());
-            ChartsParameters.getInstance().setCdfPoints(cdfPoints);
-        } catch (RuntimeException e) {
-        }
-    }
 }

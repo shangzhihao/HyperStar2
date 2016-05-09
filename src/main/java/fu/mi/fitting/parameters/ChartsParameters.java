@@ -13,6 +13,10 @@ public class ChartsParameters {
     // number of points in cdf chart
     private int cdfPoints = 200;
 
+    private int sampleSize;
+
+    private double sampleFrom;
+    private double sampleTo;
     private ChartsParameters() {
     }
 
@@ -43,5 +47,37 @@ public class ChartsParameters {
 
     public void setCdfPoints(int cdfPoints) {
         this.cdfPoints = cdfPoints;
+    }
+
+    public int getSampleSize() {
+        return sampleSize;
+    }
+
+    public void setSampleSize(int sampleSize) {
+        if (sampleSize < 0) {
+            this.sampleSize = 0;
+            return;
+        }
+        if (sampleSize > 100) {
+            this.sampleSize = 100;
+            return;
+        }
+        this.sampleSize = sampleSize;
+    }
+
+    public double getSampleFrom() {
+        return sampleFrom;
+    }
+
+    public void setSampleFrom(double sampleFrom) {
+        this.sampleFrom = sampleFrom;
+    }
+
+    public double getSampleTo() {
+        return sampleTo;
+    }
+
+    public void setSampleTo(double sampleTo) {
+        this.sampleTo = sampleTo;
     }
 }
