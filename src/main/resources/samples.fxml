@@ -12,7 +12,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         </rowConstraints>
         <children>
-            <Button onAction="#loadSamples" text="Load Samples"/>
+            <Button fx:id="loadSamplesBtn" onAction="#loadSamples" text="Load Samples"/>
             <Button mnemonicParsing="false" onAction="#rePlot" text="Replot" GridPane.columnIndex="1"/>
         </children>
     </GridPane>

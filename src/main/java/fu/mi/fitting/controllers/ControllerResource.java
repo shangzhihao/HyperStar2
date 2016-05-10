@@ -15,6 +15,7 @@ public class ControllerResource {
     public ChartsController chartsController;
     public SampleController sampleController;
     public ConfigurationController confController;
+    public MenuController menuController;
     public Stage stage;
 
     private ControllerResource() {

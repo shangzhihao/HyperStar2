@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<MenuBar xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65">
+<MenuBar xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/null"
+         fx:controller="fu.mi.fitting.controllers.MenuController">
     <menus>
         <Menu mnemonicParsing="false" text="File">
             <items>
-                <MenuItem mnemonicParsing="false" text="Close"/>
-            </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-            <items>
-                <MenuItem mnemonicParsing="false" text="Delete"/>
+                <MenuItem mnemonicParsing="false" onAction="#loadSamples" text="Load Samples"/>
+                <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit"/>
             </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

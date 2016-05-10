@@ -7,6 +7,7 @@ import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -20,6 +21,8 @@ import java.io.File;
  * reacts to actions about samples.
  */
 public class SampleController {
+    @FXML
+    Button loadSamplesBtn;
     @FXML
     Slider sampleSizeSlider;
     @FXML
