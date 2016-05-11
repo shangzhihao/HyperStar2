@@ -19,11 +19,10 @@ import java.awt.*;
  * and ChartsController will show the result.
  */
 public class PDFChart {
-    private SampleCollection sc;
     private JFreeChart histogram;
 
     public JFreeChart getHistogram(String histogramKey) {
-        sc = SamplesParameters.getInstance().getLimitedSamples();
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         histogram = ChartFactory.createHistogram("", "samples", "histogram",
                 sc.asHistogramDataset(histogramKey),
                 PlotOrientation.VERTICAL,
@@ -32,7 +31,7 @@ public class PDFChart {
     }
 
     public void drawPDF(XYDataset pdfDataset) {
-        sc = SamplesParameters.getInstance().getLimitedSamples();
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         XYPlot xyPlot = histogram.getXYPlot();
         xyPlot.setDataset(1, pdfDataset);
         xyPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);

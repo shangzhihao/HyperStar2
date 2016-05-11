@@ -12,12 +12,13 @@ import java.util.List;
 
 /**
  * Created by shang on 5/6/2016.
+ * this class is only used to draw cdf chart,
+ * dataset and parameters come from ChartsController,
+ * and ChartsController will show the result.
  */
 public class CDFChart {
-    private SampleCollection sc;
-
     public JFreeChart getCDFLineChart() {
-        sc = SamplesParameters.getInstance().getLimitedSamples();
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         List<Double> sampleList = sc.asDoubleList();
         Collections.sort(sampleList);
         double probabilityPerSample = 1.0 / sampleList.size();

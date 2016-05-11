@@ -91,11 +91,13 @@ public class SampleController {
     }
 
     public void rePlot(ActionEvent actionEvent) {
+        ControllerResource.getInstance().mainController.setStatus(Messages.REPLOTING);
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null) {
             ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }
         ControllerResource.getInstance().chartsController.drawChart();
+        ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
     }
 }

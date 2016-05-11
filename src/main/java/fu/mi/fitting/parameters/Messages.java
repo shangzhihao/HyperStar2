@@ -8,12 +8,13 @@ package fu.mi.fitting.parameters;
  * so I put it here. It's kind of parameter.
  */
 public class Messages {
-    public static String PERCENT = "%";
-    public static String LOADING = "loading samples";
-    public static String NONE_SAMPLE_WARN = "please load samples first";
-    public static String NONE_STATUS = "status";
-    public static String DRAW_HISTOGRAM = "drawing histogram";
-    public static String DRAW_CDF = "drawing cdf";
-    public static String DRAW_PDF = "drawing pdf";
-    public static String PDF_LABEL = "pdf";
+    public static final String REPLOTING = "re-polting";
+    public static final String PERCENT = "%";
+    public static final String LOADING = "loading samples";
+    public static final String NONE_SAMPLE_WARN = "please load samples first";
+    public static final String NONE_STATUS = "status";
+    public static final String DRAW_HISTOGRAM = "drawing histogram";
+    public static final String DRAW_CDF = "drawing cdf";
+    public static final String DRAW_PDF = "drawing pdf";
+    public static final String PDF_LABEL = "pdf";
 }

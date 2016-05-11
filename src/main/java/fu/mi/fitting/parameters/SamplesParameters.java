@@ -18,6 +18,8 @@ public class SamplesParameters {
     // others samples will be ignored
     private double from = Double.MAX_VALUE;
     private double to = Double.MAX_VALUE;
+    // max moment order for moment chart
+    private int maxMomentOrder = 5;
 
     private SamplesParameters() {
     }
@@ -80,5 +82,13 @@ public class SamplesParameters {
             to = Collections.max(originSamples.asDoubleList());
         }
         this.setLimitedSamples(originSamples.subSampleCollection(from, to));
+    }
+
+    public int getMaxMomentOrder() {
+        return maxMomentOrder;
+    }
+
+    public void setMaxMomentOrder(int maxMomentOrder) {
+        this.maxMomentOrder = maxMomentOrder;
     }
 }

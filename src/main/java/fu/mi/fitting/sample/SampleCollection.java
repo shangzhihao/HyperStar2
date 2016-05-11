@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.util.FastMath;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
@@ -105,4 +106,33 @@ public class SampleCollection {
         return new SampleCollection(res);
     }
 
+    /**
+     * get k-order moment
+     *
+     * @param k order, k should be integer and greater than 0
+     * @return k-order moment
+     */
+    public double getMoment(int k) {
+        List<Double> samplesPower = Lists.newArrayList();
+        for (SampleItem sample : data) {
+            samplesPower.add(FastMath.pow(sample.value, k));
+        }
+        double res = StatUtils.mean(Doubles.toArray(samplesPower));
+        return res;
+    }
+
+    /**
+     * get n-order moments form begin(include) to end(include)
+     *
+     * @param begin the min order
+     * @param end   the max order
+     * @return moments form begin to end
+     */
+    public List<Double> getMoments(int begin, int end) {
+        List<Double> res = Lists.newArrayList();
+        for (int i = begin; i <= end; i++) {
+            res.add(getMoment(i));
+        }
+        return res;
+    }
 }

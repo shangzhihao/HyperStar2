@@ -3,6 +3,7 @@ package fu.mi.fitting.controllers;
 import fu.mi.fitting.charts.CDFChart;
 import fu.mi.fitting.charts.MomentChart;
 import fu.mi.fitting.charts.PDFChart;
+import fu.mi.fitting.charts.PDFMouseListener;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.Messages;
 import fu.mi.fitting.sample.SampleCollection;
@@ -20,6 +21,7 @@ import org.jfree.data.xy.XYDataset;
  * chart controller, all chart is drawn by this class
  */
 public class ChartsController {
+    public ChartViewer histogramViewer;
     @FXML
     Tab pdfTab;
     @FXML
@@ -54,7 +56,13 @@ public class ChartsController {
     }
 
     private void drawMoment() {
-
+        JFreeChart momentsLineChart = momentChart.getMomentChart();
+        ChartViewer viewer = new ChartViewer(momentsLineChart);
+        momPane.getChildren().add(viewer);
+        AnchorPane.setBottomAnchor(viewer, 0.0);
+        AnchorPane.setTopAnchor(viewer, 0.0);
+        AnchorPane.setLeftAnchor(viewer, 0.0);
+        AnchorPane.setRightAnchor(viewer, 0.0);
     }
 
     private void drawCDF() {
@@ -69,12 +77,13 @@ public class ChartsController {
 
     private void drawHistogram() {
         JFreeChart histogram = pdfChart.getHistogram(getHistogramKey());
-        ChartViewer viewer = new ChartViewer(histogram);
-        pdfPane.getChildren().add(viewer);
-        AnchorPane.setBottomAnchor(viewer, 0.0);
-        AnchorPane.setTopAnchor(viewer, 0.0);
-        AnchorPane.setLeftAnchor(viewer, 0.0);
-        AnchorPane.setRightAnchor(viewer, 0.0);
+        histogramViewer = new ChartViewer(histogram);
+        histogramViewer.addChartMouseListener(new PDFMouseListener());
+        pdfPane.getChildren().add(histogramViewer);
+        AnchorPane.setBottomAnchor(histogramViewer, 0.0);
+        AnchorPane.setTopAnchor(histogramViewer, 0.0);
+        AnchorPane.setLeftAnchor(histogramViewer, 0.0);
+        AnchorPane.setRightAnchor(histogramViewer, 0.0);
     }
 
     private String getHistogramKey() {
