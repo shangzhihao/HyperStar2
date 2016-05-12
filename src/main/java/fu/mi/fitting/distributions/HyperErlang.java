@@ -5,7 +5,6 @@ import com.google.common.collect.ListMultimap;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
-import org.apache.commons.math3.util.ArithmeticUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.apache.commons.math3.util.FastMath;
 
@@ -67,7 +66,7 @@ public class HyperErlang implements RealDistribution {
     }
     private BigDecimal cdfBranch(Erlang erlang, double x){
         BigDecimal res = BigDecimal.ZERO;
-        for(int i=0; i<erlang.shape; i++){
+        for (int i = 0; i < erlang.phase; i++) {
             res = BigDecimal.valueOf(erlang.rate*x);
             res = res.pow(i);
             res = res.multiply(BigDecimal.valueOf(FastMath.exp(-erlang.rate * x)));

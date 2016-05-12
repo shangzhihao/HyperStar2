@@ -10,10 +10,10 @@ import fu.mi.fitting.sample.SampleCollection;
  * this is based on the maximization likelihood estimation
  * for gamma distribution.
  * see https://en.wikipedia.org/wiki/Gamma_distribution#Maximum_likelihood_estimation
- * First I calculate shape, then rate.
- * But shape can be only an integer,
+ * First I calculate phase, then rate.
+ * But phase can be only an integer,
  * so I compare the log-likelihood function of the distribution
- * when shape equals floor(shape) and ceil(shape),
+ * when phase equals floor(phase) and ceil(phase),
  * and choose the greater one.
  */
 public class MLEErlangFitter extends ErlangFitter{

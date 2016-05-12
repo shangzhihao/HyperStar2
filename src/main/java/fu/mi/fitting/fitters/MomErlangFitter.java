@@ -10,11 +10,11 @@ import fu.mi.fitting.sample.SampleCollection;
  *
  * If we let samples mean equal expectation
  * and sample variance equal variance,
- * we will get rate=m/v and shape=m^2/v,
+ * we will get rate=m/v and phase=m^2/v,
  * that is how I fit erlang distribution in this class.
- * but shape can be only an integer,
+ * but phase can be only an integer,
  * so I compare the log-likelihood function of the distribution
- * when shape equals floor(shape) and ceil(shape),
+ * when phase equals floor(phase) and ceil(phase),
  * and choose the greater one.
  */
 
@@ -27,7 +27,7 @@ public class MomErlangFitter extends ErlangFitter{
     }
 
     /**
-     * get floor(shape) distribution
+     * get floor(phase) distribution
      */
     protected Erlang fitFloor(){
         double mean = samples.getMean();
@@ -40,7 +40,7 @@ public class MomErlangFitter extends ErlangFitter{
         return new Erlang(shape, rate);
     }
     /**
-     * get ceil(shape) distribution
+     * get ceil(phase) distribution
      */
     protected Erlang fitCeil(){
         double mean = samples.getMean();

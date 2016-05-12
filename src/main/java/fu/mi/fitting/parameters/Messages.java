@@ -17,4 +17,5 @@ public class Messages {
     public static final String DRAW_CDF = "drawing cdf";
     public static final String DRAW_PDF = "drawing pdf";
     public static final String PDF_LABEL = "pdf";
+    public static final String AUTO_BRANCH = "auto";
 }

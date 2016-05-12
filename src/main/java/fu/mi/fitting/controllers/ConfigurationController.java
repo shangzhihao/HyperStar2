@@ -5,11 +5,14 @@ import fu.mi.fitting.fitters.HyperErlangFitter;
 import fu.mi.fitting.fitters.MomErlangFitter;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
+import fu.mi.fitting.parameters.Messages;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shang on 5/9/2016.
@@ -25,6 +28,13 @@ public class ConfigurationController {
     TextField cdfPointsTxt;
     @FXML
     TextField pdfPointsTxt;
+    @FXML
+    TextField branchText;
+    @FXML
+    TextField maxMomentText;
+
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @FXML
     public void initialize() {
@@ -37,28 +47,52 @@ public class ConfigurationController {
     }
 
     private void addListener() {
+        maxMomentText.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                int maxMomentOrder = Integer.parseInt(newValue);
+                ChartsParameters.getInstance().setMaxMomentOrder(maxMomentOrder);
+            } catch (RuntimeException e) {
+                logger.warn("{} is not a integer, can't set it as max moment order", newValue);
+            }
+
+        });
+        // how many branch in hyper-erlang distribuion
+        branchText.textProperty().addListener((observable, oldVlue, newValue) -> {
+            try {
+                int branch = Integer.parseInt(newValue);
+                FitParameters.getInstance().setBranch(branch);
+            } catch (RuntimeException e) {
+                logger.warn("{} is not a integer, can't set it as branch", newValue);
+            }
+            if (newValue.equals(Messages.AUTO_BRANCH)) {
+                FitParameters.getInstance().setBranchToDefault();
+            }
+        });
         // number of histogram bins changed listener
         binsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 int bins = Integer.parseInt(newValue);
                 ChartsParameters.getInstance().setBins(bins);
             } catch (RuntimeException e) {
+                logger.warn("{} is not a integer, can't set it as histogram bins", newValue);
             }
         });
         // number of pdf points changed listener
         pdfPointsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                int bins = Integer.parseInt(newValue);
-                ChartsParameters.getInstance().setPdfPoints(bins);
+                int points = Integer.parseInt(newValue);
+                ChartsParameters.getInstance().setPdfPoints(points);
             } catch (RuntimeException e) {
+                logger.warn("{} is not a integer, can't set it as pdf points", newValue);
             }
         });
         // number of cdf points changed listener
         cdfPointsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                int bins = Integer.parseInt(newValue);
-                ChartsParameters.getInstance().setCdfPoints(bins);
+                int points = Integer.parseInt(newValue);
+                ChartsParameters.getInstance().setCdfPoints(points);
             } catch (RuntimeException e) {
+                logger.warn("{} is not a integer, can't set it as cdf points", newValue);
             }
         });
     }

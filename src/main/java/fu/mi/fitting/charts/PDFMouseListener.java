@@ -1,6 +1,7 @@
 package fu.mi.fitting.charts;
 
 import fu.mi.fitting.controllers.ControllerResource;
+import fu.mi.fitting.parameters.FitParameters;
 import javafx.scene.input.MouseButton;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
@@ -22,15 +23,21 @@ public class PDFMouseListener implements ChartMouseListenerFX {
     /**
      * when user clicks on histogram chart,
      * add a peak and draw a line.
-     *
      * @param event event information (never <code>null</code>).
      */
     @Override
     public void chartMouseClicked(ChartMouseEventFX event) {
+        int clickCount = event.getTrigger().getClickCount();
+        {
+            if (clickCount == 2) {
+                return;
+            }
+        }
         MouseButton mouseButton = event.getTrigger().getButton();
         if (mouseButton.compareTo(MouseButton.PRIMARY) == 0) {
             JFreeChart pdfHistogramChart = event.getChart();
             double position = getXofEvent(event);
+            FitParameters.getInstance().addPeak(position);
             ValueMarker valueMarker = new ValueMarker(position);
             valueMarker.setPaint(Color.BLUE);
             XYPlot plot = (XYPlot) pdfHistogramChart.getPlot();

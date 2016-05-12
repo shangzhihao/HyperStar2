@@ -12,7 +12,8 @@ public class ChartsParameters {
     private int pdfPoints = 200;
     // number of points in cdf chart
     private int cdfPoints = 200;
-
+    // max moment order for moment chart
+    private int maxMomentOrder = 3;
     private ChartsParameters() {
     }
 
@@ -45,4 +46,11 @@ public class ChartsParameters {
         this.cdfPoints = cdfPoints;
     }
 
+    public int getMaxMomentOrder() {
+        return maxMomentOrder;
+    }
+
+    public void setMaxMomentOrder(int maxMomentOrder) {
+        this.maxMomentOrder = maxMomentOrder;
+    }
 }

@@ -602,13 +602,13 @@ public class FXGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified shape with the current {@code paint} and
+     * Draws the specified phase with the current {@code paint} and
      * {@code stroke}.  There is direct handling for {@code Line2D},
      * {@code Rectangle2D}, {@code Ellipse2D}, {@code Arc2D} and
      * {@code Path2D}. All other shapes are mapped to a path outline and then
      * drawn.
      *
-     * @param s the shape ({@code null} not permitted).
+     * @param s the phase ({@code null} not permitted).
      * @see #fill(Shape)
      */
     @Override
@@ -666,9 +666,9 @@ public class FXGraphics2D extends Graphics2D {
     }
 
     /**
-     * Maps a shape to a path in the graphics context.
+     * Maps a phase to a path in the graphics context.
      *
-     * @param s the shape ({@code null} not permitted).
+     * @param s the phase ({@code null} not permitted).
      */
     private void shapeToPath(Shape s) {
         double[] coords = new double[6];
@@ -714,12 +714,12 @@ public class FXGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills the specified shape with the current {@code paint}.  There is
+     * Fills the specified phase with the current {@code paint}.  There is
      * direct handling for {@code RoundRectangle2D},
      * {@code Rectangle2D}, {@code Ellipse2D} and {@code Arc2D}.
      * All other shapes are mapped to a path outline and then filled.
      *
-     * @param s the shape ({@code null} not permitted).
+     * @param s the phase ({@code null} not permitted).
      * @see #draw(Shape)
      */
     @Override
@@ -1005,11 +1005,11 @@ public class FXGraphics2D extends Graphics2D {
 
     /**
      * Returns {@code true} if the rectangle (in device space) intersects
-     * with the shape (the interior, if {@code onStroke} is false,
-     * otherwise the stroked outline of the shape).
+     * with the phase (the interior, if {@code onStroke} is false,
+     * otherwise the stroked outline of the phase).
      *
      * @param rect     a rectangle (in device space).
-     * @param s        the shape.
+     * @param s        the phase.
      * @param onStroke test the stroked outline only?
      * @return A boolean.
      */
@@ -1119,7 +1119,7 @@ public class FXGraphics2D extends Graphics2D {
 
     /**
      * Clips to the intersection of the current clipping region and the
-     * specified shape.
+     * specified phase.
      * <p>
      * According to the Oracle API specification, this method will accept a
      * {@code null} argument, but there is an open bug report (since 2004)
@@ -1130,7 +1130,7 @@ public class FXGraphics2D extends Graphics2D {
      * <p>
      * In this implementation, a {@code null} argument is not permitted.
      *
-     * @param s the clip shape ({@code null} not permitted).
+     * @param s the clip phase ({@code null} not permitted).
      */
     @Override
     public void clip(Shape s) {

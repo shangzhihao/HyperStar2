@@ -1,3 +1,8 @@
 .chart-control {
     -fx-skin: "org.jfree.chart.fx.ChartViewerSkin";
 }
+
+.chart-marker-line {
+    -fx-stroke-width: 5;
+    -fx-stroke: black;
+}
