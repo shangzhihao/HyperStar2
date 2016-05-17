@@ -8,10 +8,10 @@ import org.apache.commons.math3.distribution.GammaDistribution;
  * erlang distribution with phase parameter and rate parameter
  */
 public class Erlang extends GammaDistribution {
-    public long phase;
+    public int phase;
     public double rate;
 
-    public Erlang(long phase, double rate) {
+    public Erlang(int phase, double rate) {
         super(phase, 1 / rate);
         this.phase = phase;
         this.rate = rate;

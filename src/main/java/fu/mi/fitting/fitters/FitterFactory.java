@@ -15,8 +15,10 @@ public class FitterFactory {
                 return new MomErlangFitter(sc);
             case HyperErlangFitter.FITTER_NAME:
                 return new HyperErlangFitter(sc);
+            case HyperStar.FITTER_NAME:
+                return new HyperStar(sc);
             default:
-                return new HyperErlangFitter(sc);
+                return new HyperStar(sc);
         }
     }
 }

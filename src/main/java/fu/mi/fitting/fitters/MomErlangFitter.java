@@ -19,8 +19,8 @@ import fu.mi.fitting.sample.SampleCollection;
  */
 
 public class MomErlangFitter extends ErlangFitter{
-
     public static final String FITTER_NAME = "Erlang";
+    private static final int MIN_PHASE = 1;
 
     MomErlangFitter(SampleCollection sc) {
         super(sc);
@@ -36,8 +36,11 @@ public class MomErlangFitter extends ErlangFitter{
             var = Double.MIN_VALUE;
         }
         double rate = mean/var;
-        long shape = (long)Math.floor(mean*rate);
-        return new Erlang(shape, rate);
+        int phase = (int) Math.floor(mean * rate);
+        if (phase < MIN_PHASE) {
+            phase = MIN_PHASE;
+        }
+        return new Erlang(phase, rate);
     }
     /**
      * get ceil(phase) distribution
@@ -49,8 +52,11 @@ public class MomErlangFitter extends ErlangFitter{
             var = Double.MIN_VALUE;
         }
         double rate = mean/var;
-        long shape = (long)Math.ceil(mean*rate);
-        return new Erlang(shape, rate);
+        int phase = (int) Math.ceil(mean * rate);
+        if (phase < MIN_PHASE) {
+            phase = MIN_PHASE;
+        }
+        return new Erlang(phase, rate);
     }
 
     @Override

@@ -2,6 +2,7 @@ package fu.mi.fitting.controllers;
 
 import fu.mi.fitting.fitters.ExponentialFitter;
 import fu.mi.fitting.fitters.HyperErlangFitter;
+import fu.mi.fitting.fitters.HyperStar;
 import fu.mi.fitting.fitters.MomErlangFitter;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
@@ -10,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,12 @@ public class ConfigurationController {
     TextField branchText;
     @FXML
     TextField maxMomentText;
-
+    @FXML
+    ChoiceBox equalityChoice;
+    @FXML
+    ChoiceBox emptyChoice;
+    @FXML
+    ChoiceBox terminationChoice;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -40,9 +45,15 @@ public class ConfigurationController {
     public void initialize() {
         ControllerResource.getInstance().confController = this;
         fitterChoice.getItems().addAll(HyperErlangFitter.FITTER_NAME,
-                ExponentialFitter.FITTER_NAME, MomErlangFitter.FITTER_NAME);
-        fitterChoice.setTooltip(new Tooltip("select a distribution to fit"));
+                ExponentialFitter.FITTER_NAME, MomErlangFitter.FITTER_NAME,
+                HyperStar.FITTER_NAME);
         fitterChoice.getSelectionModel().selectFirst();
+        equalityChoice.getItems().addAll("ParameterEquals", "RegularEquals", "ReferenceEquals");
+        equalityChoice.getSelectionModel().selectFirst();
+        emptyChoice.getItems().addAll("RemoveCluster", "KeepEmptyCluster");
+        emptyChoice.getSelectionModel().selectFirst();
+        terminationChoice.getItems().addAll("ClusterEquality", "MinLLogikelihoodReached");
+        terminationChoice.getSelectionModel().selectFirst();
         addListener();
     }
 
@@ -104,5 +115,17 @@ public class ConfigurationController {
      */
     public void chooseFitter(ActionEvent actionEvent) {
         FitParameters.getInstance().setFitterName(fitterChoice.getValue());
+    }
+
+    public void setInputDisable(boolean isDisable) {
+        fitterChoice.setDisable(isDisable);
+        binsTxt.setDisable(isDisable);
+        cdfPointsTxt.setDisable(isDisable);
+        pdfPointsTxt.setDisable(isDisable);
+        branchText.setDisable(isDisable);
+        maxMomentText.setDisable(isDisable);
+        equalityChoice.setDisable(isDisable);
+        emptyChoice.setDisable(isDisable);
+        terminationChoice.setDisable(isDisable);
     }
 }

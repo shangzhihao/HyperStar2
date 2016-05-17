@@ -31,6 +31,8 @@ public class SampleController {
     TextField sampleRangeTo;
     @FXML
     Label sampleSizeText;
+    @FXML
+    Button rePlotBtn;
 
     @FXML
     public void initialize() {
@@ -99,5 +101,13 @@ public class SampleController {
         }
         ControllerResource.getInstance().chartsController.drawChart();
         ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
+    }
+
+    public void setInputDisable(boolean isDisable) {
+        loadSamplesBtn.setDisable(isDisable);
+        rePlotBtn.setDisable(isDisable);
+        sampleRangeFrom.setDisable(isDisable);
+        sampleRangeTo.setDisable(isDisable);
+        sampleSizeSlider.setDisable(isDisable);
     }
 }

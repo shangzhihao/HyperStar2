@@ -24,5 +24,4 @@ public class ControllerResource {
     public static ControllerResource getInstance() {
         return INSTANCE;
     }
-
 }

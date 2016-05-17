@@ -26,13 +26,13 @@ public class MLEErlangFitter extends ErlangFitter{
 
     protected Erlang fitFloor(){
         double mean = samples.getMean();
-        long shape = (long)Math.floor(calcShape());
+        int shape = (int) Math.floor(calcShape());
         double rate = shape/mean;
         return new Erlang(shape, rate);
     }
     protected Erlang fitCeil(){
         double mean = samples.getMean();
-        long shape = (long)Math.ceil(calcShape());
+        int shape = (int) Math.ceil(calcShape());
         double rate = shape/mean;
         return new Erlang(shape, rate);
     }

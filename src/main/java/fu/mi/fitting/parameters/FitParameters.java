@@ -1,7 +1,7 @@
 package fu.mi.fitting.parameters;
 
 import com.google.common.collect.Lists;
-import fu.mi.fitting.fitters.HyperErlangFitter;
+import fu.mi.fitting.fitters.HyperStar;
 import fu.mi.fitting.fitters.MomErlangFitter;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class FitParameters {
     private int branch = 2;
     private int kMeans = 10;
     private String erlangFitter = MomErlangFitter.FITTER_NAME;
-    private String fitterName = HyperErlangFitter.FITTER_NAME;
+    private String fitterName = HyperStar.FITTER_NAME;
     private List<Double> peaks = Lists.newArrayList();
 
     private FitParameters() {

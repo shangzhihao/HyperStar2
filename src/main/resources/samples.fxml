@@ -13,7 +13,8 @@
         </rowConstraints>
         <children>
             <Button fx:id="loadSamplesBtn" onAction="#loadSamples" text="Load Samples"/>
-            <Button mnemonicParsing="false" onAction="#rePlot" text="Replot" GridPane.columnIndex="1"/>
+            <Button fx:id="rePlotBtn" mnemonicParsing="false" onAction="#rePlot" text="Replot"
+                    GridPane.columnIndex="1"/>
         </children>
     </GridPane>
     <TitledPane animated="false" text="Limit Data">
@@ -47,7 +48,7 @@
                                             <Insets/>
                                         </HBox.margin>
                                     </Label>
-                                    <TextField fx:id="sampleRangeFrom" prefWidth="50.0" text="N">
+                                    <TextField fx:id="sampleRangeFrom" prefWidth="50.0" text="min">
                                         <HBox.margin>
                                             <Insets left="10.0"/>
                                         </HBox.margin>
@@ -57,7 +58,7 @@
                                             <Insets left="20.0"/>
                                         </HBox.margin>
                                     </Label>
-                                    <TextField fx:id="sampleRangeTo" prefWidth="50.0" text="N">
+                                    <TextField fx:id="sampleRangeTo" prefWidth="50.0" text="max">
                                         <HBox.margin>
                                             <Insets left="10.0"/>
                                         </HBox.margin>

@@ -33,7 +33,7 @@ public class HyperErlangFitter extends Fitter {
     public List<Erlang> erlangs = Lists.newArrayList();
     public List<ErlangFitter> fitters = Lists.newArrayList();
     Logger logger = LoggerFactory.getLogger(HyperErlang.class);
-    private int maxLoop = 500;
+    private int maxLoop = 5000;
     private Class erlangFitterClass = MLEErlangFitter.class;
 
     HyperErlangFitter(SampleCollection sc) {

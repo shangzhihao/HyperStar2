@@ -35,20 +35,33 @@ public class ParameterController {
      * @param actionEvent click event
      */
     public void fitBtnAction(ActionEvent actionEvent) {
-        fitBtn.setDisable(true);
-        fitDistribution();
-        fitBtn.setDisable(false);
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
+        if (sc == null) {
+            ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
+            return;
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                setInputDisable(true);
+                fitDistribution();
+                setInputDisable(false);
+            }
+        }.start();
     }
+
+    private void setInputDisable(boolean isDisable) {
+        ControllerResource.getInstance().sampleController.setInputDisable(isDisable);
+        ControllerResource.getInstance().confController.setInputDisable(isDisable);
+        fitBtn.setDisable(isDisable);
+    }
+
 
     /**
      * fit distribution with selected fitter and parameters
      */
     private void fitDistribution() {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
-        if (sc == null) {
-            ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
-            return;
-        }
         Fitter herFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
         RealDistribution res = herFitter.fit();
         Function2D pdf = d -> res.density(d);
