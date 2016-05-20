@@ -3,6 +3,7 @@ package fu.mi.fitting.fitters;
 import cluster.fitter.Hyper_Star_Erlang;
 import fu.mi.fitting.distributions.Erlang;
 import fu.mi.fitting.distributions.HyperErlang;
+import fu.mi.fitting.distributions.HyperErlangBranch;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import utilities.Config;
@@ -12,7 +13,7 @@ import utilities.Config;
  * fit hyper-erlang distribution by the method of Hyper-Star
  */
 public class HyperStar extends Fitter<HyperErlang> {
-    public static final String FITTER_NAME = "HyperStar";
+    public static final String FITTER_NAME = "HyperErlang";
 
     HyperStar(SampleCollection sc) {
         super(sc);
@@ -29,7 +30,7 @@ public class HyperStar extends Fitter<HyperErlang> {
         double[] lambda = hyperStarRes.lambdaOfBranch;
         HyperErlang res = new HyperErlang();
         for (int i = 0; i < alpha.length; i++) {
-            res.pro2dist.put(alpha[i], new Erlang(length[i], lambda[i]));
+            res.branches.add(new HyperErlangBranch(alpha[i], new Erlang(length[i], lambda[i])));
         }
         return res;
     }

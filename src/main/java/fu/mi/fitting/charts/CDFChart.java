@@ -4,6 +4,10 @@ import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.DatasetRenderingOrder;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -17,6 +21,8 @@ import java.util.List;
  * and ChartsController will show the result.
  */
 public class CDFChart {
+    private JFreeChart cdfChart;
+
     public JFreeChart getCDFLineChart() {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         List<Double> sampleList = sc.asDoubleList();
@@ -30,6 +36,15 @@ public class CDFChart {
             cdfSeries.add(sampleList.get(i), new Double(probability));
         }
         dataset.addSeries(cdfSeries);
-        return ChartFactory.createXYLineChart("", "samples", "CDF", dataset);
+        cdfChart = ChartFactory.createXYLineChart("", "samples", "CDF", dataset);
+        return cdfChart;
+    }
+
+    public void drawFittedCDF(XYDataset cdfDataset) {
+        XYPlot xyPlot = cdfChart.getXYPlot();
+        xyPlot.setDataset(1, cdfDataset);
+        xyPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+        StandardXYItemRenderer render = new StandardXYItemRenderer(StandardXYItemRenderer.LINES);
+        xyPlot.setRenderer(1, render);
     }
 }

@@ -95,4 +95,10 @@ public class ChartsController {
                 chartsParameters.getPdfPoints(), Messages.PDF_LABEL);
         pdfChart.drawPDF(pdfDataset);
     }
+
+    public void addCDF(Function2D cdf, double start, double end) {
+        XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(cdf, start, end,
+                chartsParameters.getCdfPoints(), Messages.PDF_LABEL);
+        cdfChart.drawFittedCDF(pdfDataset);
+    }
 }

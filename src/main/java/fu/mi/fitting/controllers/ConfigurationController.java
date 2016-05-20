@@ -11,8 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.scene.layout.GridPane;
 
 /**
  * Created by shang on 5/9/2016.
@@ -33,20 +32,20 @@ public class ConfigurationController {
     @FXML
     TextField maxMomentText;
     @FXML
-    ChoiceBox equalityChoice;
+    ChoiceBox<String> equalityChoice;
     @FXML
-    ChoiceBox emptyChoice;
+    ChoiceBox<String> emptyChoice;
     @FXML
-    ChoiceBox terminationChoice;
+    ChoiceBox<String> terminationChoice;
+    @FXML
+    GridPane fittingParameterGrid;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @FXML
     public void initialize() {
         ControllerResource.getInstance().confController = this;
-        fitterChoice.getItems().addAll(HyperErlangFitter.FITTER_NAME,
-                ExponentialFitter.FITTER_NAME, MomErlangFitter.FITTER_NAME,
-                HyperStar.FITTER_NAME);
+        fitterChoice.getItems().addAll(ExponentialFitter.FITTER_NAME, HyperErlangFitter.FITTER_NAME,
+                MomErlangFitter.FITTER_NAME, HyperStar.FITTER_NAME);
         fitterChoice.getSelectionModel().selectFirst();
         equalityChoice.getItems().addAll("ParameterEquals", "RegularEquals", "ReferenceEquals");
         equalityChoice.getSelectionModel().selectFirst();
@@ -58,12 +57,13 @@ public class ConfigurationController {
     }
 
     private void addListener() {
+        //
         maxMomentText.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 int maxMomentOrder = Integer.parseInt(newValue);
                 ChartsParameters.getInstance().setMaxMomentOrder(maxMomentOrder);
             } catch (RuntimeException e) {
-                logger.warn("{} is not a integer, can't set it as max moment order", newValue);
+                //logger.warn("{} is not a integer, can't set it as max moment order", newValue);
             }
 
         });
@@ -73,7 +73,7 @@ public class ConfigurationController {
                 int branch = Integer.parseInt(newValue);
                 FitParameters.getInstance().setBranch(branch);
             } catch (RuntimeException e) {
-                logger.warn("{} is not a integer, can't set it as branch", newValue);
+                //logger.warn("{} is not a integer, can't set it as branch", newValue);
             }
             if (newValue.equals(Messages.AUTO_BRANCH)) {
                 FitParameters.getInstance().setBranchToDefault();
@@ -85,7 +85,7 @@ public class ConfigurationController {
                 int bins = Integer.parseInt(newValue);
                 ChartsParameters.getInstance().setBins(bins);
             } catch (RuntimeException e) {
-                logger.warn("{} is not a integer, can't set it as histogram bins", newValue);
+                //logger.warn("{} is not a integer, can't set it as histogram bins", newValue);
             }
         });
         // number of pdf points changed listener
@@ -94,7 +94,7 @@ public class ConfigurationController {
                 int points = Integer.parseInt(newValue);
                 ChartsParameters.getInstance().setPdfPoints(points);
             } catch (RuntimeException e) {
-                logger.warn("{} is not a integer, can't set it as pdf points", newValue);
+                //logger.warn("{} is not a integer, can't set it as pdf points", newValue);
             }
         });
         // number of cdf points changed listener
@@ -103,7 +103,21 @@ public class ConfigurationController {
                 int points = Integer.parseInt(newValue);
                 ChartsParameters.getInstance().setCdfPoints(points);
             } catch (RuntimeException e) {
-                logger.warn("{} is not a integer, can't set it as cdf points", newValue);
+                //logger.warn("{} is not a integer, can't set it as cdf points", newValue);
+            }
+        });
+        // fitter change listener
+        fitterChoice.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            fittingParameterGrid.setVisible(false);
+            int selected = newValue.intValue();
+            switch (selected) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    fittingParameterGrid.setVisible(true);
+                    break;
             }
         });
     }

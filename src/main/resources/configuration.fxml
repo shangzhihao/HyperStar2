@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" maxWidth="280.0" minWidth="280.0" prefWidth="280.0" spacing="5.0"
       xmlns="http://javafx.com/javafx/null" fx:controller="fu.mi.fitting.controllers.ConfigurationController">
     <TitledPane animated="false" text="Configuration">
@@ -29,7 +27,8 @@
                                             <Label text="Fitter:"/>
                                         </children>
                                     </GridPane>
-                                    <GridPane prefHeight="48.0" prefWidth="238.0">
+                                    <GridPane fx:id="fittingParameterGrid" prefHeight="48.0" prefWidth="238.0"
+                                              visible="false">
                                         <columnConstraints>
                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -69,33 +68,11 @@
                                     <Label text="Rule for Equality"/>
                                     <Label text="Rule for Empty Clusters" GridPane.rowIndex="1"/>
                                     <Label text="Rule for Termination" GridPane.rowIndex="2"/>
-                                    <ChoiceBox fx:id="equalityChoice" prefWidth="150.0" GridPane.columnIndex="1">
-                                        <items>
-                                            <FXCollections fx:factory="observableArrayList" value="ParameterEquals">
-                                                <String fx:value="RegularEquals"/>
-                                                <String fx:value="ParameterEquals"/>
-                                                <String fx:value="ReferenceEquals"/>
-                                            </FXCollections>
-                                        </items>
-                                    </ChoiceBox>
+                                    <ChoiceBox fx:id="equalityChoice" prefWidth="150.0" GridPane.columnIndex="1"/>
                                     <ChoiceBox fx:id="emptyChoice" prefWidth="150.0" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="1">
-                                        <items>
-                                            <FXCollections fx:factory="observableArrayList" value="RemoveCluster">
-                                                <String fx:value="RemoveCluster"/>
-                                                <String fx:value="KeepEmptyCluster"/>
-                                            </FXCollections>
-                                        </items>
-                                    </ChoiceBox>
+                                               GridPane.rowIndex="1"/>
                                     <ChoiceBox fx:id="terminationChoice" prefWidth="150.0" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="2">
-                                        <items>
-                                            <FXCollections fx:factory="observableArrayList" value="ClusterEquality">
-                                                <String fx:value="ClusterEquality"/>
-                                                <String fx:value="MinLLogikelihoodReached"/>
-                                            </FXCollections>
-                                        </items>
-                                    </ChoiceBox>
+                                               GridPane.rowIndex="2"/>
                                 </children>
                                 <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>

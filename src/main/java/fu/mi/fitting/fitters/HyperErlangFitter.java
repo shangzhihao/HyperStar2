@@ -1,9 +1,9 @@
 package fu.mi.fitting.fitters;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import fu.mi.fitting.distributions.Erlang;
 import fu.mi.fitting.distributions.HyperErlang;
+import fu.mi.fitting.distributions.HyperErlangBranch;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import fu.mi.fitting.sample.SampleItem;
@@ -29,7 +29,7 @@ import java.util.List;
 public class HyperErlangFitter extends Fitter {
 
     public static final String FITTER_NAME = "Hyper-Erlang";
-    public int branch = 8;
+    public int branch = 2;
     public List<Erlang> erlangs = Lists.newArrayList();
     public List<ErlangFitter> fitters = Lists.newArrayList();
     Logger logger = LoggerFactory.getLogger(HyperErlang.class);
@@ -40,15 +40,6 @@ public class HyperErlangFitter extends Fitter {
         super(sc);
     }
 
-    private ErlangFitter getErlangFitter() {
-        ErlangFitter res = null;
-        try {
-            res = (ErlangFitter) erlangFitterClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
     @Override
     public RealDistribution fit() {
         branch = FitParameters.getInstance().getBranch();
@@ -80,7 +71,7 @@ public class HyperErlangFitter extends Fitter {
                         logger.debug("loop {} transfer sample {} from {} to {}",
                                 loop, j, i, maxPdfIndex);
                         transferSample(j, i, maxPdfIndex);
-                        noChange = false;
+                        //noChange = false;
                     }
                 }
             }
@@ -91,13 +82,13 @@ public class HyperErlangFitter extends Fitter {
         }
         assert erlangs.size() == fitters.size();
         // make result
-        ArrayListMultimap<Double, Erlang> pro2dist = ArrayListMultimap.create();
+        List<HyperErlangBranch> branches = Lists.newArrayList();
         double total = samples.data.size();
         for(int i = 0; i < erlangs.size(); i++){
-            pro2dist.put(fitters.get(i).samples.data.size()/total, erlangs.get(i));
+            branches.add(new HyperErlangBranch(fitters.get(i).samples.data.size() / total, erlangs.get(i)));
         }
         HyperErlang res = new HyperErlang();
-        res.pro2dist = pro2dist;
+        res.branches = branches;
         return res;
     }
 

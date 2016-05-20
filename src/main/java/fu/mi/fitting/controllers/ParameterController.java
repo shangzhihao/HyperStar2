@@ -62,11 +62,13 @@ public class ParameterController {
      */
     private void fitDistribution() {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
-        Fitter herFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
-        RealDistribution res = herFitter.fit();
+        Fitter selectedFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
+        RealDistribution res = selectedFitter.fit();
         Function2D pdf = d -> res.density(d);
+        Function2D cdf = d -> res.cumulativeProbability(d);
         double start = StatUtils.min(sc.asDoubleArray());
         double end = StatUtils.max(sc.asDoubleArray());
         ControllerResource.getInstance().chartsController.addPDF(pdf, start, end);
+        ControllerResource.getInstance().chartsController.addCDF(cdf, start, end);
     }
 }

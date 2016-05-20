@@ -1,7 +1,6 @@
 package fu.mi.fitting.distributions;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
@@ -9,8 +8,8 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.apache.commons.math3.util.FastMath;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -23,7 +22,7 @@ public class HyperErlang implements RealDistribution {
     /**
      * initial probability to erlang distribution
      */
-    public ListMultimap<Double, Erlang> pro2dist  = ArrayListMultimap.create();
+    public List<HyperErlangBranch> branches = Lists.newArrayList();
     /**
      * P(X = v)
      */
@@ -39,12 +38,8 @@ public class HyperErlang implements RealDistribution {
     @Override
     public double density(double v) {
         double res = 0;
-        Set<Double> keys = pro2dist.keySet();
-        for(Double key : keys){
-            List<Erlang> erlangs = pro2dist.get(key);
-            for(Erlang eralng : erlangs){
-                res += key*eralng.density(v);
-            }
+        for (HyperErlangBranch branch : branches) {
+            res += branch.probability * branch.dist.density(v);
         }
         return res;
     }
@@ -55,23 +50,23 @@ public class HyperErlang implements RealDistribution {
     @Override
     public double cumulativeProbability(double v) {
         BigDecimal res = BigDecimal.ZERO;
-        Set<Double> keys = pro2dist.keySet();
-        for(Double key : keys){
-            List<Erlang> erlangs = pro2dist.get(key);
-            for(Erlang eralng : erlangs){
-                res = res.add(cdfBranch(eralng, v));
-            }
+        for (HyperErlangBranch branch : branches) {
+            res = res.add(cdfBranch(branch, v));
         }
         return 1 - res.doubleValue();
     }
-    private BigDecimal cdfBranch(Erlang erlang, double x){
+
+    private BigDecimal cdfBranch(HyperErlangBranch branch, double x) {
+        BigDecimal temp;
         BigDecimal res = BigDecimal.ZERO;
-        for (int i = 0; i < erlang.phase; i++) {
-            res = BigDecimal.valueOf(erlang.rate*x);
-            res = res.pow(i);
-            res = res.multiply(BigDecimal.valueOf(FastMath.exp(-erlang.rate * x)));
-            res = res.divide(BigDecimal.valueOf(CombinatoricsUtils.factorial(i))).add(res);
+        for (int i = 0; i < branch.dist.phase; i++) {
+            temp = BigDecimal.valueOf(branch.dist.rate * x);
+            temp = temp.pow(i);
+            temp = temp.multiply(BigDecimal.valueOf(FastMath.exp(-branch.dist.rate * x)));
+            temp = temp.divide(BigDecimal.valueOf(CombinatoricsUtils.factorial(i)), MathContext.DECIMAL128);
+            res = res.add(temp);
         }
+        res = res.multiply(BigDecimal.valueOf(branch.probability));
         return  res;
     }
 
@@ -137,4 +132,6 @@ public class HyperErlang implements RealDistribution {
     public double[] sample(int i) {
         throw new UnsupportedOperationException();
     }
+
 }
+

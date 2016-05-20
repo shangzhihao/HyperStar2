@@ -10,8 +10,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 
-import java.awt.*;
-
 /**
  * Created by shang on 5/6/2016.
  * this class is only used to draw pdf chart,
@@ -31,12 +29,10 @@ public class PDFChart {
     }
 
     public void drawPDF(XYDataset pdfDataset) {
-        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         XYPlot xyPlot = histogram.getXYPlot();
         xyPlot.setDataset(1, pdfDataset);
         xyPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
         StandardXYItemRenderer render = new StandardXYItemRenderer(StandardXYItemRenderer.LINES);
-        render.setSeriesPaint(1, Color.BLACK, true);
         xyPlot.setRenderer(1, render);
     }
 }
