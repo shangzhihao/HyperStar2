@@ -4,12 +4,13 @@ import fu.mi.fitting.distributions.HyperErlang;
 import fu.mi.fitting.sample.SampleCollection;
 
 /**
- * Created by shang on 5/12/2016.
+ * Created by shang on 5/23/2016.
+ * Fit Markov Arrival Process using joint-moments
  */
-public class HyperErlang2 extends Fitter<HyperErlang> {
-    public static final String FITTER_NAME = "HyperErlang2";
+public class MAPMoments extends Fitter<HyperErlang> {
+    public static final String FITTER_NAME = "Markov Arrival Process";
 
-    HyperErlang2(SampleCollection sc) {
+    MAPMoments(SampleCollection sc) {
         super(sc);
     }
 

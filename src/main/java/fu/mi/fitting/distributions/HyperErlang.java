@@ -1,6 +1,7 @@
 package fu.mi.fitting.distributions;
 
 import com.google.common.collect.Lists;
+import fu.mi.fitting.sample.SampleCollection;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
@@ -23,6 +24,19 @@ public class HyperErlang implements RealDistribution {
      * initial probability to erlang distribution
      */
     public List<HyperErlangBranch> branches = Lists.newArrayList();
+
+    /**
+     * add a branch to distribution
+     * @param branch an erlang branch with initial probability
+     */
+    public void addBranch(HyperErlangBranch branch) {
+        branches.add(branch);
+    }
+
+    public void addBranch(double init, Erlang erlang) {
+        addBranch(new HyperErlangBranch(init, erlang));
+    }
+
     /**
      * P(X = v)
      */
@@ -54,6 +68,24 @@ public class HyperErlang implements RealDistribution {
             res = res.add(cdfBranch(branch, v));
         }
         return 1 - res.doubleValue();
+    }
+
+    /**
+     * get log likelihood of given samples
+     *
+     * @param values samples
+     * @return log likelihood
+     */
+    public double logLikelihood(List<Double> values) {
+        double res = 0;
+        for (double value : values) {
+            res += density(value);
+        }
+        return res;
+    }
+
+    public double logLikelihood(SampleCollection sc) {
+        return logLikelihood(sc.asDoubleList());
     }
 
     private BigDecimal cdfBranch(HyperErlangBranch branch, double x) {
