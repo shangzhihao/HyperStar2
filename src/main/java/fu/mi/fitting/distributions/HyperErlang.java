@@ -33,11 +33,7 @@ public class HyperErlang implements RealDistribution {
      * @return initial probability
      */
     public List<Double> getAlpha() {
-        List<Double> result = Lists.newArrayList();
-        for (HyperErlangBranch branch : branches) {
-            result.add(branch.probability);
-        }
-        return result;
+        return null;
     }
 
     /**
