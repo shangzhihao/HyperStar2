@@ -18,5 +18,7 @@ public abstract class Fitter<T extends RealDistribution> {
 
     public abstract T fit();
 
+    public abstract double logLikelihood();
+
     public abstract String getName();
 }

@@ -24,6 +24,12 @@ public class MLEErlangFitter extends ErlangFitter{
         super(sc);
     }
 
+    // TODO implement this
+    @Override
+    public double logLikelihood() {
+        return 0;
+    }
+
     protected Erlang fitFloor(){
         double mean = samples.getMean();
         int shape = (int) Math.floor(calcShape());

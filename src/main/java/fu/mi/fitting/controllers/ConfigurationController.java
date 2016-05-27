@@ -37,14 +37,23 @@ public class ConfigurationController {
     @FXML
     ChoiceBox<String> terminationChoice;
     @FXML
-    GridPane fittingParameterGrid;
-
+    GridPane hyperErlangGrid;
+    @FXML
+    GridPane erlangGrid;
+    @FXML
+    TextField reassignText;
+    @FXML
+    TextField optimizeText;
+    @FXML
+    TextField invoksText;
+    @FXML
+    TextField phaseText;
 
     @FXML
     public void initialize() {
         ControllerResource.getInstance().confController = this;
-        fitterChoice.getItems().addAll(ExponentialFitter.FITTER_NAME, HyperErlangFitter.FITTER_NAME,
-                MomErlangFitter.FITTER_NAME);
+        fitterChoice.getItems().addAll(HyperErlangFitter.FITTER_NAME,
+                MomErlangFitter.FITTER_NAME, ExponentialFitter.FITTER_NAME);
         fitterChoice.getSelectionModel().selectFirst();
         equalityChoice.getItems().addAll("ParameterEquals", "RegularEquals", "ReferenceEquals");
         equalityChoice.getSelectionModel().selectFirst();
@@ -107,17 +116,17 @@ public class ConfigurationController {
         });
         // fitter change listener
         fitterChoice.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            fittingParameterGrid.setVisible(false);
+            hyperErlangGrid.setVisible(false);
+            erlangGrid.setVisible(false);
             int selected = newValue.intValue();
             switch (selected) {
                 case 0:
+                    hyperErlangGrid.setVisible(true);
                     break;
                 case 1:
+                    erlangGrid.setVisible(true);
                     break;
                 case 2:
-                    break;
-                case 3:
-                    fittingParameterGrid.setVisible(true);
                     break;
             }
         });

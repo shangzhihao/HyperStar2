@@ -19,6 +19,12 @@ public class ExponentialFitter extends Fitter<ExponentialDistribution> {
         return new ExponentialDistribution(samples.getMean());
     }
 
+    // TODO implement this
+    @Override
+    public double logLikelihood() {
+        return 0;
+    }
+
     @Override
     public String getName() {
         return null;

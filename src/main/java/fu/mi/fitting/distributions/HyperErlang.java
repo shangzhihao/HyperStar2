@@ -1,11 +1,12 @@
 package fu.mi.fitting.distributions;
 
 import com.google.common.collect.Lists;
+import com.google.common.math.DoubleMath;
 import fu.mi.fitting.sample.SampleCollection;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
-import org.apache.commons.math3.util.CombinatoricsUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.FastMath;
 
 import java.math.BigDecimal;
@@ -20,11 +21,33 @@ import java.util.List;
  */
 public class HyperErlang implements RealDistribution {
 
+
     /**
-     * initial probability to erlang distribution
+     * branches in hyper-erlang distribution
      */
     public List<HyperErlangBranch> branches = Lists.newArrayList();
 
+    /**
+     * get initial probability
+     *
+     * @return initial probability
+     */
+    public List<Double> getAlpha() {
+        List<Double> result = Lists.newArrayList();
+        for (HyperErlangBranch branch : branches) {
+            result.add(branch.probability);
+        }
+        return result;
+    }
+
+    /**
+     * get transmit matrix
+     *
+     * @return transmit matrix
+     */
+    public RealMatrix getD0() {
+        return null;
+    }
     /**
      * add a branch to distribution
      * @param branch an erlang branch with initial probability
@@ -95,7 +118,7 @@ public class HyperErlang implements RealDistribution {
             temp = BigDecimal.valueOf(branch.dist.rate * x);
             temp = temp.pow(i);
             temp = temp.multiply(BigDecimal.valueOf(FastMath.exp(-branch.dist.rate * x)));
-            temp = temp.divide(BigDecimal.valueOf(CombinatoricsUtils.factorial(i)), MathContext.DECIMAL128);
+            temp = temp.divide(BigDecimal.valueOf(DoubleMath.factorial(i)), MathContext.DECIMAL128);
             res = res.add(temp);
         }
         res = res.multiply(BigDecimal.valueOf(branch.probability));

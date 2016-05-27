@@ -15,6 +15,8 @@ public class FitterFactory {
                 return new MomErlangFitter(sc);
             case HyperErlangFitter.FITTER_NAME:
                 return new HyperErlangFitter(sc);
+            case MapFitter.FITTER_NAME:
+                return new MapFitter(sc);
             default:
                 return new HyperErlangFitter(sc);
         }

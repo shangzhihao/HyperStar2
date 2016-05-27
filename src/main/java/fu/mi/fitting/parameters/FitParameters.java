@@ -15,7 +15,7 @@ public class FitParameters {
     // default branch, the fitter will calculate branch
     private final int defaultBranch = -1;
     // branch of Hyper-Erlang distribution
-    private int branch = 2;
+    private int branch = 4;
     private int kMeans = 10;
     private String erlangFitter = MomErlangFitter.FITTER_NAME;
     private String fitterName = HyperErlangFitter.FITTER_NAME;

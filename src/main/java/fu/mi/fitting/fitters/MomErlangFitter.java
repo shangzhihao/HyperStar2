@@ -26,6 +26,12 @@ public class MomErlangFitter extends ErlangFitter{
         super(sc);
     }
 
+    // TODO implement this
+    @Override
+    public double logLikelihood() {
+        return 0;
+    }
+
     /**
      * get floor(phase) distribution
      */

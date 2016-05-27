@@ -16,8 +16,13 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.util.FastMath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.DoubleStream;
 
 /**
@@ -34,8 +39,12 @@ import java.util.stream.DoubleStream;
 public class HyperErlangFitter extends Fitter {
 
     public static final String FITTER_NAME = "Hyper-Erlang";
-    public int branch = 4;
-    private Map<HyperErlang, HyperErlangFitter> dist2fitter = Maps.newHashMap();
+    private Logger logger = LoggerFactory.getLogger(HyperErlangFitter.class);
+    private HyperErlang fitResult = null;
+    private double llh = -1;
+
+
+    private List<SampleCollection> cluster;
 
     HyperErlangFitter(SampleCollection sc) {
         super(sc);
@@ -43,8 +52,21 @@ public class HyperErlangFitter extends Fitter {
 
     @Override
     public RealDistribution fit() {
-        branch = FitParameters.getInstance().getBranch();
-        return refinement(initFit());
+        if (fitResult == null) {
+            HyperErlangFitter bestFitter = refinement(initFit());
+            setCluster(bestFitter.getCluster());
+            branchFit();
+        }
+        return fitResult;
+    }
+
+    @Override
+    public double logLikelihood() {
+        if (llh == -1) {
+            HyperErlang dist = (HyperErlang) fit();
+            llh = dist.logLikelihood(samples);
+        }
+        return llh;
     }
 
     /**
@@ -53,20 +75,36 @@ public class HyperErlangFitter extends Fitter {
      * @param roughRes initial fitting result
      * @return refined result, this would be the final result
      */
-    private RealDistribution refinement(HyperErlang roughRes) {
+    private HyperErlangFitter refinement(HyperErlang roughRes) {
+        // TODO read form gui
+        int maxCandidate = 10;
+        int reassignment = 30;
         int numOfShuffles = 2;
-        Queue<HyperErlang> results = new PriorityQueue<>(new HyperErlangComparator());
-        results.offer(roughRes);
-        List<HyperErlang> resCandidate;
-        for (HyperErlang dist : results) {
-            resCandidate = shuffle(dist, numOfShuffles);
-            results.addAll(resCandidate);
+
+        TreeSet<HyperErlangFitter> results = new TreeSet<>(new HyperErlangComparator());
+        TreeSet<HyperErlangFitter> loopRes = new TreeSet<>(new HyperErlangComparator());
+        List<HyperErlangFitter> resCandidate;
+        results.addAll(shuffle(roughRes, numOfShuffles));
+        for (int i = 0; i < reassignment; i++) {
+            logger.info("the {}th reassign.", i);
+            loopRes.clear();
+            int visitedCandidate = 0;
+            for (HyperErlangFitter fitter : results) {
+                visitedCandidate++;
+                if (visitedCandidate > maxCandidate) {
+                    break;
+                }
+                resCandidate = shuffle((HyperErlang) fitter.fit(), numOfShuffles);
+                logger.info("log likelihood: {}", fitter.logLikelihood());
+                loopRes.addAll(resCandidate);
+            }
+            results.addAll(loopRes);
         }
-        return results.peek();
+        return results.first();
     }
 
-    private List<HyperErlang> shuffle(HyperErlang dist, int numOfShuffles) {
-        List<HyperErlang> result = Lists.newArrayList();
+    private List<HyperErlangFitter> shuffle(HyperErlang dist, int numOfShuffles) {
+        List<HyperErlangFitter> result = Lists.newArrayList();
         List<HyperErlangBranch> branches = dist.branches;
         RealMatrix relevance = new Array2DRowRealMatrix(samples.data.size(), branches.size());
         Map<Integer, Double> sumOfRow = Maps.newHashMap();
@@ -82,18 +120,25 @@ public class HyperErlangFitter extends Fitter {
             }
         }
         for (int i = 0; i < numOfShuffles; i++) {
-            result.add(fit(discreteSamples(relevance)));
+            result.add(fitterFromCluster(discreteSamples(relevance)));
         }
         return result;
     }
 
-    private HyperErlang fit(List<SampleCollection> sampleCollections) {
-        HyperErlang res = new HyperErlang();
-        for (SampleCollection sc : sampleCollections) {
-            res.addBranch(sc.data.size() / (double) samples.data.size(),
+    private HyperErlangFitter fitterFromCluster(List<SampleCollection> sampleCollections) {
+        HyperErlangFitter res = new HyperErlangFitter(samples);
+        res.setCluster(sampleCollections);
+        res.branchFit();
+        return res;
+    }
+
+    private void branchFit() {
+        HyperErlang dist = new HyperErlang();
+        for (SampleCollection sc : getCluster()) {
+            dist.addBranch(sc.data.size() / (double) samples.data.size(),
                     (Erlang) FitterFactory.getFitterByName(MomErlangFitter.FITTER_NAME, sc).fit());
         }
-        return res;
+        fitResult = dist;
     }
 
     private List<SampleCollection> discreteSamples(RealMatrix relevance) {
@@ -131,9 +176,9 @@ public class HyperErlangFitter extends Fitter {
      *
      * @return fitting result
      */
-    public HyperErlang initFit() {
+    private HyperErlang initFit() {
         List<ErlangFitter> fitters = Lists.newArrayList();
-        branch = FitParameters.getInstance().getBranch();
+        int branch = FitParameters.getInstance().getBranch();
         KMeansPlusPlusClusterer<SampleItem> clusterer = new KMeansPlusPlusClusterer<>(branch);
         List<CentroidCluster<SampleItem>> clusterRes = clusterer.cluster(samples.data);
         CentroidCluster<SampleItem> cluster;
@@ -159,10 +204,18 @@ public class HyperErlangFitter extends Fitter {
         return FITTER_NAME;
     }
 
-    private class HyperErlangComparator implements Comparator<HyperErlang> {
+    public List<SampleCollection> getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(List<SampleCollection> cluster) {
+        this.cluster = cluster;
+    }
+
+    private class HyperErlangComparator implements Comparator<HyperErlangFitter> {
         @Override
-        public int compare(HyperErlang dist1, HyperErlang dist2) {
-            return Double.compare(dist1.logLikelihood(samples), dist2.logLikelihood(samples));
+        public int compare(HyperErlangFitter o1, HyperErlangFitter o2) {
+            return Double.compare(o2.logLikelihood(), o1.logLikelihood());
         }
     }
 }
