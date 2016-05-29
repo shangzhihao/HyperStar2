@@ -1,14 +1,28 @@
 package fu.mi.fitting.fitters;
 
+import com.google.common.collect.Maps;
+import fu.mi.fitting.distributions.HyperErlang;
+import fu.mi.fitting.distributions.HyperErlangBranch;
 import fu.mi.fitting.distributions.MarkovArrivalProcess;
 import fu.mi.fitting.sample.SampleCollection;
+import fu.mi.fitting.sample.SampleItem;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shang on 5/23/2016.
  * Fit Markov Arrival Process using joint-moments
  */
 public class MapFitter extends Fitter<MarkovArrivalProcess> {
-    public static final String FITTER_NAME = "Markov Arrival Process";
+    public static final String FITTER_NAME = "MarkovArrivalProcess";
+    Logger logger = LoggerFactory.getLogger(MapFitter.class);
+    private HyperErlang hErD;
+    private int phase;
 
     MapFitter(SampleCollection sc) {
         super(sc);
@@ -16,7 +30,50 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
 
     @Override
     public MarkovArrivalProcess fit() {
-        return null;
+        HyperErlangFitter fitter = (HyperErlangFitter) FitterFactory.getFitterByName(HyperErlangFitter.FITTER_NAME, samples);
+        hErD = fitter.fit();
+        phase = hErD.getPhase();
+        RealMatrix d0 = hErD.getD0();
+        RealMatrix d1 = makeD1FromCluster(fitter.getCluster());
+        logger.info("d0: {}", d0.toString());
+        logger.info("d1: {}", d1.toString());
+        return new MarkovArrivalProcess(d0, d1);
+    }
+
+    private RealMatrix makeD1FromCluster(List<SampleCollection> cluster) {
+        RealMatrix res = new Array2DRowRealMatrix(phase, phase);
+        Map<Integer, Integer> clusterBegins = Maps.newHashMap();
+        Map<Integer, Integer> clusterEnds = Maps.newHashMap();
+        int begin = 0;
+        List<HyperErlangBranch> branches = hErD.branches;
+        for (int i = 0; i < branches.size(); i++) {
+            clusterBegins.put(i, begin);
+            begin = begin + branches.get(i).dist.phase;
+            clusterEnds.put(i, begin - 1);
+        }
+        Map<Integer, Integer> id2cluster = Maps.newHashMap();
+        int maxID = -1;
+        for (int i = 0; i < cluster.size(); i++) {
+            for (SampleItem sample : cluster.get(i).data) {
+                id2cluster.put(sample.id, i);
+                if (sample.id > maxID) {
+                    maxID = sample.id;
+                }
+            }
+        }
+        int from = 0;
+        int to = 0;
+        for (int i = 0; i < maxID; i++) {
+            from = clusterEnds.get(id2cluster.get(i));
+            to = clusterBegins.get(id2cluster.get(i + 1));
+            res.setEntry(from, to, res.getEntry(from, to) + 1);
+        }
+        for (int i = 0; i < res.getRowDimension(); i++) {
+            for (int j = 0; j < res.getColumnDimension(); j++) {
+                res.setEntry(i, j, res.getEntry(i, j) / (samples.data.size() - 1));
+            }
+        }
+        return res;
     }
 
     @Override

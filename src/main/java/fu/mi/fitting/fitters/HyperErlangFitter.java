@@ -10,7 +10,6 @@ import fu.mi.fitting.distributions.HyperErlangBranch;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import fu.mi.fitting.sample.SampleItem;
-import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
@@ -51,7 +50,7 @@ public class HyperErlangFitter extends Fitter {
     }
 
     @Override
-    public RealDistribution fit() {
+    public HyperErlang fit() {
         if (fitResult == null) {
             HyperErlangFitter bestFitter = refinement(initFit());
             setCluster(bestFitter.getCluster());
@@ -63,7 +62,7 @@ public class HyperErlangFitter extends Fitter {
     @Override
     public double logLikelihood() {
         if (llh == -1) {
-            HyperErlang dist = (HyperErlang) fit();
+            HyperErlang dist = fit();
             llh = dist.logLikelihood(samples);
         }
         return llh;
@@ -78,7 +77,7 @@ public class HyperErlangFitter extends Fitter {
     private HyperErlangFitter refinement(HyperErlang roughRes) {
         // TODO read form gui
         int maxCandidate = 10;
-        int reassignment = 30;
+        int reassignment = 20;
         int numOfShuffles = 2;
 
         TreeSet<HyperErlangFitter> results = new TreeSet<>(new HyperErlangComparator());
@@ -94,7 +93,7 @@ public class HyperErlangFitter extends Fitter {
                 if (visitedCandidate > maxCandidate) {
                     break;
                 }
-                resCandidate = shuffle((HyperErlang) fitter.fit(), numOfShuffles);
+                resCandidate = shuffle(fitter.fit(), numOfShuffles);
                 logger.info("log likelihood: {}", fitter.logLikelihood());
                 loopRes.addAll(resCandidate);
             }

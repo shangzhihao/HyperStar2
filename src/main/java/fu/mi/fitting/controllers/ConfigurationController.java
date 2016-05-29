@@ -2,6 +2,7 @@ package fu.mi.fitting.controllers;
 
 import fu.mi.fitting.fitters.ExponentialFitter;
 import fu.mi.fitting.fitters.HyperErlangFitter;
+import fu.mi.fitting.fitters.MapFitter;
 import fu.mi.fitting.fitters.MomErlangFitter;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
@@ -53,7 +54,8 @@ public class ConfigurationController {
     public void initialize() {
         ControllerResource.getInstance().confController = this;
         fitterChoice.getItems().addAll(HyperErlangFitter.FITTER_NAME,
-                MomErlangFitter.FITTER_NAME, ExponentialFitter.FITTER_NAME);
+                MomErlangFitter.FITTER_NAME, ExponentialFitter.FITTER_NAME,
+                MapFitter.FITTER_NAME);
         fitterChoice.getSelectionModel().selectFirst();
         equalityChoice.getItems().addAll("ParameterEquals", "RegularEquals", "ReferenceEquals");
         equalityChoice.getSelectionModel().selectFirst();

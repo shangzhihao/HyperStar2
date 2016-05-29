@@ -6,6 +6,7 @@ import fu.mi.fitting.sample.SampleCollection;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.FastMath;
 
@@ -33,17 +34,45 @@ public class HyperErlang implements RealDistribution {
      * @return initial probability
      */
     public List<Double> getAlpha() {
+        List<Double> res = Lists.newArrayList();
+        for (HyperErlangBranch branch : branches) {
+            res.addAll(makeAlpha(branch));
+        }
         return null;
     }
 
+    private List<Double> makeAlpha(HyperErlangBranch branch) {
+        List<Double> res = Lists.newArrayList();
+        res.add(branch.probability);
+        for (int i = 0; i < branch.dist.phase - 1; i++) {
+            res.add(0d);
+        }
+        return res;
+    }
     /**
      * get transmit matrix
      *
      * @return transmit matrix
      */
     public RealMatrix getD0() {
-        return null;
+        int demession = getPhase();
+        RealMatrix res = new Array2DRowRealMatrix(demession, demession);
+        int position = 0;
+        for (HyperErlangBranch branch : branches) {
+            res.setSubMatrix(branch.dist.getD0().getData(), position, position);
+            position += branch.dist.phase;
+        }
+        return res;
     }
+
+    public int getPhase() {
+        int res = 0;
+        for (HyperErlangBranch branch : branches) {
+            res += branch.dist.phase;
+        }
+        return res;
+    }
+
     /**
      * add a branch to distribution
      * @param branch an erlang branch with initial probability

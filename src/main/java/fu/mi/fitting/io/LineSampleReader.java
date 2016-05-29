@@ -21,7 +21,7 @@ public class LineSampleReader extends SampleReader {
 
     @Override
     public SampleCollection read() {
-        int id = 1;
+        int id = 0;
         List<SampleItem> samples = Lists.newArrayList();
         try {
             List<String> lines = Files.readLines(sampleFile, Charsets.US_ASCII);

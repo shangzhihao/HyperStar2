@@ -3,6 +3,8 @@ package fu.mi.fitting.distributions;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.apache.commons.math3.distribution.GammaDistribution;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * erlang distribution with phase parameter and rate parameter
@@ -15,6 +17,16 @@ public class Erlang extends GammaDistribution {
         super(phase, 1 / rate);
         this.phase = phase;
         this.rate = rate;
+    }
+
+    public RealMatrix getD0() {
+        RealMatrix res = new Array2DRowRealMatrix(phase, phase);
+        for (int i = 0; i < phase - 1; i++) {
+            res.setEntry(i, i, -rate);
+            res.setEntry(i, i + 1, rate);
+        }
+        res.setEntry(phase - 1, phase - 1, -rate);
+        return res;
     }
 
     @Override
