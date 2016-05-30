@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by shang on 5/23/2016.
@@ -41,7 +42,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
     }
 
     private RealMatrix makeD1FromCluster(List<SampleCollection> cluster) {
-        RealMatrix res = new Array2DRowRealMatrix(phase, phase);
+        // beginning and ending position of a branch
         Map<Integer, Integer> clusterBegins = Maps.newHashMap();
         Map<Integer, Integer> clusterEnds = Maps.newHashMap();
         int begin = 0;
@@ -51,6 +52,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
             begin = begin + branches.get(i).dist.phase;
             clusterEnds.put(i, begin - 1);
         }
+        // to indicate sample in which cluster
         Map<Integer, Integer> id2cluster = Maps.newHashMap();
         int maxID = -1;
         for (int i = 0; i < cluster.size(); i++) {
@@ -61,18 +63,19 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
                 }
             }
         }
+        // collect samples' id
+        List<Integer> ids = samples.data.stream().map(sample -> sample.id)
+                .sorted().collect(Collectors.toList());
+        // construct D1
         int from = 0;
         int to = 0;
-        for (int i = 0; i < maxID; i++) {
-            from = clusterEnds.get(id2cluster.get(i));
-            to = clusterBegins.get(id2cluster.get(i + 1));
+        RealMatrix res = new Array2DRowRealMatrix(phase, phase);
+        for (int i = 0; i < ids.size() - 1; i++) {
+            from = clusterEnds.get(id2cluster.get(ids.get(i)));
+            to = clusterBegins.get(id2cluster.get(ids.get(i + 1)));
             res.setEntry(from, to, res.getEntry(from, to) + 1);
         }
-        for (int i = 0; i < res.getRowDimension(); i++) {
-            for (int j = 0; j < res.getColumnDimension(); j++) {
-                res.setEntry(i, j, res.getEntry(i, j) / (samples.data.size() - 1));
-            }
-        }
+        res = res.scalarMultiply(1.0 / (ids.size() - 1));
         return res;
     }
 
