@@ -76,25 +76,19 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
             to = clusterBegins.get(id2cluster.get(ids.get(i + 1)));
             res.setEntry(from, to, res.getEntry(from, to) + 1);
         }
-        // transform count to probability
-        double rowSum;
+        // transform count to rate
+        double d0RowSum;
+        double d1RowSum;
+        double scale;
         for (int i = 0; i < res.getRowDimension(); i++) {
-            rowSum = Arrays.stream(res.getRow(i)).sum();
-            if (rowSum == 0) {
+            d1RowSum = Arrays.stream(res.getRow(i)).sum();
+            d0RowSum = Arrays.stream(d0.getRow(i)).sum();
+            if (d0RowSum == 0 || d1RowSum == 0) {
                 continue;
             }
+            scale = -d0RowSum / d1RowSum;
             for (int j = 0; j < res.getColumnDimension(); j++) {
-                res.multiplyEntry(i, j, 1 / rowSum);
-            }
-        }
-        // transform probability to rate
-        for (int i = 0; i < d0.getRowDimension(); i++) {
-            rowSum = Arrays.stream(d0.getRow(i)).sum();
-            if (rowSum == 0) {
-                continue;
-            }
-            for (int j = 0; j < res.getColumnDimension(); j++) {
-                res.multiplyEntry(i, j, -rowSum);
+                res.multiplyEntry(i, j, scale);
             }
         }
         return res;

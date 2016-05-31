@@ -1,6 +1,5 @@
 package fu.mi.fitting.sample;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
@@ -18,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -50,7 +50,7 @@ public class SampleCollection {
      * @return values of samples
      */
     public List<Double> asDoubleList() {
-        List<Double> res = Lists.newArrayList();
+        List<Double> res = newArrayList();
         for (SampleItem sample : data) {
             res.add(sample.value);
         }
@@ -95,7 +95,7 @@ public class SampleCollection {
      */
     public SampleCollection subSampleCollection(int percent) {
         double end = (percent / 100.0) * data.size();
-        List<SampleItem> res = Lists.newArrayList();
+        List<SampleItem> res = newArrayList();
         for (int i = 0; i < end && i < data.size(); i++) {
             res.add(data.get(i));
         }
@@ -110,7 +110,7 @@ public class SampleCollection {
      * @return
      */
     public SampleCollection subSampleCollection(double from, double to) {
-        List<SampleItem> res = Lists.newArrayList();
+        List<SampleItem> res = newArrayList();
         for (SampleItem sample : data) {
             if (sample.value < to && sample.value >= from) {
                 res.add(sample);
@@ -126,7 +126,7 @@ public class SampleCollection {
      * @return k-order moment
      */
     public double getMoment(int k) {
-        List<Double> samplesPower = Lists.newArrayList();
+        List<Double> samplesPower = newArrayList();
         for (SampleItem sample : data) {
             samplesPower.add(FastMath.pow(sample.value, k));
         }
@@ -142,7 +142,7 @@ public class SampleCollection {
      * @return moments form begin to end
      */
     public List<Double> getMoments(int begin, int end) {
-        List<Double> res = Lists.newArrayList();
+        List<Double> res = newArrayList();
         for (int i = begin; i <= end; i++) {
             res.add(getMoment(i));
         }
@@ -174,7 +174,21 @@ public class SampleCollection {
         PolynomialFunction polynomial = new PolynomialFunction(curve);
         PolynomialFunction derivative = polynomial.polynomialDerivative();
         LaguerreSolver solver = new LaguerreSolver();
-        Complex[] roots = solver.solveAllComplex(derivative.getCoefficients(), min, 12);
-        return Arrays.stream(roots).filter(root -> root.getImaginary() == 0).map(Complex::getReal).collect(toList());
+        Complex[] roots = solver.solveAllComplex(derivative.getCoefficients(), min, 200);
+        Arrays.stream(roots).forEach(System.out::println);
+        List<Double> res = newArrayList();
+        List<Double> realRoots = Arrays.stream(roots).filter(root -> root.getImaginary() == 0)
+                .map(Complex::getReal).sorted().collect(toList());
+        double tend = derivative.value(realRoots.get(0) - 0.0001);
+        if (tend < 0) {
+            for (int i = 1; i < realRoots.size(); i += 2) {
+                res.add(realRoots.get(i));
+            }
+        } else {
+            for (int i = 0; i < realRoots.size(); i += 2) {
+                res.add(realRoots.get(i));
+            }
+        }
+        return res;
     }
 }

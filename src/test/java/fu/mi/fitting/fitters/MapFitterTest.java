@@ -4,17 +4,13 @@ import fu.mi.fitting.distributions.MarkovArrivalProcess;
 import fu.mi.fitting.io.LineSampleReader;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
-import fu.mi.fitting.sample.SampleItem;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -26,11 +22,6 @@ public class MapFitterTest {
     @BeforeClass
     public static void setup() {
         FitParameters.getInstance().setBranch(2);
-        Random rand = new Random();
-        List<SampleItem> samples = newArrayList();
-        for (int i = 0; i < 10000; i++) {
-            samples.add(new SampleItem(i, rand.nextGaussian()));
-        }
         sc = new LineSampleReader(new File("E:\\testTraces\\map1")).read();
     }
 

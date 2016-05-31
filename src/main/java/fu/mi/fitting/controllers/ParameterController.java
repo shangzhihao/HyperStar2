@@ -43,19 +43,12 @@ public class ParameterController {
         new Thread() {
             @Override
             public void run() {
-                setInputDisable(true);
+                ControllerResource.getInstance().mainController.setInputDisable(true);
                 fitDistribution();
-                setInputDisable(false);
+                ControllerResource.getInstance().mainController.setInputDisable(false);
             }
         }.start();
     }
-
-    private void setInputDisable(boolean isDisable) {
-        ControllerResource.getInstance().sampleController.setInputDisable(isDisable);
-        ControllerResource.getInstance().confController.setInputDisable(isDisable);
-        fitBtn.setDisable(isDisable);
-    }
-
 
     /**
      * fit distribution with selected fitter and parameters
@@ -64,8 +57,8 @@ public class ParameterController {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         Fitter selectedFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
         RealDistribution res = selectedFitter.fit();
-        Function2D pdf = d -> res.density(d);
-        Function2D cdf = d -> res.cumulativeProbability(d);
+        Function2D pdf = res::density;
+        Function2D cdf = res::cumulativeProbability;
         double start = StatUtils.min(sc.asDoubleArray());
         double end = StatUtils.max(sc.asDoubleArray());
         ControllerResource.getInstance().chartsController.addPDF(pdf, start, end);

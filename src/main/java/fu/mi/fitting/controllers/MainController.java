@@ -3,6 +3,8 @@ package fu.mi.fitting.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 
 /**
  * Created by shang on 5/6/2016.
@@ -14,6 +16,10 @@ import javafx.scene.control.Label;
 public class MainController {
     @FXML
     Label statusLabel;
+    @FXML
+    BorderPane mainPane;
+    @FXML
+    VBox parameters;
 
     @FXML
     public void initialize() {
@@ -33,5 +39,9 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setContentText(message.toString());
         alert.showAndWait();
+    }
+
+    public void setInputDisable(boolean enable) {
+        parameters.setDisable(enable);
     }
 }

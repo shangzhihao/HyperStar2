@@ -103,11 +103,4 @@ public class SampleController {
         ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
     }
 
-    public void setInputDisable(boolean isDisable) {
-        loadSamplesBtn.setDisable(isDisable);
-        rePlotBtn.setDisable(isDisable);
-        sampleRangeFrom.setDisable(isDisable);
-        sampleRangeTo.setDisable(isDisable);
-        sampleSizeSlider.setDisable(isDisable);
-    }
 }

@@ -143,15 +143,4 @@ public class ConfigurationController {
         FitParameters.getInstance().setFitterName(fitterChoice.getValue());
     }
 
-    public void setInputDisable(boolean isDisable) {
-        fitterChoice.setDisable(isDisable);
-        binsTxt.setDisable(isDisable);
-        cdfPointsTxt.setDisable(isDisable);
-        pdfPointsTxt.setDisable(isDisable);
-        branchText.setDisable(isDisable);
-        maxMomentText.setDisable(isDisable);
-        equalityChoice.setDisable(isDisable);
-        emptyChoice.setDisable(isDisable);
-        terminationChoice.setDisable(isDisable);
-    }
 }
