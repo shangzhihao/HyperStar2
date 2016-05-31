@@ -1,6 +1,6 @@
 package fu.mi.fitting.charts;
 
-import fu.mi.fitting.controllers.ControllerResource;
+import fu.mi.fitting.controllers.Controllers;
 import fu.mi.fitting.parameters.FitParameters;
 import javafx.scene.input.MouseButton;
 import org.jfree.chart.JFreeChart;
@@ -56,7 +56,7 @@ public class PDFMouseListener implements ChartMouseListenerFX {
      * @return
      */
     private double getXofEvent(ChartMouseEventFX event) {
-        ChartViewer histogramViewer = ControllerResource.getInstance().chartsController.histogramViewer;
+        ChartViewer histogramViewer = Controllers.getInstance().chartsController.histogramViewer;
         Rectangle2D area = histogramViewer.getRenderingInfo().getPlotInfo().getDataArea();
         double x = event.getTrigger().getSceneX();
         XYPlot plot = event.getChart().getXYPlot();

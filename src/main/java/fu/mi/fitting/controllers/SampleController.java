@@ -36,7 +36,7 @@ public class SampleController {
 
     @FXML
     public void initialize() {
-        ControllerResource.getInstance().sampleController = this;
+        Controllers.getInstance().sampleController = this;
         addListener();
     }
 
@@ -78,29 +78,32 @@ public class SampleController {
      * @param actionEvent click event
      */
     public void loadSamples(ActionEvent actionEvent) {
-        ControllerResource.getInstance().mainController.setStatus(Messages.LOADING);
+        MainController mainController = Controllers.getInstance().mainController;
+        mainController.setStatus(Messages.LOADING);
         FileChooser fileChooser = new FileChooser();
-        File inputFile = fileChooser.showOpenDialog(ControllerResource.getInstance().stage);
+        File inputFile = fileChooser.showOpenDialog(Controllers.getInstance().stage);
+
         if (inputFile == null) {
-            ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
+            mainController.setStatus(Messages.NONE_STATUS);
             return;
         }
         SampleReader sr = new LineSampleReader(inputFile);
         SampleCollection samples = sr.read();
         SamplesParameters.getInstance().setOriginSamples(samples);
-        ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
-        ControllerResource.getInstance().chartsController.drawChart();
+        Controllers.getInstance().chartsController.drawChart();
+        mainController.setStatus(Messages.NONE_STATUS);
+
     }
 
     public void rePlot(ActionEvent actionEvent) {
-        ControllerResource.getInstance().mainController.setStatus(Messages.REPLOTING);
+        MainController mainController = Controllers.getInstance().mainController;
+        mainController.setStatus(Messages.REPLOTING);
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null) {
-            ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
+            mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }
-        ControllerResource.getInstance().chartsController.drawChart();
-        ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
+        Controllers.getInstance().chartsController.drawChart();
+        mainController.setStatus(Messages.NONE_STATUS);
     }
-
 }

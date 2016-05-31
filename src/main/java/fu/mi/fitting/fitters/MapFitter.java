@@ -94,10 +94,6 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         return res;
     }
 
-    @Override
-    public double logLikelihood() {
-        return 0;
-    }
 
     @Override
     public String getName() {

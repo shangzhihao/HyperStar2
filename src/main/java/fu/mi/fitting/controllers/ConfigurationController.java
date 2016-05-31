@@ -52,7 +52,7 @@ public class ConfigurationController {
 
     @FXML
     public void initialize() {
-        ControllerResource.getInstance().confController = this;
+        Controllers.getInstance().confController = this;
         fitterChoice.getItems().addAll(HyperErlangFitter.FITTER_NAME,
                 MomErlangFitter.FITTER_NAME, ExponentialFitter.FITTER_NAME,
                 MapFitter.FITTER_NAME);

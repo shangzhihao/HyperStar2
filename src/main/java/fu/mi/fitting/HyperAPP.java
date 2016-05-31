@@ -3,7 +3,7 @@ package fu.mi.fitting; /**
  * Application starts here.
  */
 
-import fu.mi.fitting.controllers.ControllerResource;
+import fu.mi.fitting.controllers.Controllers;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +20,7 @@ public class HyperAPP extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        ControllerResource.getInstance().stage = primaryStage;
+        Controllers.getInstance().stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
         primaryStage.setTitle("HyperStar2");
         primaryStage.setScene(new Scene(root, 1000, 500));

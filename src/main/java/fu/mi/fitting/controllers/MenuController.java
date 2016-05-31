@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 public class MenuController {
     @FXML
     public void initialize() {
-        ControllerResource.getInstance().menuController = this;
+        Controllers.getInstance().menuController = this;
     }
 
     public void quit(ActionEvent actionEvent) {
@@ -18,6 +18,6 @@ public class MenuController {
     }
 
     public void loadSamples(ActionEvent actionEvent) {
-        ControllerResource.getInstance().sampleController.loadSamplesBtn.fire();
+        Controllers.getInstance().sampleController.loadSamplesBtn.fire();
     }
 }

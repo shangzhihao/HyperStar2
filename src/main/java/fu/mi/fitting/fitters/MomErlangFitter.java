@@ -16,6 +16,10 @@ import fu.mi.fitting.sample.SampleCollection;
  * so I compare the log-likelihood function of the distribution
  * when phase equals floor(phase) and ceil(phase),
  * and choose the greater one.
+ *
+ * peak = (phase-1)*rate
+ * rate = mean/var
+ * phase = mean*rate
  */
 
 public class MomErlangFitter extends ErlangFitter{
@@ -26,11 +30,6 @@ public class MomErlangFitter extends ErlangFitter{
         super(sc);
     }
 
-    // TODO implement this
-    @Override
-    public double logLikelihood() {
-        return 0;
-    }
 
     /**
      * get floor(phase) distribution

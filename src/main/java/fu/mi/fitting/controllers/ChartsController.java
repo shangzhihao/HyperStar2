@@ -42,17 +42,17 @@ public class ChartsController {
 
     @FXML
     public void initialize() {
-        ControllerResource.getInstance().chartsController = this;
+        Controllers.getInstance().chartsController = this;
     }
 
     public void drawChart() {
-        ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_HISTOGRAM);
+        Controllers.getInstance().mainController.setStatus(Messages.DRAW_HISTOGRAM);
         drawHistogram();
-        ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_CDF);
+        Controllers.getInstance().mainController.setStatus(Messages.DRAW_CDF);
         drawCDF();
-        ControllerResource.getInstance().mainController.setStatus(Messages.DRAW_PDF);
+        Controllers.getInstance().mainController.setStatus(Messages.DRAW_PDF);
         drawMoment();
-        ControllerResource.getInstance().mainController.setStatus(Messages.NONE_STATUS);
+        Controllers.getInstance().mainController.setStatus(Messages.NONE_STATUS);
     }
 
     private void drawMoment() {

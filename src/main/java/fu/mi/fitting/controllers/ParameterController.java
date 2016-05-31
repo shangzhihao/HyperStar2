@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.StatUtils;
-import org.jfree.data.function.Function2D;
 
 /**
  * Created by shang on 5/6/2016.
@@ -26,7 +25,7 @@ public class ParameterController {
 
     @FXML
     public void initialize() {
-        ControllerResource.getInstance().parameterController = this;
+        Controllers.getInstance().parameterController = this;
     }
 
     /**
@@ -37,15 +36,15 @@ public class ParameterController {
     public void fitBtnAction(ActionEvent actionEvent) {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null) {
-            ControllerResource.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
+            Controllers.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }
         new Thread() {
             @Override
             public void run() {
-                ControllerResource.getInstance().mainController.setInputDisable(true);
+                Controllers.getInstance().mainController.setInputDisable(true);
                 fitDistribution();
-                ControllerResource.getInstance().mainController.setInputDisable(false);
+                Controllers.getInstance().mainController.setInputDisable(false);
             }
         }.start();
     }
@@ -57,11 +56,9 @@ public class ParameterController {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         Fitter selectedFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
         RealDistribution res = selectedFitter.fit();
-        Function2D pdf = res::density;
-        Function2D cdf = res::cumulativeProbability;
         double start = StatUtils.min(sc.asDoubleArray());
         double end = StatUtils.max(sc.asDoubleArray());
-        ControllerResource.getInstance().chartsController.addPDF(pdf, start, end);
-        ControllerResource.getInstance().chartsController.addCDF(cdf, start, end);
+        Controllers.getInstance().chartsController.addPDF(res::density, start, end);
+        Controllers.getInstance().chartsController.addCDF(res::cumulativeProbability, start, end);
     }
 }

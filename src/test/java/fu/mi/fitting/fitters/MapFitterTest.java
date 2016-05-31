@@ -34,10 +34,4 @@ public class MapFitterTest {
             assertEquals(Arrays.stream(d0.add(d1).getRow(i)).sum(), 0, 0.001);
         }
     }
-
-    @Test
-    public void logLikelihood() throws Exception {
-
-    }
-
 }

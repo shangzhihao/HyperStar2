@@ -8,8 +8,8 @@ import javafx.stage.Stage;
  * This is a singleton class, put all controllers here,
  * they can communicate.
  */
-public class ControllerResource {
-    private static final ControllerResource INSTANCE = new ControllerResource();
+public class Controllers {
+    private static final Controllers INSTANCE = new Controllers();
     public MainController mainController;
     public ParameterController parameterController;
     public ChartsController chartsController;
@@ -18,10 +18,10 @@ public class ControllerResource {
     public MenuController menuController;
     public Stage stage;
 
-    private ControllerResource() {
+    private Controllers() {
     }
 
-    public static ControllerResource getInstance() {
+    public static Controllers getInstance() {
         return INSTANCE;
     }
 }

@@ -8,6 +8,9 @@ import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * erlang distribution with phase parameter and rate parameter
+ * peak = (phase-1)*rate
+ * rate = mean/var
+ * phase = mean*rate
  */
 public class Erlang extends GammaDistribution {
     public int phase;

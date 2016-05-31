@@ -42,7 +42,6 @@ public class HyperErlangFitter extends Fitter {
     private HyperErlang fitResult = null;
     private double llh = -1;
 
-
     private List<SampleCollection> cluster;
 
     HyperErlangFitter(SampleCollection sc) {
@@ -57,15 +56,6 @@ public class HyperErlangFitter extends Fitter {
             branchFit();
         }
         return fitResult;
-    }
-
-    @Override
-    public double logLikelihood() {
-        if (llh == -1) {
-            HyperErlang dist = fit();
-            llh = dist.logLikelihood(samples);
-        }
-        return llh;
     }
 
     /**
@@ -85,7 +75,7 @@ public class HyperErlangFitter extends Fitter {
         List<HyperErlangFitter> resCandidate;
         results.addAll(shuffle(roughRes, numOfShuffles));
         for (int i = 0; i < reassignment; i++) {
-            logger.info("the {}th reassign of {}.", i, reassignment);
+            logger.info("the {}th reassign of {}, llh: {}.", i, reassignment, results.first().logLikelihood());
             loopRes.clear();
             int visitedCandidate = 0;
             for (HyperErlangFitter fitter : results) {

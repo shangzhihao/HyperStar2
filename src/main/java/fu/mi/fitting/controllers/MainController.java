@@ -1,5 +1,8 @@
 package fu.mi.fitting.controllers;
 
+import fu.mi.fitting.parameters.Messages;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -21,9 +24,12 @@ public class MainController {
     @FXML
     VBox parameters;
 
+    private Property<String> status = new SimpleStringProperty(Messages.NONE_STATUS);
+
     @FXML
     public void initialize() {
-        ControllerResource.getInstance().mainController = this;
+        Controllers.getInstance().mainController = this;
+        statusLabel.textProperty().bindBidirectional(status);
     }
 
     /**
@@ -32,7 +38,8 @@ public class MainController {
      * @param charSequence message to show
      */
     public void setStatus(CharSequence charSequence) {
-        statusLabel.setText(charSequence.toString());
+        status.setValue(charSequence.toString());
+//        statusLabel.setText(charSequence.toString());
     }
 
     public void showWarn(CharSequence message) {
