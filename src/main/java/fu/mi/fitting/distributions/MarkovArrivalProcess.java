@@ -14,10 +14,12 @@ public class MarkovArrivalProcess implements RealDistribution {
 
     private RealMatrix D0;
     private RealMatrix D1;
+    private HyperErlang embedDist;
 
-    public MarkovArrivalProcess(RealMatrix d0, RealMatrix d1) {
+    public MarkovArrivalProcess(RealMatrix d0, RealMatrix d1, HyperErlang embedDist) {
         D0 = d0;
         D1 = d1;
+        this.embedDist = embedDist;
     }
 
     @Override
@@ -27,12 +29,12 @@ public class MarkovArrivalProcess implements RealDistribution {
 
     @Override
     public double density(double x) {
-        throw new UnsupportedOperationException();
+        return getEmbedDist().density(x);
     }
 
     @Override
     public double cumulativeProbability(double x) {
-        throw new UnsupportedOperationException();
+        return getEmbedDist().cumulativeProbability(x);
     }
 
     public RealMatrix getD0() {
@@ -49,6 +51,14 @@ public class MarkovArrivalProcess implements RealDistribution {
 
     public void setD1(RealMatrix d1) {
         D1 = d1;
+    }
+
+    public HyperErlang getEmbedDist() {
+        return embedDist;
+    }
+
+    public void setEmbedDist(HyperErlang embedDist) {
+        this.embedDist = embedDist;
     }
 
     @Override

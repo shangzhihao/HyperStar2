@@ -13,10 +13,10 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 public class SampleCollectionTest {
 
-    SampleCollection sc;
+    static SampleCollection sc;
 
     @BeforeClass
-    public void setup() {
+    public static void setup() {
         Random rand = new Random();
         List<SampleItem> samples = newArrayList();
         for (int i = 0; i < 10000; i++) {

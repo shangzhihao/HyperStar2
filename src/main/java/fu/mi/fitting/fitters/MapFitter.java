@@ -11,6 +11,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,13 +36,13 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         hErD = fitter.fit();
         phase = hErD.getPhase();
         RealMatrix d0 = hErD.getD0();
-        RealMatrix d1 = makeD1FromCluster(fitter.getCluster());
+        RealMatrix d1 = makeD1FromCluster(d0, fitter.getCluster());
         logger.info("d0: {}", d0.toString());
         logger.info("d1: {}", d1.toString());
-        return new MarkovArrivalProcess(d0, d1);
+        return new MarkovArrivalProcess(d0, d1, hErD);
     }
 
-    private RealMatrix makeD1FromCluster(List<SampleCollection> cluster) {
+    private RealMatrix makeD1FromCluster(RealMatrix d0, List<SampleCollection> cluster) {
         // beginning and ending position of a branch
         Map<Integer, Integer> clusterBegins = Maps.newHashMap();
         Map<Integer, Integer> clusterEnds = Maps.newHashMap();
@@ -75,7 +76,27 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
             to = clusterBegins.get(id2cluster.get(ids.get(i + 1)));
             res.setEntry(from, to, res.getEntry(from, to) + 1);
         }
-        res = res.scalarMultiply(1.0 / (ids.size() - 1));
+        // transform count to probability
+        double rowSum;
+        for (int i = 0; i < res.getRowDimension(); i++) {
+            rowSum = Arrays.stream(res.getRow(i)).sum();
+            if (rowSum == 0) {
+                continue;
+            }
+            for (int j = 0; j < res.getColumnDimension(); j++) {
+                res.multiplyEntry(i, j, 1 / rowSum);
+            }
+        }
+        // transform probability to rate
+        for (int i = 0; i < d0.getRowDimension(); i++) {
+            rowSum = Arrays.stream(d0.getRow(i)).sum();
+            if (rowSum == 0) {
+                continue;
+            }
+            for (int j = 0; j < res.getColumnDimension(); j++) {
+                res.multiplyEntry(i, j, -rowSum);
+            }
+        }
         return res;
     }
 

@@ -85,7 +85,7 @@ public class HyperErlangFitter extends Fitter {
         List<HyperErlangFitter> resCandidate;
         results.addAll(shuffle(roughRes, numOfShuffles));
         for (int i = 0; i < reassignment; i++) {
-            logger.info("the {}th reassign.", i);
+            logger.info("the {}th reassign of {}.", i, reassignment);
             loopRes.clear();
             int visitedCandidate = 0;
             for (HyperErlangFitter fitter : results) {
@@ -94,7 +94,7 @@ public class HyperErlangFitter extends Fitter {
                     break;
                 }
                 resCandidate = shuffle(fitter.fit(), numOfShuffles);
-                logger.info("log likelihood: {}", fitter.logLikelihood());
+                logger.debug("log likelihood: {}", fitter.logLikelihood());
                 loopRes.addAll(resCandidate);
             }
             results.addAll(loopRes);

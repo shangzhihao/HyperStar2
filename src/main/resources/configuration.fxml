@@ -52,7 +52,7 @@
                                                     <Label text="queue optimize" GridPane.rowIndex="2"/>
                                                     <Label text="queue optimize" GridPane.rowIndex="3"/>
                                                     <TextField fx:id="branchText" prefHeight="25.0" prefWidth="79.0"
-                                                               text="4" GridPane.columnIndex="1"/>
+                                                               text="2" GridPane.columnIndex="1"/>
                                                     <TextField fx:id="reassignText" prefHeight="25.0" prefWidth="79.0"
                                                                text="4" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                                     <TextField fx:id="optimizeText" prefHeight="25.0" prefWidth="79.0"
