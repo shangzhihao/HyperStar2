@@ -3,8 +3,12 @@ package fu.mi.fitting.parameters;
 import com.google.common.collect.Lists;
 import fu.mi.fitting.fitters.HyperErlangFitter;
 import fu.mi.fitting.fitters.MomErlangFitter;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.util.List;
+
+import static fu.mi.fitting.utils.Utils.strToInt;
 
 /**
  * Created by shang on 5/6/2016.
@@ -13,14 +17,22 @@ import java.util.List;
 public class FitParameters {
     private static final FitParameters INSTANCE = new FitParameters();
     // default branch, the fitter will calculate branch
-    private final int defaultBranch = -1;
     // branch of Hyper-Erlang distribution
-    private int branch = 2;
-    private int kMeans = 10;
+    private static final int defaultBranch = 2;
+    private static final int DEFAULT_REASSIGN = 20;
+    private static final int DEFAULT_OPTIMIZE = 10;
+    private static final int DEFAULT_SHUFFLE = 2;
+    private static final int DefaultKMeans = 10;
+
+    private List<Double> peaks = Lists.newArrayList();
     private String erlangFitter = MomErlangFitter.FITTER_NAME;
     private String fitterName = HyperErlangFitter.FITTER_NAME;
-    private List<Double> peaks = Lists.newArrayList();
 
+    private StringProperty branch = new SimpleStringProperty(String.valueOf(defaultBranch));
+    private StringProperty kMeans = new SimpleStringProperty(String.valueOf(defaultBranch));
+    private StringProperty reassign = new SimpleStringProperty(String.valueOf(DEFAULT_REASSIGN));
+    private StringProperty optimize = new SimpleStringProperty(String.valueOf(DEFAULT_OPTIMIZE));
+    private StringProperty shuffle = new SimpleStringProperty(String.valueOf(DEFAULT_SHUFFLE));
     private FitParameters() {
     }
 
@@ -28,25 +40,55 @@ public class FitParameters {
         return INSTANCE;
     }
 
-    public void setBranchToDefault() {
-        setBranch(defaultBranch);
+    public StringProperty getReassignProperty() {
+        return reassign;
     }
 
-    // getters and setters
-    public int getBranch() {
+    public StringProperty getOptimizeProperty() {
+        return optimize;
+    }
+
+    public StringProperty getShuffleProperty() {
+        return shuffle;
+    }
+
+    public int getReassign() {
+        return strToInt(reassign.getValue(), DEFAULT_REASSIGN);
+    }
+
+    public int getOptimize() {
+        return strToInt(optimize.getValue(), DEFAULT_OPTIMIZE);
+    }
+
+    public int getShuffle() {
+        return strToInt(shuffle.getValue(), DEFAULT_SHUFFLE);
+    }
+
+    public StringProperty getBranchProperty() {
         return branch;
     }
-
-    public void setBranch(int branch) {
-        this.branch = branch;
+    public int getBranch() {
+        return strToInt(branch.get(), defaultBranch);
     }
 
-    public String getErlangFitter() {
-        return erlangFitter;
+    public StringProperty getkMeansProperty() {
+        return kMeans;
     }
 
-    public void setErlangFitter(String erlangFitter) {
-        this.erlangFitter = erlangFitter;
+    public int getKMeans() {
+        return strToInt(kMeans.get(), DefaultKMeans);
+    }
+
+    public void addPeak(double position) {
+        peaks.add(position);
+    }
+
+    public void delPeak(double position) {
+        peaks.remove(position);
+    }
+
+    public List<Double> getPeaks() {
+        return peaks;
     }
 
     public String getFitterName() {
@@ -55,26 +97,5 @@ public class FitParameters {
 
     public void setFitterName(String fitterName) {
         this.fitterName = fitterName;
-    }
-
-    public int getkMeans() {
-        return kMeans;
-    }
-
-    public void setkMeans(int kMeans) {
-        this.kMeans = kMeans;
-    }
-
-
-    public List<Double> getPeaks() {
-        return peaks;
-    }
-
-    public void setPeaks(List<Double> peaks) {
-        this.peaks = peaks;
-    }
-
-    public void addPeak(double position) {
-        peaks.add(position);
     }
 }

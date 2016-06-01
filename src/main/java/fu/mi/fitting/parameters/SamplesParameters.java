@@ -1,8 +1,17 @@
 package fu.mi.fitting.parameters;
 
 import fu.mi.fitting.sample.SampleCollection;
+import fu.mi.fitting.sample.SampleItem;
+import fu.mi.fitting.utils.Utils;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
-import java.util.Collections;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by shang on 5/9/2016.
@@ -10,15 +19,14 @@ import java.util.Collections;
  */
 public class SamplesParameters {
     private static final SamplesParameters INSTANCE = new SamplesParameters();
-    private SampleCollection originSamples;
-    private SampleCollection limitedSamples;
     // how many percents samples used in fitting
-    private int size = 100;
+    private static final double defaultSize = 100d;
+    private SampleCollection originSamples;
+    private DoubleProperty size = new SimpleDoubleProperty(defaultSize);
     // sample range, samples in this range will be used in fitting
     // others samples will be ignored
-    private double from = Double.MAX_VALUE;
-    private double to = Double.MAX_VALUE;
-
+    private StringProperty from = new SimpleStringProperty("min");
+    private StringProperty to = new SimpleStringProperty("max");
 
     private SamplesParameters() {
     }
@@ -27,60 +35,37 @@ public class SamplesParameters {
         return INSTANCE;
     }
 
-    public int getSize() {
+    public DoubleProperty getSizeProperty() {
         return size;
     }
 
-    public void setSize(int size) {
-        if (size > 0 && size < 100) {
-            this.size = size;
-            this.setLimitedSamples(originSamples.subSampleCollection(size));
-        }
-    }
-
-    public double getFrom() {
+    public StringProperty getFromProperty() {
         return from;
     }
 
-    public void setFrom(double from) {
-        this.from = from;
-        setRange(from, to);
-    }
-
-    public double getTo() {
+    public StringProperty getToProperty() {
         return to;
-    }
-
-    public void setTo(double to) {
-        this.to = to;
-        setRange(from, to);
-    }
-
-    public SampleCollection getOriginSamples() {
-        return originSamples;
     }
 
     public void setOriginSamples(SampleCollection originSamples) {
         this.originSamples = originSamples;
-        this.setLimitedSamples(originSamples.subSampleCollection(getSize()));
     }
 
     public SampleCollection getLimitedSamples() {
-        return limitedSamples;
-    }
-
-    public void setLimitedSamples(SampleCollection limitedSamples) {
-        this.limitedSamples = limitedSamples;
-    }
-
-    public void setRange(double from, double to) {
-        if (new Double(from).equals(Double.MAX_VALUE)) {
-            from = Collections.max(originSamples.asDoubleList());
+        List<SampleItem> res = newArrayList();
+        int limit = (int) (size.doubleValue() * originSamples.data.size() / 100);
+        double minValue = Utils.strToDouble(from.get(), Double.MIN_VALUE);
+        double maxValue = Utils.strToDouble(to.get(), Double.MAX_VALUE);
+        SampleItem sample;
+        for (int i = 0; i < limit; i++) {
+            sample = originSamples.data.get(i);
+            if (sample.value <= maxValue && sample.value >= minValue) {
+                res.add(sample);
+            }
         }
-        if (new Double(to).equals(Double.MAX_VALUE)) {
-            to = Collections.max(originSamples.asDoubleList());
+        if (res.size() == 0) {
+            res = originSamples.data.stream().collect(toList());
         }
-        this.setLimitedSamples(originSamples.subSampleCollection(from, to));
+        return new SampleCollection(res);
     }
-
 }

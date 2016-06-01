@@ -92,13 +92,13 @@ public class ChartsController {
 
     public void addPDF(Function2D pdf, double start, double end) {
         XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(pdf, start, end,
-                chartsParameters.getPdfPoints(), Messages.PDF_LABEL);
+                chartsParameters.getPDFPoints(), Messages.PDF_LABEL);
         pdfChart.drawPDF(pdfDataset);
     }
 
     public void addCDF(Function2D cdf, double start, double end) {
         XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(cdf, start, end,
-                chartsParameters.getCdfPoints(), Messages.PDF_LABEL);
+                chartsParameters.getCDFPoints(), Messages.PDF_LABEL);
         cdfChart.drawFittedCDF(pdfDataset);
     }
 }

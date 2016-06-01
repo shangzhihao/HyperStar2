@@ -1,19 +1,25 @@
 package fu.mi.fitting.parameters;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import static fu.mi.fitting.utils.Utils.strToInt;
+
 /**
  * Created by shang on 5/6/2016.
  * store parameters for drawing chart
  */
 public class ChartsParameters {
     private static final ChartsParameters INSTANCE = new ChartsParameters();
-    // bins for histograms
-    private int bins = 100;
-    // number of points in pdf chart
-    private int pdfPoints = 200;
-    // number of points in cdf chart
-    private int cdfPoints = 200;
-    // max moment order for moment chart
-    private int maxMomentOrder = 3;
+    private static final int DEFAULT_BINS = 200;
+    private static final int DEFAULT_PDF = 300;
+    private static final int DEFAULT_CDF = 300;
+    private static final int DEFAULT_MOMENTS = 3;
+    private StringProperty bins = new SimpleStringProperty(String.valueOf(DEFAULT_BINS));
+    private StringProperty cdf = new SimpleStringProperty(String.valueOf(DEFAULT_CDF));
+    private StringProperty pdf = new SimpleStringProperty(String.valueOf(DEFAULT_PDF));
+    private StringProperty moments = new SimpleStringProperty(String.valueOf(DEFAULT_MOMENTS));
+
     private ChartsParameters() {
     }
 
@@ -21,36 +27,35 @@ public class ChartsParameters {
         return INSTANCE;
     }
 
-    // getters and setters
-    public int getBins() {
+    public StringProperty getBinsProperty() {
         return bins;
     }
 
-    public void setBins(int bins) {
-        this.bins = bins;
+    public StringProperty getCDFProperty() {
+        return cdf;
     }
 
-    public int getPdfPoints() {
-        return pdfPoints;
+    public StringProperty getPDFProperty() {
+        return pdf;
     }
 
-    public void setPdfPoints(int pdfPoints) {
-        this.pdfPoints = pdfPoints;
+    public StringProperty getMomentsProperty() {
+        return moments;
     }
 
-    public int getCdfPoints() {
-        return cdfPoints;
+    public int getBins() {
+        return strToInt(bins.get(), DEFAULT_BINS);
     }
 
-    public void setCdfPoints(int cdfPoints) {
-        this.cdfPoints = cdfPoints;
+    public int getPDFPoints() {
+        return strToInt(pdf.get(), DEFAULT_PDF);
+    }
+
+    public int getCDFPoints() {
+        return strToInt(cdf.get(), DEFAULT_CDF);
     }
 
     public int getMaxMomentOrder() {
-        return maxMomentOrder;
-    }
-
-    public void setMaxMomentOrder(int maxMomentOrder) {
-        this.maxMomentOrder = maxMomentOrder;
+        return strToInt(moments.get(), DEFAULT_MOMENTS);
     }
 }

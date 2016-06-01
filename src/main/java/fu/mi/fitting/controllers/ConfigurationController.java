@@ -6,12 +6,15 @@ import fu.mi.fitting.fitters.MapFitter;
 import fu.mi.fitting.fitters.MomErlangFitter;
 import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
-import fu.mi.fitting.parameters.Messages;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+
+import java.util.Map;
+
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Created by shang on 5/9/2016.
@@ -41,14 +44,17 @@ public class ConfigurationController {
     GridPane hyperErlangGrid;
     @FXML
     GridPane erlangGrid;
+
     @FXML
     TextField reassignText;
     @FXML
     TextField optimizeText;
     @FXML
-    TextField invoksText;
+    TextField shuffleText;
+
     @FXML
     TextField phaseText;
+    Map<Integer, GridPane> indexToGrid = newHashMap();
 
     @FXML
     public void initialize() {
@@ -63,73 +69,33 @@ public class ConfigurationController {
         emptyChoice.getSelectionModel().selectFirst();
         terminationChoice.getItems().addAll("ClusterEquality", "MinLLogikelihoodReached");
         terminationChoice.getSelectionModel().selectFirst();
-        addListener();
+
+        indexToGrid.put(0, hyperErlangGrid);
+        indexToGrid.put(1, erlangGrid);
+        indexToGrid.put(3, hyperErlangGrid);
+
+        bindProperty();
     }
 
-    private void addListener() {
-        //
-        maxMomentText.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                int maxMomentOrder = Integer.parseInt(newValue);
-                ChartsParameters.getInstance().setMaxMomentOrder(maxMomentOrder);
-            } catch (RuntimeException e) {
-                //logger.warn("{} is not a integer, can't set it as max moment order", newValue);
-            }
-
-        });
+    private void bindProperty() {
+        FitParameters fitParameters = FitParameters.getInstance();
+        ChartsParameters chartsParameters = ChartsParameters.getInstance();
         // how many branch in hyper-erlang distribuion
-        branchText.textProperty().addListener((observable, oldVlue, newValue) -> {
-            try {
-                int branch = Integer.parseInt(newValue);
-                FitParameters.getInstance().setBranch(branch);
-            } catch (RuntimeException e) {
-                //logger.warn("{} is not a integer, can't set it as branch", newValue);
-            }
-            if (newValue.equals(Messages.AUTO_BRANCH)) {
-                FitParameters.getInstance().setBranchToDefault();
-            }
-        });
-        // number of histogram bins changed listener
-        binsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                int bins = Integer.parseInt(newValue);
-                ChartsParameters.getInstance().setBins(bins);
-            } catch (RuntimeException e) {
-                //logger.warn("{} is not a integer, can't set it as histogram bins", newValue);
-            }
-        });
-        // number of pdf points changed listener
-        pdfPointsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                int points = Integer.parseInt(newValue);
-                ChartsParameters.getInstance().setPdfPoints(points);
-            } catch (RuntimeException e) {
-                //logger.warn("{} is not a integer, can't set it as pdf points", newValue);
-            }
-        });
-        // number of cdf points changed listener
-        cdfPointsTxt.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                int points = Integer.parseInt(newValue);
-                ChartsParameters.getInstance().setCdfPoints(points);
-            } catch (RuntimeException e) {
-                //logger.warn("{} is not a integer, can't set it as cdf points", newValue);
-            }
-        });
-        // fitter change listener
+        branchText.textProperty().bindBidirectional(fitParameters.getBranchProperty());
+        reassignText.textProperty().bindBidirectional(fitParameters.getReassignProperty());
+        optimizeText.textProperty().bindBidirectional(fitParameters.getOptimizeProperty());
+        shuffleText.textProperty().bindBidirectional(fitParameters.getShuffleProperty());
+
+        cdfPointsTxt.textProperty().bindBidirectional(chartsParameters.getCDFProperty());
+        pdfPointsTxt.textProperty().bindBidirectional(chartsParameters.getPDFProperty());
+        binsTxt.textProperty().bindBidirectional(chartsParameters.getBinsProperty());
+        maxMomentText.textProperty().bindBidirectional(chartsParameters.getMomentsProperty());
+
         fitterChoice.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            hyperErlangGrid.setVisible(false);
-            erlangGrid.setVisible(false);
+            indexToGrid.values().stream().forEach(grid -> grid.setVisible(false));
             int selected = newValue.intValue();
-            switch (selected) {
-                case 0:
-                    hyperErlangGrid.setVisible(true);
-                    break;
-                case 1:
-                    erlangGrid.setVisible(true);
-                    break;
-                case 2:
-                    break;
+            if (indexToGrid.containsKey(selected)) {
+                indexToGrid.get(selected).setVisible(true);
             }
         });
     }

@@ -65,10 +65,10 @@ public class HyperErlangFitter extends Fitter {
      * @return refined result, this would be the final result
      */
     private HyperErlangFitter refinement(HyperErlang roughRes) {
-        // TODO read form gui
-        int maxCandidate = 10;
-        int reassignment = 20;
-        int numOfShuffles = 2;
+        FitParameters fitParameters = FitParameters.getInstance();
+        int maxCandidate = fitParameters.getOptimize();
+        int reassignment = fitParameters.getReassign();
+        int numOfShuffles = fitParameters.getShuffle();
 
         TreeSet<HyperErlangFitter> results = new TreeSet<>(new HyperErlangComparator());
         TreeSet<HyperErlangFitter> loopRes = new TreeSet<>(new HyperErlangComparator());

@@ -37,38 +37,17 @@ public class SampleController {
     @FXML
     public void initialize() {
         Controllers.getInstance().sampleController = this;
-        addListener();
+        bindProperty();
     }
 
     /**
      * add listeners to value changed event
      */
-    private void addListener() {
-        // sample size changed listener
-        sampleSizeSlider.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            int size = newValue.intValue();
-            sampleSizeText.setText(String.valueOf(size) + Messages.PERCENT);
-            SamplesParameters.getInstance().setSize(size);
-        }));
-        // sample range changed listener
-        sampleRangeFrom.textProperty().addListener((observable, oldValue, newValue) -> {
-            double from;
-            try {
-                from = Double.parseDouble(newValue);
-            } catch (Exception e) {
-                from = Double.MAX_VALUE;
-            }
-            SamplesParameters.getInstance().setFrom(from);
-        });
-        sampleRangeTo.textProperty().addListener((observable, oldValue, newValue) -> {
-            double to;
-            try {
-                to = Double.parseDouble(newValue);
-            } catch (Exception e) {
-                to = Double.MAX_VALUE;
-            }
-            SamplesParameters.getInstance().setTo(to);
-        });
+    private void bindProperty() {
+        SamplesParameters parameters = SamplesParameters.getInstance();
+        sampleSizeSlider.valueProperty().bindBidirectional(parameters.getSizeProperty());
+        sampleRangeFrom.textProperty().bindBidirectional(parameters.getFromProperty());
+        sampleRangeTo.textProperty().bindBidirectional(parameters.getToProperty());
     }
 
     /**
