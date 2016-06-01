@@ -3,6 +3,7 @@ package fu.mi.fitting.sample;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
+import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.complex.Complex;
@@ -88,36 +89,28 @@ public class SampleCollection {
     }
 
     /**
-     * get a sub-collection which contains a part of samples in this collection
      *
-     * @param percent how many percents samples the sub-SampleColelction will contain
+     * @param percent how many percents samples the sub-SampleCollection will contain
+     * @param from min value sample of sub-SampleCollection
+     * @param to max value sample of sub-SampleCollection
      * @return sub-SampleCollection
      */
-    public SampleCollection subSampleCollection(int percent) {
-        double end = (percent / 100.0) * data.size();
+    public SampleCollection subSampleCollection(double percent, double from, double to) {
         List<SampleItem> res = newArrayList();
-        for (int i = 0; i < end && i < data.size(); i++) {
-            res.add(data.get(i));
+        SampleItem sample;
+        double limit = percent * data.size() / 100;
+        for (int i = 0; i < limit; i++) {
+            sample = data.get(i);
+            if (sample.value <= to && sample.value >= from) {
+                res.add(sample);
+            }
+        }
+        if (res.size() == 0) {
+            res = data.stream().collect(toList());
         }
         return new SampleCollection(res);
     }
 
-    /**
-     * get a sub-collection which contains a part of samples in this collection(samples greater or equal to from and less than to)
-     *
-     * @param from
-     * @param to
-     * @return
-     */
-    public SampleCollection subSampleCollection(double from, double to) {
-        List<SampleItem> res = newArrayList();
-        for (SampleItem sample : data) {
-            if (sample.value < to && sample.value >= from) {
-                res.add(sample);
-            }
-        }
-        return new SampleCollection(res);
-    }
 
     /**
      * get k-order moment
@@ -147,6 +140,18 @@ public class SampleCollection {
             res.add(getMoment(i));
         }
         return res;
+    }
+
+    /**
+     * calculate autocorrelation
+     *
+     * @param lag lag
+     * @return autocorrelation
+     */
+    public double autocorrelation(int lag) {
+        List<SampleItem> x1 = data.subList(0, data.size() - lag);
+        List<SampleItem> x2 = data.subList(lag, data.size());
+        return MathUtils.correlation(new SampleCollection(x1).asDoubleList(), new SampleCollection(x2).asDoubleList());
     }
 
     public List<Double> getPeaks() {

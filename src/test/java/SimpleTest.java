@@ -1,5 +1,6 @@
 import com.google.common.collect.Lists;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jblas.DoubleMatrix;
 import org.junit.Test;
@@ -35,5 +36,17 @@ public class SimpleTest {
         a.remove(0);
         assertEquals(ints.size(), 5);
         assertEquals(a.size(), 4);
+    }
+
+    @Test
+    public void eigenDecomposition() {
+        RealMatrix matrix = new Array2DRowRealMatrix(2, 2);
+        matrix.setEntry(0, 0, 0.6);
+        matrix.setEntry(0, 1, 0.4);
+        matrix.setEntry(1, 0, 0.4);
+        matrix.setEntry(1, 1, 0.6);
+        EigenDecomposition decomposition = new EigenDecomposition(matrix);
+        System.out.println(decomposition.getEigenvector(1));
+        System.out.println(matrix.power(100));
     }
 }

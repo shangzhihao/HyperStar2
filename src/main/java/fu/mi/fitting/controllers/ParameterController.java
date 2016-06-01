@@ -34,8 +34,10 @@ public class ParameterController {
      * @param actionEvent click event
      */
     public void fitBtnAction(ActionEvent actionEvent) {
+        // TODO check original samples
+        checkSamples();
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
-        if (sc == null) {
+        if (sc == null || sc.data.size() == 0) {
             Controllers.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }

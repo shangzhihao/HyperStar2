@@ -5,6 +5,7 @@ import fu.mi.fitting.io.SampleReader;
 import fu.mi.fitting.parameters.Messages;
 import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
+import fu.mi.fitting.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import javafx.util.StringConverter;
 
 import java.io.File;
 
@@ -48,6 +50,18 @@ public class SampleController {
         sampleSizeSlider.valueProperty().bindBidirectional(parameters.getSizeProperty());
         sampleRangeFrom.textProperty().bindBidirectional(parameters.getFromProperty());
         sampleRangeTo.textProperty().bindBidirectional(parameters.getToProperty());
+        sampleSizeText.textProperty().bindBidirectional(parameters.getSizeProperty(), new StringConverter<Number>() {
+            @Override
+            public String toString(Number num) {
+                return String.valueOf(num.intValue()) + "%";
+            }
+
+            @Override
+            public Number fromString(String str) {
+                String intValue = str.substring(0, str.length() - 1);
+                return Utils.strToInt(intValue, 100);
+            }
+        });
     }
 
     /**

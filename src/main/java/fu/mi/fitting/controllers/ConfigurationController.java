@@ -53,7 +53,7 @@ public class ConfigurationController {
     TextField shuffleText;
 
     @FXML
-    TextField phaseText;
+    TextField maxPhaseText;
     Map<Integer, GridPane> indexToGrid = newHashMap();
 
     @FXML
@@ -80,16 +80,18 @@ public class ConfigurationController {
     private void bindProperty() {
         FitParameters fitParameters = FitParameters.getInstance();
         ChartsParameters chartsParameters = ChartsParameters.getInstance();
-        // how many branch in hyper-erlang distribuion
+        // parameters for hyper-erlang and map
         branchText.textProperty().bindBidirectional(fitParameters.getBranchProperty());
         reassignText.textProperty().bindBidirectional(fitParameters.getReassignProperty());
         optimizeText.textProperty().bindBidirectional(fitParameters.getOptimizeProperty());
         shuffleText.textProperty().bindBidirectional(fitParameters.getShuffleProperty());
-
+        // parameters for drawing
         cdfPointsTxt.textProperty().bindBidirectional(chartsParameters.getCDFProperty());
         pdfPointsTxt.textProperty().bindBidirectional(chartsParameters.getPDFProperty());
         binsTxt.textProperty().bindBidirectional(chartsParameters.getBinsProperty());
         maxMomentText.textProperty().bindBidirectional(chartsParameters.getMomentsProperty());
+        // parameters for erlang
+        maxMomentText.textProperty().bindBidirectional(fitParameters.getMaxPhaseProperty());
 
         fitterChoice.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             indexToGrid.values().stream().forEach(grid -> grid.setVisible(false));

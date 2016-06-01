@@ -2,6 +2,7 @@ package fu.mi.fitting.fitters;
 
 
 import fu.mi.fitting.distributions.Erlang;
+import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
 
 /**
@@ -40,11 +41,10 @@ public class MomErlangFitter extends ErlangFitter{
         if(var == 0){
             var = Double.MIN_VALUE;
         }
-        double rate = mean/var;
-        int phase = (int) Math.floor(mean * rate);
-        if (phase < MIN_PHASE) {
-            phase = MIN_PHASE;
-        }
+        int phase = (int) Math.floor(mean * mean / var);
+        phase = correctPhase(phase);
+        double rate = phase / mean;
+        phase = correctPhase(phase);
         return new Erlang(phase, rate);
     }
     /**
@@ -56,14 +56,23 @@ public class MomErlangFitter extends ErlangFitter{
         if(var == 0){
             var = Double.MIN_VALUE;
         }
-        double rate = mean/var;
-        int phase = (int) Math.ceil(mean * rate);
-        if (phase < MIN_PHASE) {
-            phase = MIN_PHASE;
-        }
+        int phase = (int) Math.ceil(mean * mean / var);
+        phase = correctPhase(phase);
+        double rate = phase / mean;
+        phase = correctPhase(phase);
         return new Erlang(phase, rate);
     }
 
+    private int correctPhase(int phase) {
+        int maxPhase = FitParameters.getInstance().getMaxPhase();
+        if (phase < MIN_PHASE) {
+            return MIN_PHASE;
+        }
+        if (phase > maxPhase) {
+            return maxPhase;
+        }
+        return phase;
+    }
     @Override
     public String getName() {
         return FITTER_NAME;

@@ -33,7 +33,7 @@ import java.util.stream.DoubleStream;
  * 2) fit each cluster’s samples with an Erlang distribution
  * 3) the assignment of samples to clusters is refined iteratively
  * until either convergence is reached or
- * a maximum number of 100 rounds has elapsed.
+ * a maximum number of rounds has elapsed.
  */
 public class HyperErlangFitter extends Fitter {
 
@@ -193,11 +193,11 @@ public class HyperErlangFitter extends Fitter {
         return FITTER_NAME;
     }
 
-    public List<SampleCollection> getCluster() {
+    List<SampleCollection> getCluster() {
         return cluster;
     }
 
-    public void setCluster(List<SampleCollection> cluster) {
+    private void setCluster(List<SampleCollection> cluster) {
         this.cluster = cluster;
     }
 

@@ -75,7 +75,7 @@
                                                 </rowConstraints>
                                                 <children>
                                                     <Label text="max phase"/>
-                                                    <TextField fx:id="phaseText" prefHeight="25.0" prefWidth="79.0"
+                                                    <TextField fx:id="maxPhaseText" prefHeight="25.0" prefWidth="79.0"
                                                                text="2000" GridPane.columnIndex="1"/>
                                                 </children>
                                             </GridPane>

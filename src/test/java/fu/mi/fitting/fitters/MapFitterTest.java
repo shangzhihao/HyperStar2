@@ -15,13 +15,14 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by shang on 5/31/2016.
+ *
  */
 public class MapFitterTest {
     static SampleCollection sc;
 
     @BeforeClass
     public static void setup() {
-        FitParameters.getInstance().setBranch(2);
+        FitParameters.getInstance().getBranchProperty().setValue("2");
         sc = new LineSampleReader(new File("E:\\testTraces\\map1")).read();
     }
 

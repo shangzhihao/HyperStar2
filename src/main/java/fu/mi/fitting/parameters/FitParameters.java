@@ -22,8 +22,8 @@ public class FitParameters {
     private static final int DEFAULT_REASSIGN = 20;
     private static final int DEFAULT_OPTIMIZE = 10;
     private static final int DEFAULT_SHUFFLE = 2;
-    private static final int DefaultKMeans = 10;
-
+    private static final int DEFAULT_K_MEANS = 10;
+    private static final int DEFAULT_MAX_PAHSE = 2000;
     private List<Double> peaks = Lists.newArrayList();
     private String erlangFitter = MomErlangFitter.FITTER_NAME;
     private String fitterName = HyperErlangFitter.FITTER_NAME;
@@ -33,6 +33,7 @@ public class FitParameters {
     private StringProperty reassign = new SimpleStringProperty(String.valueOf(DEFAULT_REASSIGN));
     private StringProperty optimize = new SimpleStringProperty(String.valueOf(DEFAULT_OPTIMIZE));
     private StringProperty shuffle = new SimpleStringProperty(String.valueOf(DEFAULT_SHUFFLE));
+    private StringProperty maxPhase = new SimpleStringProperty(String.valueOf(DEFAULT_MAX_PAHSE));
     private FitParameters() {
     }
 
@@ -40,6 +41,13 @@ public class FitParameters {
         return INSTANCE;
     }
 
+    public StringProperty getMaxPhaseProperty() {
+        return maxPhase;
+    }
+
+    public int getMaxPhase() {
+        return strToInt(maxPhase.get(), DEFAULT_MAX_PAHSE);
+    }
     public StringProperty getReassignProperty() {
         return reassign;
     }
@@ -76,7 +84,7 @@ public class FitParameters {
     }
 
     public int getKMeans() {
-        return strToInt(kMeans.get(), DefaultKMeans);
+        return strToInt(kMeans.get(), DEFAULT_K_MEANS);
     }
 
     public void addPeak(double position) {
