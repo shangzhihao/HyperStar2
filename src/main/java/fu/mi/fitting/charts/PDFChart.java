@@ -4,11 +4,7 @@ import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-import org.jfree.data.xy.XYDataset;
 
 /**
  * Created by shang on 5/6/2016.
@@ -16,23 +12,14 @@ import org.jfree.data.xy.XYDataset;
  * dataset and parameters come from ChartsController,
  * and ChartsController will show the result.
  */
-public class PDFChart {
-    private JFreeChart histogram;
-
-    public JFreeChart getHistogram(String histogramKey) {
+public class PDFChart extends BaseChart {
+    @Override
+    public JFreeChart getChart(String chartName) {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
-        histogram = ChartFactory.createHistogram("", "samples", "histogram",
-                sc.asHistogramDataset(histogramKey),
+        chart = ChartFactory.createHistogram("", "samples", "histogram",
+                sc.asHistogramDataset(chartName),
                 PlotOrientation.VERTICAL,
                 true, true, true);
-        return histogram;
-    }
-
-    public void drawPDF(XYDataset pdfDataset) {
-        XYPlot xyPlot = histogram.getXYPlot();
-        xyPlot.setDataset(1, pdfDataset);
-        xyPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-        StandardXYItemRenderer render = new StandardXYItemRenderer(StandardXYItemRenderer.LINES);
-        xyPlot.setRenderer(1, render);
+        return chart;
     }
 }

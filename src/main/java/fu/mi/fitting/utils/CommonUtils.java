@@ -4,7 +4,10 @@ package fu.mi.fitting.utils;
  * Created by shang on 6/1/2016.
  * some useful static methods
  */
-public class Utils {
+public class CommonUtils {
+    private CommonUtils() {
+    }
+
     public static int strToInt(String str, int defaultValue) {
         int res = defaultValue;
         try {

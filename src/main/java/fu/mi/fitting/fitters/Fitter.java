@@ -26,8 +26,8 @@ public abstract class Fitter<T extends RealDistribution> {
     public double logLikelihood() {
         if (llh == -1) {
             RealDistribution dist = fit();
-            Optional<Double> res = samples.data.stream().
-                    map(sample -> FastMath.log(dist.density(sample.value))).
+            Optional<Double> res = samples.getValues().stream().
+                    map(value -> FastMath.log(dist.density(value))).
                     reduce((a1, a2) -> a1 + a2);
             llh = res.get();
 

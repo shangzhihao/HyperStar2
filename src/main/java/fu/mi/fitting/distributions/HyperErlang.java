@@ -6,7 +6,9 @@ import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.FastMath;
 
 import java.math.BigDecimal;
@@ -32,19 +34,12 @@ public class HyperErlang implements RealDistribution {
      *
      * @return initial probability
      */
-    public List<Double> getAlpha() {
-        List<Double> res = Lists.newArrayList();
+    public RealVector getAlpha() {
+        RealVector res = new ArrayRealVector(getPhase());
+        int position = 0;
         for (HyperErlangBranch branch : branches) {
-            res.addAll(makeAlpha(branch));
-        }
-        return null;
-    }
-
-    private List<Double> makeAlpha(HyperErlangBranch branch) {
-        List<Double> res = Lists.newArrayList();
-        res.add(branch.probability);
-        for (int i = 0; i < branch.dist.phase - 1; i++) {
-            res.add(0d);
+            res.setEntry(position, branch.probability);
+            position += branch.dist.phase;
         }
         return res;
     }

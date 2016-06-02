@@ -24,9 +24,9 @@ public abstract class ErlangFitter extends Fitter<Erlang> {
         double floorllh = 0;
         // ceil of log likelihood
         double ceilllh = 0;
-        for(int i=0, n=samples.data.size(); i < n; i++){
-            floorllh += floorRes.logDensity(samples.data.get(i).value);
-            ceilllh += ceilRes.logDensity(samples.data.get(i).value);
+        for (int i = 0, n = samples.size(); i < n; i++) {
+            floorllh += floorRes.logDensity(samples.getValue(i));
+            ceilllh += ceilRes.logDensity(samples.getValue(i));
         }
         return floorllh > ceilllh ? floorRes : ceilRes;
     }

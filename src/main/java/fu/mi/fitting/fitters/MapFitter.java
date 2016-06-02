@@ -57,7 +57,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         Map<Integer, Integer> id2cluster = Maps.newHashMap();
         int maxID = -1;
         for (int i = 0; i < cluster.size(); i++) {
-            for (SampleItem sample : cluster.get(i).data) {
+            for (SampleItem sample : cluster.get(i).getData()) {
                 id2cluster.put(sample.id, i);
                 if (sample.id > maxID) {
                     maxID = sample.id;
@@ -65,7 +65,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
             }
         }
         // collect samples' id
-        List<Integer> ids = samples.data.stream().map(sample -> sample.id)
+        List<Integer> ids = samples.getData().stream().map(sample -> sample.id)
                 .sorted().collect(Collectors.toList());
         // construct D1
         int from = 0;

@@ -5,7 +5,7 @@ import fu.mi.fitting.io.SampleReader;
 import fu.mi.fitting.parameters.Messages;
 import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
-import fu.mi.fitting.utils.Utils;
+import fu.mi.fitting.utils.CommonUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -59,7 +59,7 @@ public class SampleController {
             @Override
             public Number fromString(String str) {
                 String intValue = str.substring(0, str.length() - 1);
-                return Utils.strToInt(intValue, 100);
+                return CommonUtils.strToInt(intValue, 100);
             }
         });
     }

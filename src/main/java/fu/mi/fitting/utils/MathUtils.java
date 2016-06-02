@@ -1,40 +1,63 @@
 package fu.mi.fitting.utils;
 
-import com.google.common.primitives.Doubles;
-import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.util.FastMath;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
- * Created by shang on 6/1/2016.
- * mathematical utils
+ * Created by shang on 6/2/2016.
+ * some useful math functions
  */
 public class MathUtils {
+    private static final double DELTA = 0.00001;
+
+    private MathUtils() {
+    }
 
     /**
-     * calculate correlation of two random variables
+     * get inverse matrix of given matrix
      *
-     * @param x1 random variable
-     * @param x2 random variable
-     * @return correlation
+     * @param matrix matrix to be inversed
+     * @return inverse matrix
      */
-    public static double correlation(List<Double> x1, List<Double> x2) {
-        if (x1.size() != x2.size()) {
-            throw new IllegalArgumentException();
+    public static RealMatrix inverseMatrix(RealMatrix matrix) {
+        int row = matrix.getRowDimension();
+        int col = matrix.getColumnDimension();
+        if (row != col) {
+            throw new IllegalArgumentException("not a nxn matrix");
         }
-        double mean1 = StatUtils.mean(Doubles.toArray(x1));
-        double mean2 = StatUtils.mean(Doubles.toArray(x2));
-        double top = 0;
-        double left = 0;
-        double right = 0;
-        for (int i = 0; i < x1.size(); i++) {
-            top += (x1.get(i) - mean1) * (x2.get(i) - mean2);
-            left += FastMath.pow(x1.get(i) - mean1, 2);
-            right += FastMath.pow(x2.get(i) - mean2, 2);
-        }
-        left = FastMath.sqrt(left);
-        right = FastMath.sqrt(right);
-        return top / (left * right);
+        // make unit matrix
+        RealMatrix unitMatrix = new Array2DRowRealMatrix(row, col);
+        IntStream.range(0, row).forEach(i -> unitMatrix.setEntry(i, i, 1));
+
+        DecompositionSolver solver = new LUDecomposition(matrix).getSolver();
+        return solver.solve(unitMatrix);
     }
+
+    /**
+     * get steady state probability vector of a markov chain
+     * state transition probability matrix
+     *
+     * @param trans transition probability matrix
+     * @return steady state probability vector
+     */
+    public static RealVector limitProbability(RealMatrix trans) {
+        EigenDecomposition eigenSolver = new EigenDecomposition(trans);
+        RealMatrix diag = eigenSolver.getD();
+        double eigenValue;
+        double delta;
+        for (int i = 0; i < diag.getRowDimension(); i++) {
+            eigenValue = diag.getEntry(i, i);
+            delta = FastMath.abs(FastMath.abs(eigenValue) - 1);
+            if (delta < DELTA) {
+                RealVector res = eigenSolver.getEigenvector(i);
+                double scale = Arrays.stream(res.toArray()).sum();
+                return res.mapMultiply(1 / scale);
+            }
+        }
+        throw new IllegalArgumentException("not a markov transition matrix exception");
+    }
+
 }

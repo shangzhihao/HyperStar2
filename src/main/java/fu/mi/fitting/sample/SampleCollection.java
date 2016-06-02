@@ -3,13 +3,13 @@ package fu.mi.fitting.sample;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
-import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.util.FastMath;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
@@ -36,7 +36,7 @@ public class SampleCollection {
     /**
      * samples
      */
-    public List<SampleItem> data;
+    private List<SampleItem> data;
     /**
      * values of samples
      */
@@ -151,7 +151,10 @@ public class SampleCollection {
     public double autocorrelation(int lag) {
         List<SampleItem> x1 = data.subList(0, data.size() - lag);
         List<SampleItem> x2 = data.subList(lag, data.size());
-        return MathUtils.correlation(new SampleCollection(x1).asDoubleList(), new SampleCollection(x2).asDoubleList());
+        double[] xArray = new SampleCollection(x1).asDoubleArray();
+        double[] yArray = new SampleCollection(x2).asDoubleArray();
+        PearsonsCorrelation corCalc = new PearsonsCorrelation();
+        return corCalc.correlation(xArray, yArray);
     }
 
     public List<Double> getPeaks() {
@@ -195,5 +198,25 @@ public class SampleCollection {
             }
         }
         return res;
+    }
+
+    public List<Double> getValues() {
+        return values;
+    }
+
+    public List<SampleItem> getData() {
+        return data;
+    }
+
+    public int size() {
+        return data.size();
+    }
+
+    public double getValue(int i) {
+        return data.get(i).value;
+    }
+
+    public SampleItem getSample(int i) {
+        return data.get(i);
     }
 }

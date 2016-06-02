@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="hyperstar2_main" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-all:2.3.11" level="project" />

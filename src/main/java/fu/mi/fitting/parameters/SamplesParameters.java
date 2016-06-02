@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import static fu.mi.fitting.utils.Utils.strToDouble;
+import static fu.mi.fitting.utils.CommonUtils.strToDouble;
 
 /**
  * Created by shang on 5/9/2016.
@@ -47,6 +47,9 @@ public class SamplesParameters {
     }
 
     public SampleCollection getLimitedSamples() {
+        if (originSamples == null || originSamples.size() == 0) {
+            return null;
+        }
         double percent = size.doubleValue();
         double min = strToDouble(from.getValue(), Double.MIN_VALUE);
         double max = strToDouble(to.getValue(), Double.MAX_VALUE);

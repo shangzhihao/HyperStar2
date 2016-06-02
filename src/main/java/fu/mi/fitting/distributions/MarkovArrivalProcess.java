@@ -1,10 +1,14 @@
 package fu.mi.fitting.distributions;
 
 import com.google.common.base.Objects;
+import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+
+import java.util.Arrays;
 
 /**
  * Created by shang on 5/27/2016.
@@ -20,6 +24,22 @@ public class MarkovArrivalProcess implements RealDistribution {
         D0 = d0;
         D1 = d1;
         this.embedDist = embedDist;
+    }
+
+    public double autoCorrelation(int lag) {
+        // invers of d0
+        RealMatrix d0v = MathUtils.inverseMatrix(D0);
+        // matrix P D_0^{-1}*D_1
+        RealMatrix P = d0v.multiply(D1);
+        // steady state probability of embedded process
+        RealVector pi = MathUtils.limitProbability(P);
+        double expectation = -Arrays.stream(d0v.operate(pi).toArray()).sum();
+        double lambda = 1 / expectation;
+        double[] topVector = d0v.multiply(P.power(lag)).multiply(d0v).operate(pi).toArray();
+        double top = Arrays.stream(topVector).sum() * lambda * lambda - 1;
+        double[] bottomVector = d0v.power(2).operate(pi).toArray();
+        double bottom = Arrays.stream(bottomVector).sum() * lambda * lambda * 2 - 1;
+        return top / bottom;
     }
 
     @Override

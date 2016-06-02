@@ -1,7 +1,7 @@
 package fu.mi.fitting.controllers;
 
+import fu.mi.fitting.charts.BaseChart;
 import fu.mi.fitting.charts.CDFChart;
-import fu.mi.fitting.charts.MomentChart;
 import fu.mi.fitting.charts.PDFChart;
 import fu.mi.fitting.charts.PDFMouseListener;
 import fu.mi.fitting.parameters.ChartsParameters;
@@ -36,9 +36,8 @@ public class ChartsController {
     AnchorPane momPane;
     private ChartsParameters chartsParameters = ChartsParameters.getInstance();
     private SampleCollection sampleCollection;
-    private PDFChart pdfChart = new PDFChart();
-    private CDFChart cdfChart = new CDFChart();
-    private MomentChart momentChart = new MomentChart();
+    private BaseChart pdfChart = new PDFChart();
+    private BaseChart cdfChart = new CDFChart();
 
     @FXML
     public void initialize() {
@@ -50,23 +49,12 @@ public class ChartsController {
         drawHistogram();
         Controllers.getInstance().mainController.setStatus(Messages.DRAW_CDF);
         drawCDF();
-        Controllers.getInstance().mainController.setStatus(Messages.DRAW_PDF);
-        drawMoment();
         Controllers.getInstance().mainController.setStatus(Messages.NONE_STATUS);
     }
 
-    private void drawMoment() {
-        JFreeChart momentsLineChart = momentChart.getMomentChart();
-        ChartViewer viewer = new ChartViewer(momentsLineChart);
-        momPane.getChildren().add(viewer);
-        AnchorPane.setBottomAnchor(viewer, 0.0);
-        AnchorPane.setTopAnchor(viewer, 0.0);
-        AnchorPane.setLeftAnchor(viewer, 0.0);
-        AnchorPane.setRightAnchor(viewer, 0.0);
-    }
 
     private void drawCDF() {
-        JFreeChart cdfLineChart = cdfChart.getCDFLineChart();
+        JFreeChart cdfLineChart = cdfChart.getChart("");
         ChartViewer viewer = new ChartViewer(cdfLineChart);
         cdfPane.getChildren().add(viewer);
         AnchorPane.setBottomAnchor(viewer, 0.0);
@@ -76,7 +64,7 @@ public class ChartsController {
     }
 
     private void drawHistogram() {
-        JFreeChart histogram = pdfChart.getHistogram(getHistogramKey());
+        JFreeChart histogram = pdfChart.getChart(getHistogramKey());
         histogramViewer = new ChartViewer(histogram);
         histogramViewer.addChartMouseListener(new PDFMouseListener());
         pdfPane.getChildren().add(histogramViewer);
@@ -90,15 +78,15 @@ public class ChartsController {
         return "samples-" + chartsParameters.getBins() + " steps";
     }
 
-    public void addPDF(Function2D pdf, double start, double end) {
+    void addPDF(Function2D pdf, double start, double end) {
         XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(pdf, start, end,
                 chartsParameters.getPDFPoints(), Messages.PDF_LABEL);
-        pdfChart.drawPDF(pdfDataset);
+        pdfChart.drawLine(pdfDataset);
     }
 
-    public void addCDF(Function2D cdf, double start, double end) {
+    void addCDF(Function2D cdf, double start, double end) {
         XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(cdf, start, end,
                 chartsParameters.getCDFPoints(), Messages.PDF_LABEL);
-        cdfChart.drawFittedCDF(pdfDataset);
+        cdfChart.drawLine(pdfDataset);
     }
 }

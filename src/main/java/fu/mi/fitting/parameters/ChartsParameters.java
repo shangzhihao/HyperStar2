@@ -3,7 +3,7 @@ package fu.mi.fitting.parameters;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import static fu.mi.fitting.utils.Utils.strToInt;
+import static fu.mi.fitting.utils.CommonUtils.strToInt;
 
 /**
  * Created by shang on 5/6/2016.

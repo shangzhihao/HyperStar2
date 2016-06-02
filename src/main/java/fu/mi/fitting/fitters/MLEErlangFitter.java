@@ -44,11 +44,11 @@ public class MLEErlangFitter extends ErlangFitter{
         double mean = samples.getMean();
         double logOfmean = Math.log(mean);
         double log = 0;
-        for(int i=0, n=samples.data.size(); i < n; i++){
-            log += Math.log(samples.data.get(i).value);
+        for (int i = 0, n = samples.size(); i < n; i++) {
+            log += Math.log(samples.getValue(i));
         }
 
-        double meanOfLog = log/samples.data.size();
+        double meanOfLog = log / samples.size();
         double s = logOfmean - meanOfLog;
         double res = (s-3)*(s-3) + 24*s;
         res = Math.sqrt(res) + 3 - s;

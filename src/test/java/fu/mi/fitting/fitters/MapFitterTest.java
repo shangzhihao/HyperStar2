@@ -4,21 +4,27 @@ import fu.mi.fitting.distributions.MarkovArrivalProcess;
 import fu.mi.fitting.io.LineSampleReader;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
+import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by shang on 5/31/2016.
- *
  */
 public class MapFitterTest {
+    private static final double delta = 0.000001;
     static SampleCollection sc;
+    protected Logger logger = LoggerFactory.getLogger(MapFitterTest.class);
 
     @BeforeClass
     public static void setup() {
@@ -32,7 +38,55 @@ public class MapFitterTest {
         RealMatrix d0 = map.getD0();
         RealMatrix d1 = map.getD1();
         for (int i = 0; i < d0.getRowDimension(); i++) {
-            assertEquals(Arrays.stream(d0.add(d1).getRow(i)).sum(), 0, 0.001);
+            assertEquals(Arrays.stream(d0.add(d1).getRow(i)).sum(), 0, delta);
         }
+        int row0 = d0.getRowDimension();
+        int col0 = d0.getColumnDimension();
+        int row1 = d1.getRowDimension();
+        int col1 = d1.getColumnDimension();
+        assertEquals(row0, row1);
+        assertEquals(col0, col1);
+        assertEquals(col0, row0);
+
+
+        // invers of d0
+        RealMatrix d0v = MathUtils.inverseMatrix(d0);
+
+        // matrix P D_0^{-1}*D_1
+        RealMatrix P = d0v.multiply(d1);
+
+        // pi
+        RealVector pi = MathUtils.limitProbability(P);
+
+        // D
+        RealMatrix d = d0.add(d1);
+
+        RealVector temp = P.operate(pi);
+        for (int i = 0; i < temp.getDimension(); i++) {
+            assertTrue(temp.getEntry(i) + pi.getEntry(i) < delta
+                    || temp.getEntry(i) - pi.getEntry(i) < delta);
+            logger.info("probability: {},{}", i, pi.getEntry(i));
+            assertTrue(pi.getEntry(i) > 0 && pi.getEntry(i) < 1);
+        }
+        double sum = Arrays.stream(pi.toArray()).sum();
+        assertEquals(1, sum, delta);
+
+        // lambda
+        double expect = -Arrays.stream(d0v.operate(pi).toArray()).sum();
+        double lambda = 1 / expect;
+
+        // test autoCorrelation
+        double sampleCorr;
+        double resCorr;
+        for (int i = 0; i < 10; i++) {
+            sampleCorr = sc.autocorrelation(i);
+            resCorr = map.autoCorrelation(i);
+            logger.info("auto correlation: lag {}, expect {}, actual {}", i, sampleCorr, resCorr);
+        }
+    }
+
+    @Test
+    public void autoCorrelation() {
+
     }
 }
