@@ -9,7 +9,7 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.util.FastMath;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
@@ -148,13 +148,19 @@ public class SampleCollection {
      * @param lag lag
      * @return autocorrelation
      */
+    // TODO test
     public double autocorrelation(int lag) {
         List<SampleItem> x1 = data.subList(0, data.size() - lag);
         List<SampleItem> x2 = data.subList(lag, data.size());
         double[] xArray = new SampleCollection(x1).asDoubleArray();
         double[] yArray = new SampleCollection(x2).asDoubleArray();
-        PearsonsCorrelation corCalc = new PearsonsCorrelation();
-        return corCalc.correlation(xArray, yArray);
+        Covariance covariance = new Covariance();
+        double covar = covariance.covariance(xArray, yArray);
+        double standVar = FastMath.sqrt(StatUtils.variance(xArray))
+                * FastMath.sqrt(StatUtils.variance(yArray));
+        return covar / standVar;
+//        PearsonsCorrelation corCalc = new PearsonsCorrelation();
+//        return corCalc.correlation(xArray, yArray);
     }
 
     public List<Double> getPeaks() {

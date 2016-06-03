@@ -94,7 +94,7 @@ public class HyperErlangFitter extends Fitter {
 
     private List<HyperErlangFitter> shuffle(HyperErlang dist, int numOfShuffles) {
         List<HyperErlangFitter> result = Lists.newArrayList();
-        List<HyperErlangBranch> branches = dist.branches;
+        List<HyperErlangBranch> branches = dist.getBranches();
         RealMatrix relevance = new Array2DRowRealMatrix(samples.size(), branches.size());
         Map<Integer, Double> sumOfRow = Maps.newHashMap();
         for (int i = 0; i < samples.size(); i++) {

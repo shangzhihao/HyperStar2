@@ -5,10 +5,10 @@ import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-
-import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shang on 5/27/2016.
@@ -16,6 +16,7 @@ import java.util.Arrays;
  */
 public class MarkovArrivalProcess implements RealDistribution {
 
+    protected Logger logger = LoggerFactory.getLogger(MarkovArrivalProcess.class);
     private RealMatrix D0;
     private RealMatrix D1;
     private HyperErlang embedDist;
@@ -26,19 +27,26 @@ public class MarkovArrivalProcess implements RealDistribution {
         this.embedDist = embedDist;
     }
 
+    // TODO test
     public double autoCorrelation(int lag) {
-        // invers of d0
-        RealMatrix d0v = MathUtils.inverseMatrix(D0);
+        int dim = D0.getRowDimension();
+        // inverse of d0
+        RealMatrix d0Inverse = MathUtils.inverseMatrix(new Array2DRowRealMatrix(dim, dim).subtract(D0));
         // matrix P D_0^{-1}*D_1
-        RealMatrix P = d0v.multiply(D1);
+        RealMatrix P = d0Inverse.multiply(D1);
         // steady state probability of embedded process
-        RealVector pi = MathUtils.limitProbability(P);
-        double expectation = -Arrays.stream(d0v.operate(pi).toArray()).sum();
+        RealMatrix pi = new Array2DRowRealMatrix(1, dim);
+        pi.setRowVector(0, embedDist.getAlpha());
+        double expectation = embedDist.expectation();
+        logger.info("expection: {}", expectation);
         double lambda = 1 / expectation;
-        double[] topVector = d0v.multiply(P.power(lag)).multiply(d0v).operate(pi).toArray();
-        double top = Arrays.stream(topVector).sum() * lambda * lambda - 1;
-        double[] bottomVector = d0v.power(2).operate(pi).toArray();
-        double bottom = Arrays.stream(bottomVector).sum() * lambda * lambda * 2 - 1;
+        RealMatrix ones = MathUtils.getOnes(dim, 1);
+        double top = pi.scalarMultiply(lambda * lambda)
+                .multiply(d0Inverse).multiply(P.power(lag))
+                .multiply(d0Inverse).multiply(ones).getEntry(0, 0) - 1;
+        double bottom = pi.scalarMultiply(2 * lambda * lambda)
+                .multiply(d0Inverse).multiply(d0Inverse)
+                .multiply(ones).getEntry(0, 0) - 1;
         return top / bottom;
     }
 

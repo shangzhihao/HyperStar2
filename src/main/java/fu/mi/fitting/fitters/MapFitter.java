@@ -47,7 +47,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         Map<Integer, Integer> clusterBegins = Maps.newHashMap();
         Map<Integer, Integer> clusterEnds = Maps.newHashMap();
         int begin = 0;
-        List<HyperErlangBranch> branches = hErD.branches;
+        List<HyperErlangBranch> branches = hErD.getBranches();
         for (int i = 0; i < branches.size(); i++) {
             clusterBegins.put(i, begin);
             begin = begin + branches.get(i).dist.phase;

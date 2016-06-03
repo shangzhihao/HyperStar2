@@ -32,6 +32,9 @@ public class Erlang extends GammaDistribution {
         return res;
     }
 
+    public double expection() {
+        return phase / rate;
+    }
     @Override
     public int hashCode() {
         return Objects.hashCode(phase, rate);

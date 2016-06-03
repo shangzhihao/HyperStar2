@@ -2,6 +2,7 @@ package fu.mi.fitting.distributions;
 
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
+import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
@@ -27,7 +28,11 @@ public class HyperErlang implements RealDistribution {
     /**
      * branches in hyper-erlang distribution
      */
-    public List<HyperErlangBranch> branches = Lists.newArrayList();
+    private List<HyperErlangBranch> branches = Lists.newArrayList();
+
+    public List<HyperErlangBranch> getBranches() {
+        return branches;
+    }
 
     /**
      * get initial probability
@@ -110,6 +115,25 @@ public class HyperErlang implements RealDistribution {
             res = res.add(cdfBranch(branch, v));
         }
         return 1 - res.doubleValue();
+    }
+
+    public double expectation() {
+//        double res = 0;
+//        for(HyperErlangBranch branch:getBranches()){
+//            res += branch.probability*branch.dist.expection();
+//        }
+//        return res;
+
+        double res;
+        RealMatrix d0 = getD0();
+        int dim = d0.getColumnDimension();
+        RealMatrix zeros = new Array2DRowRealMatrix(dim, dim);
+        RealMatrix M = MathUtils.inverseMatrix(zeros.subtract(d0));
+        RealMatrix alphaMatrix = new Array2DRowRealMatrix(1, dim);
+        alphaMatrix.setRowVector(0, getAlpha());
+        RealMatrix ones = MathUtils.getOnes(dim, 1);
+        res = alphaMatrix.multiply(M).multiply(ones).getEntry(0, 0);
+        return res;
     }
 
     private BigDecimal cdfBranch(HyperErlangBranch branch, double x) {

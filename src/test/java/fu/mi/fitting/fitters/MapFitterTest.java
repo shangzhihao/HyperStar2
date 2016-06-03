@@ -15,14 +15,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by shang on 5/31/2016.
  */
 public class MapFitterTest {
-    private static final double delta = 0.000001;
+    private static final double delta = 0.0001;
     static SampleCollection sc;
     protected Logger logger = LoggerFactory.getLogger(MapFitterTest.class);
 
@@ -56,7 +55,7 @@ public class MapFitterTest {
         RealMatrix P = d0v.multiply(d1);
 
         // pi
-        RealVector pi = MathUtils.limitProbability(P);
+        RealVector pi = map.getEmbedDist().getAlpha();
 
         // D
         RealMatrix d = d0.add(d1);
@@ -66,19 +65,16 @@ public class MapFitterTest {
             assertTrue(temp.getEntry(i) + pi.getEntry(i) < delta
                     || temp.getEntry(i) - pi.getEntry(i) < delta);
             logger.info("probability: {},{}", i, pi.getEntry(i));
-            assertTrue(pi.getEntry(i) > 0 && pi.getEntry(i) < 1);
+            assertTrue(pi.getEntry(i) >= 0 && pi.getEntry(i) < 1);
         }
+        assertEquals(1, Arrays.stream(pi.toArray()).sum(), delta);
+        assertArrayEquals(map.getEmbedDist().getAlpha().toArray(), pi.toArray(), delta);
         double sum = Arrays.stream(pi.toArray()).sum();
         assertEquals(1, sum, delta);
-
-        // lambda
-        double expect = -Arrays.stream(d0v.operate(pi).toArray()).sum();
-        double lambda = 1 / expect;
-
         // test autoCorrelation
         double sampleCorr;
         double resCorr;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             sampleCorr = sc.autocorrelation(i);
             resCorr = map.autoCorrelation(i);
             logger.info("auto correlation: lag {}, expect {}, actual {}", i, sampleCorr, resCorr);
