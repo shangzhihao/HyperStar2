@@ -3,15 +3,12 @@ package fu.mi.fitting.utils;
 import com.google.common.collect.Lists;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.util.FastMath;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -72,25 +69,21 @@ public class MathUtilsTest {
         return res;
     }
 
-    /**
-     * calculate limit probability of a transition matrix
-     *
-     * @param matrix transition matrix
-     * @return limit probability
-     */
-    private RealVector limit(RealMatrix matrix) {
-        Map<Integer, RealMatrix> power = new HashMap<>();
-        int dim = matrix.getRowDimension();
-        power.put(19, matrix.power(20));
-        int i;
-        for (i = 20; ; i++) {
-            power.put(i, matrix.power(i));
-            if (power.get(i).getRowVector(0).equals(power.get(i).getRowVector(1))) {
-                break;
+    @Test
+    public void limit() {
+        for (int i = 0; i < 100; i++) {
+            RealMatrix matrix = transMatrix();
+            RealMatrix limitProbability = MathUtils.limitProbability(matrix);
+            RealMatrix expected = limitProbability.multiply(matrix);
+            assertEquals(limitProbability.getRowDimension(), expected.getRowDimension());
+            assertEquals(limitProbability.getColumnDimension(), expected.getColumnDimension());
+            for (int j = 0; j < expected.getRowDimension(); j++) {
+                for (int k = 0; k < expected.getColumnDimension(); k++) {
+                    assertEquals(limitProbability.getEntry(j, k),
+                            expected.getEntry(j, k), DELTA);
+                }
             }
         }
-        System.out.println(i);
-        return power.get(i).getRowVector(dim - 1);
     }
 
     /**
@@ -128,8 +121,7 @@ public class MathUtilsTest {
         double[] x2;
         Covariance covariance = new Covariance();
         double covar;
-
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0; i < 100; i++) {
             int dim = random.nextInt(200) + 5;
             x1 = new double[dim];

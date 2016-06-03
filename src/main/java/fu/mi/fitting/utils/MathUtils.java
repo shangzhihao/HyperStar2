@@ -1,10 +1,11 @@
 package fu.mi.fitting.utils;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.DecompositionSolver;
-import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.util.FastMath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 /**
@@ -13,6 +14,7 @@ import java.util.stream.IntStream;
  */
 public class MathUtils {
     private static final double DELTA = 0.00001;
+    static Logger logger = LoggerFactory.getLogger(MathUtils.class);
 
     private MathUtils() {
     }
@@ -48,4 +50,30 @@ public class MathUtils {
     }
 
 
+    /**
+     * get steady state probability vector of a markov chain
+     * state transition probability matrix
+     *
+     * @param trans transition probability matrix
+     * @return steady state probability vector
+     */
+    public static RealMatrix limitProbability(RealMatrix trans) {
+        EigenDecomposition eigenSolver = new EigenDecomposition(trans);
+        RealMatrix diag = eigenSolver.getD();
+        double eigenValue;
+        double delta;
+        int dim = trans.getColumnDimension();
+        for (int i = 0; i < dim; i++) {
+            eigenValue = diag.getEntry(i, i);
+            delta = FastMath.abs(FastMath.abs(eigenValue) - 1);
+            if (delta < DELTA) {
+                RealVector vector = eigenSolver.getEigenvector(i);
+                double scale = Arrays.stream(vector.toArray()).sum();
+                RealMatrix res = new Array2DRowRealMatrix(1, dim);
+                res.setRowVector(0, vector.mapMultiply(1 / scale));
+                return res;
+            }
+        }
+        throw new IllegalArgumentException("not a markov transition matrix exception");
+    }
 }

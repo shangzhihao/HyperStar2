@@ -9,6 +9,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by shang on 5/27/2016.
@@ -17,37 +18,69 @@ import org.slf4j.LoggerFactory;
 public class MarkovArrivalProcess implements RealDistribution {
 
     protected Logger logger = LoggerFactory.getLogger(MarkovArrivalProcess.class);
+    private int dim;
     private RealMatrix D0;
     private RealMatrix D1;
-    private HyperErlang embedDist;
+    /**
+     * embedded process
+     * -D_0^{-1}*D_1
+     */
+    private RealMatrix P;
+    /**
+     * just for computing
+     * -D_0^{-1}
+     */
+    private RealMatrix d0Inverse;
+    /**
+     * steady probability of P
+     * pi*P=pi
+     * sum(pi) = 1
+     */
+    private RealMatrix limitProbabitlity;
+    /**
+     * expectation of
+     */
+    private double expectation = -1;
 
-    public MarkovArrivalProcess(RealMatrix d0, RealMatrix d1, HyperErlang embedDist) {
+    private RealMatrix ones;
+
+    public MarkovArrivalProcess(RealMatrix d0, RealMatrix d1) {
         D0 = d0;
         D1 = d1;
-        this.embedDist = embedDist;
+        dim = D0.getRowDimension();
+        // inverse of -d0
+        d0Inverse = MathUtils.inverseMatrix(new Array2DRowRealMatrix(dim, dim).subtract(D0));
+        // matrix P D_0^{-1}*D_1
+        P = d0Inverse.multiply(D1);
+        limitProbabitlity = MathUtils.limitProbability(P);
+        ones = MathUtils.getOnes(dim, 1);
+        logger.info("expection: {}", getExpectation());
     }
 
     // TODO test
     public double autoCorrelation(int lag) {
-        int dim = D0.getRowDimension();
-        // inverse of d0
-        RealMatrix d0Inverse = MathUtils.inverseMatrix(new Array2DRowRealMatrix(dim, dim).subtract(D0));
-        // matrix P D_0^{-1}*D_1
-        RealMatrix P = d0Inverse.multiply(D1);
+
         // steady state probability of embedded process
-        RealMatrix pi = new Array2DRowRealMatrix(1, dim);
-        pi.setRowVector(0, embedDist.getAlpha());
-        double expectation = embedDist.expectation();
-        logger.info("expection: {}", expectation);
         double lambda = 1 / expectation;
         RealMatrix ones = MathUtils.getOnes(dim, 1);
-        double top = pi.scalarMultiply(lambda * lambda)
+        double top = limitProbabitlity.scalarMultiply(lambda * lambda)
                 .multiply(d0Inverse).multiply(P.power(lag))
                 .multiply(d0Inverse).multiply(ones).getEntry(0, 0) - 1;
-        double bottom = pi.scalarMultiply(2 * lambda * lambda)
+        double bottom = limitProbabitlity.scalarMultiply(2 * lambda * lambda)
                 .multiply(d0Inverse).multiply(d0Inverse)
                 .multiply(ones).getEntry(0, 0) - 1;
         return top / bottom;
+    }
+
+    public double getExpectation() {
+        if (expectation < 0) {
+            expectation = limitProbabitlity.multiply(d0Inverse).multiply(ones).getEntry(0, 0);
+        }
+        return expectation;
+    }
+
+    public RealMatrix getLimitProbabitlity() {
+        return limitProbabitlity;
     }
 
     @Override
@@ -57,36 +90,21 @@ public class MarkovArrivalProcess implements RealDistribution {
 
     @Override
     public double density(double x) {
-        return getEmbedDist().density(x);
+        throw new NotImplementedException();
     }
 
     @Override
     public double cumulativeProbability(double x) {
-        return getEmbedDist().cumulativeProbability(x);
+        throw new NotImplementedException();
     }
 
     public RealMatrix getD0() {
         return D0;
     }
 
-    public void setD0(RealMatrix d0) {
-        D0 = d0;
-    }
 
     public RealMatrix getD1() {
         return D1;
-    }
-
-    public void setD1(RealMatrix d1) {
-        D1 = d1;
-    }
-
-    public HyperErlang getEmbedDist() {
-        return embedDist;
-    }
-
-    public void setEmbedDist(HyperErlang embedDist) {
-        this.embedDist = embedDist;
     }
 
     @Override

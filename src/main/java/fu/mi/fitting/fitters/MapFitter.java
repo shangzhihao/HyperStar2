@@ -39,7 +39,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         RealMatrix d1 = makeD1FromCluster(d0, fitter.getCluster());
         logger.info("d0: {}", d0.toString());
         logger.info("d1: {}", d1.toString());
-        return new MarkovArrivalProcess(d0, d1, hErD);
+        return new MarkovArrivalProcess(d0, d1);
     }
 
     private RealMatrix makeD1FromCluster(RealMatrix d0, List<SampleCollection> cluster) {
