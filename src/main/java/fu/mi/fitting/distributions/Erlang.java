@@ -13,8 +13,8 @@ import org.apache.commons.math3.linear.RealMatrix;
  * phase = mean*rate
  */
 public class Erlang extends GammaDistribution {
-    public int phase;
-    public double rate;
+    public final int phase;
+    public final double rate;
 
     public Erlang(int phase, double rate) {
         super(phase, 1 / rate);

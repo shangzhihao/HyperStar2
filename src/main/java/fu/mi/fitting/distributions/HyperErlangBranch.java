@@ -10,11 +10,11 @@ public class HyperErlangBranch {
     /**
      * probability of this branch
      */
-    public double probability;
+    public final double probability;
     /**
      * Erlang Distribution of this branch
      */
-    public Erlang dist;
+    public final Erlang dist;
 
     /**
      * @param probability probability of this branch

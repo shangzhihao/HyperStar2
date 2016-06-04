@@ -30,8 +30,14 @@ public class HyperErlang implements RealDistribution {
      */
     private List<HyperErlangBranch> branches = Lists.newArrayList();
 
+    public HyperErlang(List<HyperErlangBranch> branches) {
+        this.branches = branches;
+    }
+
     public List<HyperErlangBranch> getBranches() {
-        return branches;
+        List<HyperErlangBranch> res = Lists.newArrayList();
+        res.addAll(branches);
+        return res;
     }
 
     /**
@@ -72,17 +78,6 @@ public class HyperErlang implements RealDistribution {
         return res;
     }
 
-    /**
-     * add a branch to distribution
-     * @param branch an erlang branch with initial probability
-     */
-    public void addBranch(HyperErlangBranch branch) {
-        branches.add(branch);
-    }
-
-    public void addBranch(double init, Erlang erlang) {
-        addBranch(new HyperErlangBranch(init, erlang));
-    }
 
     /**
      * P(X = v)

@@ -7,9 +7,9 @@ import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by shang on 5/27/2016.
@@ -17,32 +17,31 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class MarkovArrivalProcess implements RealDistribution {
 
-    protected Logger logger = LoggerFactory.getLogger(MarkovArrivalProcess.class);
-    private int dim;
-    private RealMatrix D0;
-    private RealMatrix D1;
+    /**
+     * expectation of
+     */
+    public final double expectation;
+    private final int dim;
+    private final RealMatrix D0;
+    private final RealMatrix D1;
     /**
      * embedded process
      * -D_0^{-1}*D_1
      */
-    private RealMatrix P;
+    private final RealMatrix P;
     /**
      * just for computing
      * -D_0^{-1}
      */
-    private RealMatrix d0Inverse;
+    private final RealMatrix d0Inverse;
     /**
      * steady probability of P
      * pi*P=pi
      * sum(pi) = 1
      */
-    private RealMatrix limitProbabitlity;
-    /**
-     * expectation of
-     */
-    private double expectation = -1;
-
-    private RealMatrix ones;
+    private final RealVector limitProbabitlity;
+    private final RealMatrix ones;
+    protected Logger logger = LoggerFactory.getLogger(MarkovArrivalProcess.class);
 
     public MarkovArrivalProcess(RealMatrix d0, RealMatrix d1) {
         D0 = d0;
@@ -50,11 +49,13 @@ public class MarkovArrivalProcess implements RealDistribution {
         dim = D0.getRowDimension();
         // inverse of -d0
         d0Inverse = MathUtils.inverseMatrix(new Array2DRowRealMatrix(dim, dim).subtract(D0));
-        // matrix P D_0^{-1}*D_1
+        // matrix P = -D_0^{-1}*D_1
         P = d0Inverse.multiply(D1);
         limitProbabitlity = MathUtils.limitProbability(P);
+        MathUtils.limitProbability(MathUtils.matrixExp(D0.add(D1)));
         ones = MathUtils.getOnes(dim, 1);
-        logger.info("expection: {}", getExpectation());
+        expectation = MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(d0Inverse).multiply(ones).getEntry(0, 0);
     }
 
     // TODO test
@@ -62,25 +63,18 @@ public class MarkovArrivalProcess implements RealDistribution {
 
         // steady state probability of embedded process
         double lambda = 1 / expectation;
-        RealMatrix ones = MathUtils.getOnes(dim, 1);
-        double top = limitProbabitlity.scalarMultiply(lambda * lambda)
+        double top = MathUtils.vectorToRowMatrix(limitProbabitlity)
                 .multiply(d0Inverse).multiply(P.power(lag))
-                .multiply(d0Inverse).multiply(ones).getEntry(0, 0) - 1;
-        double bottom = limitProbabitlity.scalarMultiply(2 * lambda * lambda)
-                .multiply(d0Inverse).multiply(d0Inverse)
-                .multiply(ones).getEntry(0, 0) - 1;
+                .multiply(d0Inverse).multiply(ones)
+                .getEntry(0, 0) * lambda * lambda - 1;
+        double bottom = MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(d0Inverse).multiply(d0Inverse).multiply(ones)
+                .getEntry(0, 0) * 2 * lambda * lambda - 1;
         return top / bottom;
     }
 
-    public double getExpectation() {
-        if (expectation < 0) {
-            expectation = limitProbabitlity.multiply(d0Inverse).multiply(ones).getEntry(0, 0);
-        }
-        return expectation;
-    }
-
-    public RealMatrix getLimitProbabitlity() {
-        return limitProbabitlity;
+    public RealVector getLimitProbabitlity() {
+        return limitProbabitlity.copy();
     }
 
     @Override
@@ -90,21 +84,26 @@ public class MarkovArrivalProcess implements RealDistribution {
 
     @Override
     public double density(double x) {
-        throw new NotImplementedException();
+        RealMatrix minusD0 = new Array2DRowRealMatrix(dim, dim).subtract(D0);
+        return MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(MathUtils.matrixExp(D0.scalarMultiply(x)))
+                .multiply(minusD0.multiply(ones)).getEntry(0, 0);
     }
 
     @Override
     public double cumulativeProbability(double x) {
-        throw new NotImplementedException();
+        return 1 - MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(MathUtils.matrixExp(D0.scalarMultiply(x)))
+                .multiply(ones).getEntry(0, 0);
     }
 
     public RealMatrix getD0() {
-        return D0;
+        return D0.copy();
     }
 
 
     public RealMatrix getD1() {
-        return D1;
+        return D1.copy();
     }
 
     @Override

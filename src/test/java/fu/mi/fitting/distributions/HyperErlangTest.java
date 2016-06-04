@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class HyperErlangTest {
 
     private static final double delta = 0.0001;
-    private static HyperErlang hErD = new HyperErlang();
+    private static HyperErlang hErD;
     protected Logger logger = LoggerFactory.getLogger(HyperErlangTest.class);
 
     @BeforeClass
@@ -32,10 +32,12 @@ public class HyperErlangTest {
             initial.add(proba);
             sum += proba;
         }
+        List<HyperErlangBranch> branches = Lists.newArrayList();
         for (int i = 0; i < branch; i++) {
-            hErD.addBranch(initial.get(i) / sum,
-                    new Erlang(random.nextInt(4) + 1, random.nextDouble()));
+            branches.add(new HyperErlangBranch(initial.get(i) / sum,
+                    new Erlang(random.nextInt(4) + 1, random.nextDouble())));
         }
+        hErD = new HyperErlang(branches);
     }
 
     @Test

@@ -1,11 +1,11 @@
 import com.google.common.collect.Lists;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jblas.DoubleMatrix;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -38,15 +38,17 @@ public class SimpleTest {
         assertEquals(a.size(), 4);
     }
 
+
     @Test
-    public void eigenDecomposition() {
-        RealMatrix matrix = new Array2DRowRealMatrix(2, 2);
-        matrix.setEntry(0, 0, 0.6);
-        matrix.setEntry(0, 1, 0.4);
-        matrix.setEntry(1, 0, 0.4);
-        matrix.setEntry(1, 1, 0.6);
-        EigenDecomposition decomposition = new EigenDecomposition(matrix);
-        System.out.println(decomposition.getEigenvector(1));
-        System.out.println(matrix.power(100));
+    public void generator() {
+        Random random = new Random();
+        for (int i = 0; i < 1000; i++) {
+            double[][] ents1 = {{random.nextInt(10), random.nextInt(10)}, {random.nextInt(10), random.nextInt(10)}};
+            double[][] ents2 = {{random.nextInt(10), random.nextInt(10)}, {random.nextInt(10), random.nextInt(10)}};
+            RealMatrix matrix1 = new Array2DRowRealMatrix(ents1);
+            RealMatrix matrix2 = new Array2DRowRealMatrix(ents2);
+            assertEquals(matrix1.multiply(matrix2).scalarMultiply(3),
+                    matrix1.scalarMultiply(3).multiply(matrix2));
+        }
     }
 }

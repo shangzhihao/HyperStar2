@@ -1,5 +1,6 @@
 package fu.mi.fitting.sample;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
@@ -32,15 +33,14 @@ import static java.util.stream.Collectors.toList;
 public class SampleCollection {
 
     private static final int PEAK_DETECT_BINS = 200;
-
     /**
      * samples
      */
-    private List<SampleItem> data;
+    private final List<SampleItem> data;
     /**
      * values of samples
      */
-    private List<Double> values;
+    private final List<Double> values;
 
     public SampleCollection(List<SampleItem> data) {
         this.data = data;
@@ -159,8 +159,6 @@ public class SampleCollection {
         double standVar = FastMath.sqrt(StatUtils.variance(xArray))
                 * FastMath.sqrt(StatUtils.variance(yArray));
         return covar / standVar;
-//        PearsonsCorrelation corCalc = new PearsonsCorrelation();
-//        return corCalc.correlation(xArray, yArray);
     }
 
     public List<Double> getPeaks() {
@@ -207,11 +205,15 @@ public class SampleCollection {
     }
 
     public List<Double> getValues() {
-        return values;
+        List<Double> res = Lists.newArrayList();
+        res.addAll(values);
+        return res;
     }
 
     public List<SampleItem> getData() {
-        return data;
+        List<SampleItem> res = Lists.newArrayList();
+        res.addAll(data);
+        return res;
     }
 
     public int size() {

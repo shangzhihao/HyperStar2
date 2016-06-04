@@ -1,7 +1,8 @@
 package fu.mi.fitting.utils;
 
 import org.apache.commons.math3.linear.*;
-import org.apache.commons.math3.util.FastMath;
+import org.jblas.DoubleMatrix;
+import org.jblas.MatrixFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,31 +50,52 @@ public class MathUtils {
         return ones;
     }
 
+    public static RealMatrix vectorToRowMatrix(RealVector vector) {
+        int dim = vector.getDimension();
+        RealMatrix res = new Array2DRowRealMatrix(1, dim);
+        res.setRowVector(0, vector);
+        return res;
+    }
+
+    public static RealMatrix vectorToColMatrix(RealVector vector) {
+        int dim = vector.getDimension();
+        RealMatrix res = new Array2DRowRealMatrix(dim, 1);
+        res.setColumnVector(0, vector);
+        return res;
+    }
 
     /**
      * get steady state probability vector of a markov chain
      * state transition probability matrix
      *
-     * @param trans transition probability matrix
+     * @param matrix transition probability matrix
      * @return steady state probability vector
      */
-    public static RealMatrix limitProbability(RealMatrix trans) {
+    public static RealVector limitProbability(RealMatrix matrix) {
+        RealMatrix trans = matrix.transpose();
+        int row = trans.getRowDimension();
+        int col = trans.getColumnDimension();
+        if (row != col) {
+            throw new IllegalArgumentException("not a square matrix");
+        }
         EigenDecomposition eigenSolver = new EigenDecomposition(trans);
-        RealMatrix diag = eigenSolver.getD();
-        double eigenValue;
-        double delta;
-        int dim = trans.getColumnDimension();
-        for (int i = 0; i < dim; i++) {
-            eigenValue = diag.getEntry(i, i);
-            delta = FastMath.abs(FastMath.abs(eigenValue) - 1);
-            if (delta < DELTA) {
-                RealVector vector = eigenSolver.getEigenvector(i);
-                double scale = Arrays.stream(vector.toArray()).sum();
-                RealMatrix res = new Array2DRowRealMatrix(1, dim);
-                res.setRowVector(0, vector.mapMultiply(1 / scale));
+        RealMatrix V = eigenSolver.getV();
+        double[] real = eigenSolver.getRealEigenvalues();
+        for (int i = 0; i < row; i++) {
+            if (Math.abs(real[i] - 1.0) < DELTA) {
+                RealVector res = V.getColumnVector(i);
+                double scale = Arrays.stream(res.toArray()).sum();
+                res = res.mapMultiply(1.0 / scale);
                 return res;
             }
         }
         throw new IllegalArgumentException("not a markov transition matrix exception");
     }
+
+    public static RealMatrix matrixExp(RealMatrix matrix) {
+        DoubleMatrix doubleMatrix = new DoubleMatrix(matrix.getData());
+        DoubleMatrix res = MatrixFunctions.expm(doubleMatrix);
+        return new Array2DRowRealMatrix(res.toArray2());
+    }
+
 }

@@ -37,13 +37,9 @@ public class MapFitterTest {
         for (int i = 0; i < d0.getRowDimension(); i++) {
             assertEquals(Arrays.stream(d0.add(d1).getRow(i)).sum(), 0, delta);
         }
-        int row0 = d0.getRowDimension();
-        int col0 = d0.getColumnDimension();
-        int row1 = d1.getRowDimension();
-        int col1 = d1.getColumnDimension();
-        assertEquals(row0, row1);
-        assertEquals(col0, col1);
-        assertEquals(col0, row0);
-
+        for (int i = 0; i < 10; i++) {
+            logger.info("lag {} autocorrelation, sample:{}, res:{}",
+                    i, sc.autocorrelation(i), map.autoCorrelation(i));
+        }
     }
 }

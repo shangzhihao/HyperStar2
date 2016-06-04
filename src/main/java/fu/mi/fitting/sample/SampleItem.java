@@ -17,11 +17,11 @@ public class SampleItem implements Clusterable, Comparable {
      * id indicate every sample,
      * we can know which group the sample is in after clustering.
      */
-    public int id;
+    public final int id;
     /**
      * value of sample
      */
-    public double value;
+    public final double value;
     private Set<Integer> ids = Sets.newHashSet();
 
     /**

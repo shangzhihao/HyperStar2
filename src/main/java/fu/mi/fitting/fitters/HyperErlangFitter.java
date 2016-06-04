@@ -122,12 +122,12 @@ public class HyperErlangFitter extends Fitter {
     }
 
     private void branchFit() {
-        HyperErlang dist = new HyperErlang();
+        List<HyperErlangBranch> branches = Lists.newArrayList();
         for (SampleCollection sc : getCluster()) {
-            dist.addBranch(sc.size() / (double) samples.size(),
-                    (Erlang) FitterFactory.getFitterByName(MomErlangFitter.FITTER_NAME, sc).fit());
+            branches.add(new HyperErlangBranch(sc.size() / (double) samples.size(),
+                    (Erlang) FitterFactory.getFitterByName(MomErlangFitter.FITTER_NAME, sc).fit()));
         }
-        fitResult = dist;
+        fitResult = new HyperErlang(branches);
     }
 
     private List<SampleCollection> discreteSamples(RealMatrix relevance) {
@@ -172,7 +172,6 @@ public class HyperErlangFitter extends Fitter {
         List<CentroidCluster<SampleItem>> clusterRes = clusterer.cluster(samples.getData());
         CentroidCluster<SampleItem> cluster;
         SampleCollection sc;
-        HyperErlang res = new HyperErlang();
         // user k-means cluster samples
         for (int i = 0, n = clusterRes.size(); i < n; i++) {
             cluster = clusterRes.get(i);
@@ -181,11 +180,12 @@ public class HyperErlangFitter extends Fitter {
         }
         // fit every group
         double initProbability = 0;
+        List<HyperErlangBranch> branches = Lists.newArrayList();
         for (Fitter<Erlang> fitter : fitters) {
             initProbability = fitter.samples.size() / (double) samples.size();
-            res.addBranch(initProbability, fitter.fit());
+            branches.add(new HyperErlangBranch(initProbability, fitter.fit()));
         }
-        return res;
+        return new HyperErlang(branches);
     }
 
     @Override
