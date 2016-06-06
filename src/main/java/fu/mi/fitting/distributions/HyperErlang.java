@@ -3,9 +3,6 @@ package fu.mi.fitting.distributions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import fu.mi.fitting.utils.MathUtils;
-import org.apache.commons.math3.distribution.RealDistribution;
-import org.apache.commons.math3.exception.NumberIsTooLargeException;
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -22,9 +19,7 @@ import java.util.List;
  * Hyper-Erlang distribution
  * see https://en.wikipedia.org/wiki/Hyper-Erlang_distribution
  */
-public class HyperErlang implements RealDistribution {
-
-
+public class HyperErlang extends AbstractPHDistribution {
     /**
      * branches in hyper-erlang distribution
      */
@@ -54,6 +49,7 @@ public class HyperErlang implements RealDistribution {
         }
         return res;
     }
+
     /**
      * get transmit matrix
      *
@@ -70,6 +66,11 @@ public class HyperErlang implements RealDistribution {
         return res;
     }
 
+    /**
+     * how many phase in this hyper Erlang distribution
+     *
+     * @return count of phase
+     */
     public int getPhase() {
         int res = 0;
         for (HyperErlangBranch branch : branches) {
@@ -78,19 +79,6 @@ public class HyperErlang implements RealDistribution {
         return res;
     }
 
-
-    /**
-     * P(X = v)
-     */
-
-    @Override
-    public double probability(double v) {
-        return 0;
-    }
-
-    /**
-     * PDF
-     */
     @Override
     public double density(double v) {
         double res = 0;
@@ -100,9 +88,6 @@ public class HyperErlang implements RealDistribution {
         return res;
     }
 
-    /**
-     * CDF
-     */
     @Override
     public double cumulativeProbability(double v) {
         BigDecimal res = BigDecimal.ZERO;
@@ -112,23 +97,16 @@ public class HyperErlang implements RealDistribution {
         return 1 - res.doubleValue();
     }
 
-    public double expectation() {
-//        double res = 0;
-//        for(HyperErlangBranch branch:getBranches()){
-//            res += branch.probability*branch.dist.expection();
-//        }
-//        return res;
-
-        double res;
+    @Override
+    protected double calcMoment(int k) {
         RealMatrix d0 = getD0();
-        int dim = d0.getColumnDimension();
-        RealMatrix zeros = new Array2DRowRealMatrix(dim, dim);
-        RealMatrix M = MathUtils.inverseMatrix(zeros.subtract(d0));
-        RealMatrix alphaMatrix = new Array2DRowRealMatrix(1, dim);
-        alphaMatrix.setRowVector(0, getAlpha());
-        RealMatrix ones = MathUtils.getOnes(dim, 1);
-        res = alphaMatrix.multiply(M).multiply(ones).getEntry(0, 0);
-        return res;
+        int dim = d0.getRowDimension();
+        RealMatrix d0Inverse = MathUtils.inverseMatrix(new Array2DRowRealMatrix(dim, dim).subtract(d0));
+        return DoubleMath.factorial(k)
+                * MathUtils.vectorToRowMatrix(getAlpha())
+                .multiply(d0Inverse.power(k))
+                .multiply(MathUtils.getOnes(dim, 1))
+                .getEntry(0, 0);
     }
 
     private BigDecimal cdfBranch(HyperErlangBranch branch, double x) {
@@ -142,71 +120,7 @@ public class HyperErlang implements RealDistribution {
             res = res.add(temp);
         }
         res = res.multiply(BigDecimal.valueOf(branch.probability));
-        return  res;
+        return res;
     }
-
-    /**
-     * P(v < X <= v1)
-     */
-    @Override
-    public double cumulativeProbability(double v, double v1) throws NumberIsTooLargeException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double inverseCumulativeProbability(double v) throws OutOfRangeException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double getNumericalMean() {
-        return 0;
-    }
-
-    @Override
-    public double getNumericalVariance() {
-        return 0;
-    }
-
-    @Override
-    public double getSupportLowerBound() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double getSupportUpperBound() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isSupportLowerBoundInclusive() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isSupportUpperBoundInclusive() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isSupportConnected() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void reseedRandomGenerator(long l) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double sample() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double[] sample(int i) {
-        throw new UnsupportedOperationException();
-    }
-
 }
 

@@ -1,7 +1,6 @@
 package fu.mi.fitting.sample;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -10,7 +9,6 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.util.FastMath;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
@@ -18,8 +16,11 @@ import org.jfree.data.statistics.HistogramType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -41,6 +42,8 @@ public class SampleCollection {
      * values of samples
      */
     private final List<Double> values;
+
+    private final Map<Integer, Optional<Double>> moments = newHashMap();
 
     public SampleCollection(List<SampleItem> data) {
         this.data = data;
@@ -78,7 +81,7 @@ public class SampleCollection {
      * @return mean of samples
      */
     public double getMean() {
-        return StatUtils.mean(Doubles.toArray(values));
+        return getMoment(1);
     }
 
     /**
@@ -119,29 +122,16 @@ public class SampleCollection {
      * @return k-order moment
      */
     public double getMoment(int k) {
-        List<Double> samplesPower = newArrayList();
-        for (SampleItem sample : data) {
-            samplesPower.add(FastMath.pow(sample.value, k));
+        Optional<Double> res = moments.getOrDefault(k, Optional.empty());
+        if (res.isPresent()) {
+            return res.get();
         }
-        double res = StatUtils.mean(Doubles.toArray(samplesPower));
-        return res;
+        double moment = data.stream()
+                .mapToDouble(sample -> FastMath.pow(sample.value, k))
+                .sum() / size();
+        moments.put(k, Optional.of(moment));
+        return moment;
     }
-
-    /**
-     * get n-order moments form begin(include) to end(include)
-     *
-     * @param begin the min order
-     * @param end   the max order
-     * @return moments form begin to end
-     */
-    public List<Double> getMoments(int begin, int end) {
-        List<Double> res = newArrayList();
-        for (int i = begin; i <= end; i++) {
-            res.add(getMoment(i));
-        }
-        return res;
-    }
-
     /**
      * calculate autocorrelation
      *
@@ -149,16 +139,14 @@ public class SampleCollection {
      * @return autocorrelation
      */
     // TODO test
+    // TODO check lag
     public double autocorrelation(int lag) {
+
         List<SampleItem> x1 = data.subList(0, data.size() - lag);
         List<SampleItem> x2 = data.subList(lag, data.size());
-        double[] xArray = new SampleCollection(x1).asDoubleArray();
-        double[] yArray = new SampleCollection(x2).asDoubleArray();
-        Covariance covariance = new Covariance();
-        double covar = covariance.covariance(xArray, yArray);
-        double standVar = FastMath.sqrt(StatUtils.variance(xArray))
-                * FastMath.sqrt(StatUtils.variance(yArray));
-        return covar / standVar;
+        return IntStream.range(0, x1.size())
+                .mapToDouble(i -> x1.get(i).value * x2.get(i).value)
+                .sum() / x1.size();
     }
 
     public List<Double> getPeaks() {
@@ -166,7 +154,7 @@ public class SampleCollection {
         Double min = sortedSamples.get(0);
         Double max = sortedSamples.get(sortedSamples.size() - 1);
         int range = sortedSamples.size() / PEAK_DETECT_BINS;
-        Map<Double, Integer> hist = Maps.newHashMap();
+        Map<Double, Integer> hist = newHashMap();
         double current;
         double x;
         for (Double samle : sortedSamples) {

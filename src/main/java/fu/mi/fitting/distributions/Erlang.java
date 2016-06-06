@@ -5,6 +5,9 @@ import com.google.common.base.Objects;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.util.FastMath;
+
+import java.util.stream.IntStream;
 
 /**
  * erlang distribution with phase parameter and rate parameter
@@ -12,14 +15,15 @@ import org.apache.commons.math3.linear.RealMatrix;
  * rate = mean/var
  * phase = mean*rate
  */
-public class Erlang extends GammaDistribution {
+public class Erlang extends AbstractPHDistribution {
     public final int phase;
     public final double rate;
+    private final GammaDistribution dist;
 
     public Erlang(int phase, double rate) {
-        super(phase, 1 / rate);
         this.phase = phase;
         this.rate = rate;
+        dist = new GammaDistribution(phase, 1 / rate);
     }
 
     public RealMatrix getD0() {
@@ -32,9 +36,24 @@ public class Erlang extends GammaDistribution {
         return res;
     }
 
-    public double expection() {
-        return phase / rate;
+
+    @Override
+    protected double calcMoment(int k) {
+        return IntStream.range(phase, phase + k)
+                .reduce(1, (x1, x2) -> x1 * x2)
+                / FastMath.pow(rate, k);
     }
+
+    @Override
+    public double density(double x) {
+        return dist.density(x);
+    }
+
+    @Override
+    public double cumulativeProbability(double x) {
+        return dist.cumulativeProbability(x);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(phase, rate);

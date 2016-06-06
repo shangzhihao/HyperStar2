@@ -83,6 +83,10 @@ public class SampleController {
         SampleReader sr = new LineSampleReader(inputFile);
         SampleCollection samples = sr.read();
         SamplesParameters.getInstance().setOriginSamples(samples);
+        if (SamplesParameters.getInstance().getLimitedSamples().size() == 0) {
+            mainController.showWarn(Messages.ILLEGAL_SAMPLE_FILE);
+            return;
+        }
         Controllers.getInstance().chartsController.drawChart();
         mainController.setStatus(Messages.NONE_STATUS);
 
@@ -92,7 +96,7 @@ public class SampleController {
         MainController mainController = Controllers.getInstance().mainController;
         mainController.setStatus(Messages.REPLOTING);
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
-        if (sc == null) {
+        if (sc.size() == 0) {
             mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }

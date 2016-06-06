@@ -1,5 +1,6 @@
 package fu.mi.fitting.controllers;
 
+import fu.mi.fitting.distributions.PHDistribution;
 import fu.mi.fitting.fitters.Fitter;
 import fu.mi.fitting.fitters.FitterFactory;
 import fu.mi.fitting.parameters.FitParameters;
@@ -9,7 +10,6 @@ import fu.mi.fitting.sample.SampleCollection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 
 /**
@@ -55,7 +55,7 @@ public class ParameterController {
     private void fitDistribution() {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         Fitter selectedFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
-        RealDistribution res = selectedFitter.fit();
+        PHDistribution res = selectedFitter.fit();
         double start = StatUtils.min(sc.asDoubleArray());
         double end = StatUtils.max(sc.asDoubleArray());
         Controllers.getInstance().chartsController.addPDF(res::density, start, end);

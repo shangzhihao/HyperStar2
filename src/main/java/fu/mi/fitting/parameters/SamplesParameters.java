@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static fu.mi.fitting.utils.CommonUtils.strToDouble;
 
 /**
@@ -48,7 +49,7 @@ public class SamplesParameters {
 
     public SampleCollection getLimitedSamples() {
         if (originSamples == null || originSamples.size() == 0) {
-            return null;
+            return new SampleCollection(newArrayList());
         }
         double percent = size.doubleValue();
         double min = strToDouble(from.getValue(), Double.MIN_VALUE);

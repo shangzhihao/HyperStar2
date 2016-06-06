@@ -3,6 +3,7 @@ package fu.mi.fitting.fitters;
 
 import fu.mi.fitting.distributions.Erlang;
 import fu.mi.fitting.sample.SampleCollection;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * Created by shangzhihao on 3/10/16.
@@ -25,8 +26,8 @@ public abstract class ErlangFitter extends Fitter<Erlang> {
         // ceil of log likelihood
         double ceilllh = 0;
         for (int i = 0, n = samples.size(); i < n; i++) {
-            floorllh += floorRes.logDensity(samples.getValue(i));
-            ceilllh += ceilRes.logDensity(samples.getValue(i));
+            floorllh += FastMath.log(floorRes.density(samples.getValue(i)));
+            ceilllh += FastMath.log(ceilRes.density(samples.getValue(i)));
         }
         return floorllh > ceilllh ? floorRes : ceilRes;
     }

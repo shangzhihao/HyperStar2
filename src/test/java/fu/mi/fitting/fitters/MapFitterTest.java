@@ -40,6 +40,11 @@ public class MapFitterTest {
         for (int i = 0; i < 10; i++) {
             logger.info("lag {} autocorrelation, sample:{}, res:{}",
                     i, sc.autocorrelation(i), map.autoCorrelation(i));
+
+        }
+        for (int i = 0; i < 5; i++) {
+            logger.info("moment {}, samples: {}, fitting: {}",
+                    i, sc.getMoment(i), map.getMoment(i));
         }
     }
 }

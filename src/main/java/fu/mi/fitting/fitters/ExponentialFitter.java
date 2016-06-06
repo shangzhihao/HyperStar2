@@ -1,13 +1,13 @@
 package fu.mi.fitting.fitters;
 
+import fu.mi.fitting.distributions.Exponential;
 import fu.mi.fitting.sample.SampleCollection;
-import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 /**
  * Created by shang on 5/7/2016.
  * fit an exponential distribution
  */
-public class ExponentialFitter extends Fitter<ExponentialDistribution> {
+public class ExponentialFitter extends Fitter<Exponential> {
     public static final String FITTER_NAME = "Exponential";
 
     ExponentialFitter(SampleCollection sc) {
@@ -15,8 +15,8 @@ public class ExponentialFitter extends Fitter<ExponentialDistribution> {
     }
 
     @Override
-    public ExponentialDistribution fit() {
-        return new ExponentialDistribution(samples.getMean());
+    public Exponential fit() {
+        return new Exponential(samples.getMean());
     }
 
     @Override

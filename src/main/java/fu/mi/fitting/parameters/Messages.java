@@ -12,6 +12,7 @@ public class Messages {
     public static final String PERCENT = "%";
     public static final String LOADING = "loading samples";
     public static final String NONE_SAMPLE_WARN = "please load samples first";
+    public static final String ILLEGAL_SAMPLE_FILE = "no samples loaded";
     public static final String NONE_STATUS = "status";
     public static final String DRAW_HISTOGRAM = "drawing histogram";
     public static final String DRAW_CDF = "drawing cdf";
