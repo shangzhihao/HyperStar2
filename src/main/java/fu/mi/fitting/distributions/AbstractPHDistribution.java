@@ -9,9 +9,10 @@ import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Created by shang on 6/6/2016.
+ *
  */
 public abstract class AbstractPHDistribution implements PHDistribution {
-    protected Map<Integer, Optional<Double>> moments = newHashMap();
+    private Map<Integer, Optional<Double>> moments = newHashMap();
 
     @Override
     public double getMoment(int k) {

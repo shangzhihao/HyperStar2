@@ -12,6 +12,8 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.util.FastMath;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,8 @@ public class SampleCollection {
     private final List<Double> values;
 
     private final Map<Integer, Optional<Double>> moments = newHashMap();
+
+    private Logger logger = LoggerFactory.getLogger(SampleCollection.class);
 
     public SampleCollection(List<SampleItem> data) {
         this.data = data;
@@ -141,12 +145,19 @@ public class SampleCollection {
     // TODO test
     // TODO check lag
     public double autocorrelation(int lag) {
-
         List<SampleItem> x1 = data.subList(0, data.size() - lag);
         List<SampleItem> x2 = data.subList(lag, data.size());
-        return IntStream.range(0, x1.size())
+        double mMean = IntStream.range(0, x1.size())
                 .mapToDouble(i -> x1.get(i).value * x2.get(i).value)
                 .sum() / x1.size();
+        double cov = mMean - FastMath.pow(getMean(), 2);
+        logger.debug("mMean: {}, cov: {}, mean: {}, acf:{}",
+                mMean, cov, FastMath.pow(getMean(), 2), cov / getVariance());
+        return cov / getVariance();
+    }
+
+    public double getVariance() {
+        return getMoment(2) - FastMath.pow(getMean(), 2);
     }
 
     public List<Double> getPeaks() {

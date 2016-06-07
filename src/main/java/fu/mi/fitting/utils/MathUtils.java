@@ -6,15 +6,12 @@ import org.jblas.MatrixFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.stream.IntStream;
-
 /**
  * Created by shang on 6/2/2016.
  * some useful math functions
  */
 public class MathUtils {
-    private static final double DELTA = 0.00001;
+    private static final double DELTA = 1E-4;
     static Logger logger = LoggerFactory.getLogger(MathUtils.class);
 
     private MathUtils() {
@@ -33,11 +30,18 @@ public class MathUtils {
             throw new IllegalArgumentException("not a nxn matrix");
         }
         // make unit matrix
-        RealMatrix unitMatrix = new Array2DRowRealMatrix(row, col);
-        IntStream.range(0, row).forEach(i -> unitMatrix.setEntry(i, i, 1));
+        RealMatrix unitMatrix = getUnitMatrix(col);
 
         DecompositionSolver solver = new LUDecomposition(matrix).getSolver();
         return solver.solve(unitMatrix);
+    }
+
+    public static RealMatrix getUnitMatrix(int dim) {
+        RealMatrix res = new Array2DRowRealMatrix(dim, dim);
+        for (int i = 0; i < dim; i++) {
+            res.setEntry(i, i, 1);
+        }
+        return res;
     }
 
     public static RealMatrix getOnes(int rowDim, int colDim) {
@@ -72,24 +76,23 @@ public class MathUtils {
      * @return steady state probability vector
      */
     public static RealVector limitProbability(RealMatrix matrix) {
-        RealMatrix trans = matrix.transpose();
-        int row = trans.getRowDimension();
+        RealMatrix trans = matrix.copy();
         int col = trans.getColumnDimension();
-        if (row != col) {
-            throw new IllegalArgumentException("not a square matrix");
+        int row = trans.getRowDimension();
+        if (col != row) {
+            throw new IllegalArgumentException("not a square matrix.");
         }
-        EigenDecomposition eigenSolver = new EigenDecomposition(trans);
-        RealMatrix V = eigenSolver.getV();
-        double[] real = eigenSolver.getRealEigenvalues();
+        RealMatrix ones = getOnes(row, 1);
+        RealMatrix sum = trans.multiply(ones);
         for (int i = 0; i < row; i++) {
-            if (Math.abs(real[i] - 1.0) < DELTA) {
-                RealVector res = V.getColumnVector(i);
-                double scale = Arrays.stream(res.toArray()).sum();
-                res = res.mapMultiply(1.0 / scale);
-                return res;
+            if (Math.abs(sum.getEntry(i, 0) - 1) > DELTA) {
+                throw new IllegalArgumentException("not a transition matrox.");
             }
         }
-        throw new IllegalArgumentException("not a markov transition matrix exception");
+        for (int i = 0; i < 14; i++) {
+            trans = trans.power(2);
+        }
+        return trans.getRowVector(row - 1);
     }
 
     public static RealMatrix matrixExp(RealMatrix matrix) {

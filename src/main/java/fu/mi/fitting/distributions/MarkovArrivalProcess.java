@@ -6,13 +6,9 @@ import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.util.FastMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Optional;
-
-import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Created by shang on 5/27/2016.
@@ -20,10 +16,6 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 public class MarkovArrivalProcess extends AbstractPHDistribution {
 
-    /**
-     * expectation of distribution
-     */
-    public final double expectation;
     /**
      * dimension of matrix D0 and D1;
      */
@@ -33,7 +25,6 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
      */
     private final RealMatrix D0;
     private final RealMatrix D1;
-    private final Map<Integer, Optional<Double>> moments;
     /**
      * just for computing
      * -D_0^{-1}
@@ -57,9 +48,8 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
     protected Logger logger = LoggerFactory.getLogger(MarkovArrivalProcess.class);
 
     public MarkovArrivalProcess(RealMatrix d0, RealMatrix d1) {
-        D0 = d0;
-        D1 = d1;
-        moments = newHashMap();
+        D0 = d0.copy();
+        D1 = d1.copy();
         dim = D0.getRowDimension();
         // inverse of -d0
         d0Inverse = MathUtils.inverseMatrix(new Array2DRowRealMatrix(dim, dim).subtract(D0));
@@ -68,21 +58,6 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
         limitProbabitlity = MathUtils.limitProbability(P);
         MathUtils.limitProbability(MathUtils.matrixExp(D0.add(D1)));
         ones = MathUtils.getOnes(dim, 1);
-        expectation = MathUtils.vectorToRowMatrix(limitProbabitlity)
-                .multiply(d0Inverse).multiply(ones).getEntry(0, 0);
-    }
-
-    public double getMoment(int k) {
-        Optional<Double> res = moments.getOrDefault(k, Optional.empty());
-        if (res.isPresent()) {
-            return res.get();
-        }
-        double moment = DoubleMath.factorial(k)
-                * MathUtils.vectorToRowMatrix(limitProbabitlity)
-                .multiply(d0Inverse.power(k))
-                .multiply(ones).getEntry(0, 0);
-        moments.put(k, Optional.of(moment));
-        return moment;
     }
 
     @Override
@@ -94,10 +69,21 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
     }
 
     // TODO test
-    public double autoCorrelation(int lag) {
-        return MathUtils.vectorToRowMatrix(limitProbabitlity)
-                .multiply(d0Inverse).multiply(P.power(lag))
+
+    /**
+     * get the kth auto correlation
+     *
+     * @param k order
+     * @return the kth auto correlation
+     */
+    public double autoCorrelation(int k) {
+        double mMean = MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(d0Inverse).multiply(P.power(k))
                 .multiply(d0Inverse).multiply(ones).getEntry(0, 0);
+        double cov = mMean - FastMath.pow(getMean(), 2);
+        logger.debug("mMean: {}, cov: {}, mean: {}, acf:{}",
+                mMean, cov, FastMath.pow(getMean(), 2), cov / getVariance());
+        return cov / (getVariance());
     }
 
     public RealVector getLimitProbabitlity() {

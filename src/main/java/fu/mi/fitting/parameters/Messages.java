@@ -16,9 +16,6 @@ public class Messages {
     public static final String NONE_STATUS = "status";
     public static final String DRAW_HISTOGRAM = "drawing histogram";
     public static final String DRAW_CDF = "drawing cdf";
-    public static final String DRAW = "drawing";
-    public static final String DRAW_PDF = "drawing pdf";
     public static final String PDF_LABEL = "pdf";
-    public static final String AUTO_BRANCH = "auto";
     public static final CharSequence READING_SAMPLES = "reading samples";
 }

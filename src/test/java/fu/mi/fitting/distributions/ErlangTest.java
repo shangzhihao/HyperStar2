@@ -44,7 +44,7 @@ public class ErlangTest {
             RealMatrix actual = pi.multiply(d0invers).multiply(ones);
             assertEquals(1, actual.getColumnDimension(), delta);
             assertEquals(1, actual.getRowDimension(), delta);
-            assertEquals(erlang.expection(), actual.getEntry(0, 0), delta);
+            assertEquals(erlang.getMean(), actual.getEntry(0, 0), delta);
         }
     }
 

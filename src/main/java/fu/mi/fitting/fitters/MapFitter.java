@@ -42,6 +42,13 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         return new MarkovArrivalProcess(d0, d1);
     }
 
+    /**
+     * use cluster to construct D1
+     *
+     * @param d0      D0 of Hyper Erlang Distribution
+     * @param cluster cluster of Hyper Erlang
+     * @return d1 of MAP
+     */
     private RealMatrix makeD1FromCluster(RealMatrix d0, List<SampleCollection> cluster) {
         // beginning and ending position of a branch
         Map<Integer, Integer> clusterBegins = Maps.newHashMap();

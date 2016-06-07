@@ -53,7 +53,7 @@ public class SampleController {
         sampleSizeText.textProperty().bindBidirectional(parameters.getSizeProperty(), new StringConverter<Number>() {
             @Override
             public String toString(Number num) {
-                return String.valueOf(num.intValue()) + "%";
+                return String.valueOf(num.intValue()) + Messages.PERCENT;
             }
 
             @Override

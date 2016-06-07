@@ -59,9 +59,9 @@ public class HyperErlangTest {
     public void expectation() throws Exception {
         double actual = 0;
         for (HyperErlangBranch branch : hErD.getBranches()) {
-            actual += branch.probability * branch.dist.expection();
+            actual += branch.probability * branch.dist.getMean();
         }
-        assertEquals(actual, hErD.expectation(), delta);
+        assertEquals(actual, hErD.getMean(), delta);
     }
 
 }

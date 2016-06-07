@@ -2,7 +2,10 @@ package fu.mi.fitting.distributions;
 
 /**
  * Created by shang on 6/6/2016.
+ * Phase-Type distribution
  */
+// TODO there should be sth about
+// initial probability and transition matrix
 public interface PHDistribution {
     /**
      * @param x the point at which the PDF is evaluated

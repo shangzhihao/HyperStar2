@@ -1,7 +1,6 @@
 package fu.mi.fitting.fitters;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import fu.mi.fitting.distributions.Erlang;
@@ -24,6 +23,8 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.DoubleStream;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Created by shangzhihao on 3/10/16.
  * <p>
@@ -41,7 +42,6 @@ public class HyperErlangFitter extends Fitter {
     private Logger logger = LoggerFactory.getLogger(HyperErlangFitter.class);
     private HyperErlang fitResult = null;
     private double llh = -1;
-
     private List<SampleCollection> cluster;
 
     HyperErlangFitter(SampleCollection sc) {
@@ -93,7 +93,7 @@ public class HyperErlangFitter extends Fitter {
     }
 
     private List<HyperErlangFitter> shuffle(HyperErlang dist, int numOfShuffles) {
-        List<HyperErlangFitter> result = Lists.newArrayList();
+        List<HyperErlangFitter> result = newArrayList();
         List<HyperErlangBranch> branches = dist.getBranches();
         RealMatrix relevance = new Array2DRowRealMatrix(samples.size(), branches.size());
         Map<Integer, Double> sumOfRow = Maps.newHashMap();
@@ -122,7 +122,7 @@ public class HyperErlangFitter extends Fitter {
     }
 
     private void branchFit() {
-        List<HyperErlangBranch> branches = Lists.newArrayList();
+        List<HyperErlangBranch> branches = newArrayList();
         for (SampleCollection sc : getCluster()) {
             branches.add(new HyperErlangBranch(sc.size() / (double) samples.size(),
                     (Erlang) FitterFactory.getFitterByName(MomErlangFitter.FITTER_NAME, sc).fit()));
@@ -131,13 +131,13 @@ public class HyperErlangFitter extends Fitter {
     }
 
     private List<SampleCollection> discreteSamples(RealMatrix relevance) {
-        List<SampleCollection> res = Lists.newArrayList();
+        List<SampleCollection> res = newArrayList();
         Multimap<Integer, SampleItem> clusters = ArrayListMultimap.create();
         for (int i = 0; i < samples.size(); i++) {
             clusters.put(findCluster(i, relevance), samples.getSample(i));
         }
         for (int i = 0; i < relevance.getColumnDimension(); i++) {
-            List<SampleItem> branch = Lists.newArrayList();
+            List<SampleItem> branch = newArrayList();
             branch.addAll(clusters.get(i));
             res.add(new SampleCollection(branch));
         }
@@ -166,7 +166,7 @@ public class HyperErlangFitter extends Fitter {
      * @return fitting result
      */
     private HyperErlang initFit() {
-        List<ErlangFitter> fitters = Lists.newArrayList();
+        List<ErlangFitter> fitters = newArrayList();
         int branch = FitParameters.getInstance().getBranch();
         KMeansPlusPlusClusterer<SampleItem> clusterer = new KMeansPlusPlusClusterer<>(branch);
         List<CentroidCluster<SampleItem>> clusterRes = clusterer.cluster(samples.getData());
@@ -180,7 +180,7 @@ public class HyperErlangFitter extends Fitter {
         }
         // fit every group
         double initProbability = 0;
-        List<HyperErlangBranch> branches = Lists.newArrayList();
+        List<HyperErlangBranch> branches = newArrayList();
         for (Fitter<Erlang> fitter : fitters) {
             initProbability = fitter.samples.size() / (double) samples.size();
             branches.add(new HyperErlangBranch(initProbability, fitter.fit()));
@@ -194,6 +194,8 @@ public class HyperErlangFitter extends Fitter {
     }
 
     List<SampleCollection> getCluster() {
+        List<SampleCollection> res = newArrayList();
+        res.addAll(cluster);
         return cluster;
     }
 
