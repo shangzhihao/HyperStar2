@@ -17,7 +17,7 @@ public abstract class BaseChart {
 
     public abstract JFreeChart getChart(String chartName);
 
-    public void drawLine(XYDataset cdfDataset) {
+    public void addLine(XYDataset cdfDataset) {
         if (chart == null) {
             logger.error("there is no chart.");
             return;

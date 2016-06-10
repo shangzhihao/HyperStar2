@@ -35,6 +35,9 @@ public class ConfigurationController {
     @FXML
     TextField maxMomentText;
     @FXML
+    TextField maxCorText;
+
+    @FXML
     ChoiceBox<String> equalityChoice;
     @FXML
     ChoiceBox<String> emptyChoice;
@@ -54,7 +57,7 @@ public class ConfigurationController {
 
     @FXML
     TextField maxPhaseText;
-    Map<Integer, GridPane> indexToGrid = newHashMap();
+    private Map<Integer, GridPane> indexToGrid = newHashMap();
 
     @FXML
     public void initialize() {
@@ -90,8 +93,9 @@ public class ConfigurationController {
         pdfPointsTxt.textProperty().bindBidirectional(chartsParameters.getPDFProperty());
         binsTxt.textProperty().bindBidirectional(chartsParameters.getBinsProperty());
         maxMomentText.textProperty().bindBidirectional(chartsParameters.getMomentsProperty());
+        maxCorText.textProperty().bindBidirectional(chartsParameters.getCorrelatinProperty());
         // parameters for erlang
-        maxMomentText.textProperty().bindBidirectional(fitParameters.getMaxPhaseProperty());
+        maxPhaseText.textProperty().bindBidirectional(fitParameters.getMaxPhaseProperty());
 
         fitterChoice.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             indexToGrid.values().stream().forEach(grid -> grid.setVisible(false));

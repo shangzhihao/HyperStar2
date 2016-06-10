@@ -15,10 +15,12 @@ public class ChartsParameters {
     private static final int DEFAULT_PDF = 300;
     private static final int DEFAULT_CDF = 300;
     private static final int DEFAULT_MOMENTS = 3;
+    private static final int DEFAULT_CORRELATION = 20;
     private StringProperty bins = new SimpleStringProperty(String.valueOf(DEFAULT_BINS));
     private StringProperty cdf = new SimpleStringProperty(String.valueOf(DEFAULT_CDF));
     private StringProperty pdf = new SimpleStringProperty(String.valueOf(DEFAULT_PDF));
     private StringProperty moments = new SimpleStringProperty(String.valueOf(DEFAULT_MOMENTS));
+    private StringProperty correlations = new SimpleStringProperty(String.valueOf(DEFAULT_CORRELATION));
 
     private ChartsParameters() {
     }
@@ -41,6 +43,14 @@ public class ChartsParameters {
 
     public StringProperty getMomentsProperty() {
         return moments;
+    }
+
+    public StringProperty getCorrelatinProperty() {
+        return correlations;
+    }
+
+    public int getCorPoints() {
+        return strToInt(correlations.get(), DEFAULT_CORRELATION);
     }
 
     public int getBins() {

@@ -1,5 +1,6 @@
 package fu.mi.fitting.controllers;
 
+import fu.mi.fitting.distributions.MarkovArrivalProcess;
 import fu.mi.fitting.distributions.PHDistribution;
 import fu.mi.fitting.fitters.Fitter;
 import fu.mi.fitting.fitters.FitterFactory;
@@ -7,6 +8,7 @@ import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.parameters.Messages;
 import fu.mi.fitting.parameters.SamplesParameters;
 import fu.mi.fitting.sample.SampleCollection;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -43,22 +45,34 @@ public class ParameterController {
             @Override
             public void run() {
                 Controllers.getInstance().mainController.setInputDisable(true);
-                fitDistribution();
+                final PHDistribution res = fitDistribution();
+                Platform.runLater(() -> drawResult(res));
                 Controllers.getInstance().mainController.setInputDisable(false);
             }
         }.start();
     }
 
+    private void drawResult(PHDistribution res) {
+        SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
+        double start = StatUtils.min(sc.asDoubleArray());
+        double end = StatUtils.max(sc.asDoubleArray());
+        ChartsController chartsController = Controllers.getInstance().chartsController;
+        chartsController.addPDF(res::density, start, end);
+        chartsController.addCDF(res::cumulativeProbability, start, end);
+        if (res instanceof MarkovArrivalProcess) {
+            chartsController.drawCorrelation();
+            chartsController.addCorrelation((MarkovArrivalProcess) res);
+            chartsController.chartsPane.getTabs().add(chartsController.corTab);
+        }
+    }
+
     /**
      * fit distribution with selected fitter and parameters
      */
-    private void fitDistribution() {
+    private PHDistribution fitDistribution() {
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         Fitter selectedFitter = FitterFactory.getFitterByName(FitParameters.getInstance().getFitterName(), sc);
-        PHDistribution res = selectedFitter.fit();
-        double start = StatUtils.min(sc.asDoubleArray());
-        double end = StatUtils.max(sc.asDoubleArray());
-        Controllers.getInstance().chartsController.addPDF(res::density, start, end);
-        Controllers.getInstance().chartsController.addCDF(res::cumulativeProbability, start, end);
+        return selectedFitter.fit();
+
     }
 }

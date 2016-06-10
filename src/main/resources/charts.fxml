@@ -6,6 +6,7 @@
 <TabPane xmlns:fx="http://javafx.com/fxml/1"
          tabClosingPolicy="UNAVAILABLE"
          xmlns="http://javafx.com/javafx/8.0.65"
+         fx:id="chartsPane"
          fx:controller="fu.mi.fitting.controllers.ChartsController">
     <Tab fx:id="pdfTab" text="PDF ">
         <AnchorPane fx:id="pdfPane"/>
@@ -13,7 +14,7 @@
     <Tab fx:id="cdfTab" text="CDF">
         <AnchorPane fx:id="cdfPane"/>
     </Tab>
-    <Tab fx:id="momTab" text="Moment">
-        <AnchorPane fx:id="momPane"/>
+    <Tab fx:id="corTab" text="Correlation">
+        <AnchorPane fx:id="corPane"/>
     </Tab>
 </TabPane>
