@@ -59,6 +59,9 @@ public class ParameterController {
         ChartsController chartsController = Controllers.getInstance().chartsController;
         chartsController.addPDF(res::density, start, end);
         chartsController.addCDF(res::cumulativeProbability, start, end);
+        if (chartsController.chartsPane.getTabs().contains(chartsController.corTab)) {
+            chartsController.chartsPane.getTabs().remove(chartsController.corTab);
+        }
         if (res instanceof MarkovArrivalProcess) {
             chartsController.drawCorrelation();
             chartsController.addCorrelation((MarkovArrivalProcess) res);

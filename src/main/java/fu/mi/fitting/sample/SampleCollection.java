@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import fu.mi.fitting.parameters.ChartsParameters;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
-import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.stat.StatUtils;
@@ -15,7 +13,6 @@ import org.jfree.data.statistics.HistogramType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +32,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class SampleCollection {
 
-    private static final int PEAK_DETECT_BINS = 200;
+    private static final int PEAK_DETECT_BINS = 500;
     /**
      * samples
      */
@@ -96,10 +93,9 @@ public class SampleCollection {
     }
 
     /**
-     *
      * @param percent how many percents samples the sub-SampleCollection will contain
-     * @param from min value sample of sub-SampleCollection
-     * @param to max value sample of sub-SampleCollection
+     * @param from    min value sample of sub-SampleCollection
+     * @param to      max value sample of sub-SampleCollection
      * @return sub-SampleCollection
      */
     public SampleCollection subSampleCollection(double percent, double from, double to) {
@@ -136,6 +132,7 @@ public class SampleCollection {
         moments.put(k, Optional.of(moment));
         return moment;
     }
+
     /**
      * calculate autocorrelation
      *
@@ -178,26 +175,22 @@ public class SampleCollection {
                 }
             }
         }
-        double weight = 1.0 / PEAK_DETECT_BINS;
         List<WeightedObservedPoint> points = hist.keySet().stream().map(key -> new WeightedObservedPoint
-                (weight, key, hist.get(key).doubleValue())).collect(toList());
-        double[] curve = PolynomialCurveFitter.create(12).fit(points);
-        PolynomialFunction polynomial = new PolynomialFunction(curve);
-        PolynomialFunction derivative = polynomial.polynomialDerivative();
-        LaguerreSolver solver = new LaguerreSolver();
-        Complex[] roots = solver.solveAllComplex(derivative.getCoefficients(), min, 200);
-        Arrays.stream(roots).forEach(System.out::println);
+                (1, key, hist.get(key).doubleValue())).collect(toList());
+        double[] curve = PolynomialCurveFitter.create(6).fit(points);
+        PolynomialFunction curveFunction = new PolynomialFunction(curve);
+
+        List<Double> values = newArrayList();
         List<Double> res = newArrayList();
-        List<Double> realRoots = Arrays.stream(roots).filter(root -> root.getImaginary() == 0)
-                .map(Complex::getReal).sorted().collect(toList());
-        double tend = derivative.value(realRoots.get(0) - 0.0001);
-        if (tend < 0) {
-            for (int i = 1; i < realRoots.size(); i += 2) {
-                res.add(realRoots.get(i));
+        for (double v = min; v < max; v += 0.5) {
+            values.add(curveFunction.value(v));
+        }
+        for (int i = 1; i < values.size() - 1; i++) {
+            if (values.get(i) <= 0) {
+                continue;
             }
-        } else {
-            for (int i = 0; i < realRoots.size(); i += 2) {
-                res.add(realRoots.get(i));
+            if (values.get(i) > values.get(i + 1) && values.get(i) > values.get(i - 1)) {
+                res.add(values.get(i));
             }
         }
         return res;

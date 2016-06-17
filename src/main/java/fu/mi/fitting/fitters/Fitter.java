@@ -30,7 +30,6 @@ public abstract class Fitter<T extends PHDistribution> {
                     map(value -> FastMath.log(dist.density(value))).
                     reduce((a1, a2) -> a1 + a2);
             llh = res.get();
-
         }
         return llh;
     }

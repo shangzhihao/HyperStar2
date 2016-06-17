@@ -41,7 +41,6 @@ public class HyperErlangFitter extends Fitter {
     public static final String FITTER_NAME = "Hyper-Erlang";
     private Logger logger = LoggerFactory.getLogger(HyperErlangFitter.class);
     private HyperErlang fitResult = null;
-    private double llh = -1;
     private List<SampleCollection> cluster;
 
     HyperErlangFitter(SampleCollection sc) {
@@ -66,7 +65,7 @@ public class HyperErlangFitter extends Fitter {
      */
     private HyperErlangFitter refinement(HyperErlang roughRes) {
         FitParameters fitParameters = FitParameters.getInstance();
-        int maxCandidate = fitParameters.getOptimize();
+
         int reassignment = fitParameters.getReassign();
         int numOfShuffles = fitParameters.getShuffle();
 
@@ -77,19 +76,29 @@ public class HyperErlangFitter extends Fitter {
         for (int i = 0; i < reassignment; i++) {
             logger.info("the {}th reassign of {}, llh: {}.", i, reassignment, results.first().logLikelihood());
             loopRes.clear();
-            int visitedCandidate = 0;
             for (HyperErlangFitter fitter : results) {
-                visitedCandidate++;
-                if (visitedCandidate > maxCandidate) {
-                    break;
-                }
                 resCandidate = shuffle(fitter.fit(), numOfShuffles);
                 logger.debug("log likelihood: {}", fitter.logLikelihood());
                 loopRes.addAll(resCandidate);
             }
             results.addAll(loopRes);
+            cleanRseult(results);
         }
         return results.first();
+    }
+
+    private void cleanRseult(TreeSet<HyperErlangFitter> results) {
+        TreeSet<HyperErlangFitter> bestRes = new TreeSet<>(new HyperErlangComparator());
+        int maxCandidate = FitParameters.getInstance().getOptimize();
+        for (int i = 0; i < maxCandidate && i < results.size(); i++) {
+            if (results.first() != null) {
+                bestRes.add(results.pollFirst());
+            } else {
+                break;
+            }
+        }
+        results.clear();
+        results.addAll(bestRes);
     }
 
     private List<HyperErlangFitter> shuffle(HyperErlang dist, int numOfShuffles) {

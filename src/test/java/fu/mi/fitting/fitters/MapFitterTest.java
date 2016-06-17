@@ -1,10 +1,13 @@
 package fu.mi.fitting.fitters;
 
+import fu.mi.fitting.distributions.Erlang;
+import fu.mi.fitting.distributions.HyperErlang;
+import fu.mi.fitting.distributions.HyperErlangBranch;
 import fu.mi.fitting.distributions.MarkovArrivalProcess;
 import fu.mi.fitting.io.LineSampleReader;
 import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.sample.SampleCollection;
-import fu.mi.fitting.utils.MathUtils;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Created by shang on 5/31/2016.
@@ -26,30 +29,30 @@ public class MapFitterTest {
 
     @BeforeClass
     public static void setup() {
-        FitParameters.getInstance().getBranchProperty().setValue("4");
+        FitParameters.getInstance().getBranchProperty().setValue("2");
         FitParameters.getInstance().getReassignProperty().set("25");
-        sc = new LineSampleReader(new File("E:\\testTraces\\lbl3_50k")).read();
+        sc = new LineSampleReader(new File("E:\\testTraces\\map2")).read();
     }
 
     @Test
     public void fit() throws Exception {
+        List<HyperErlangBranch> branches = newArrayList();
+        branches.add(new HyperErlangBranch(0.6, new Erlang(8, 1.0 / 5)));
+        branches.add(new HyperErlangBranch(0.4, new Erlang(8, 1.0 / 30)));
+        RealMatrix d0 = new HyperErlang(branches).getD0();
+        int dim = d0.getColumnDimension();
+        RealMatrix d1 = new Array2DRowRealMatrix(dim, dim);
+
+        d1.setEntry(7, 0, 2.0 / 25);
+        d1.setEntry(7, 8, 3.0 / 25);
+        d1.setEntry(15, 0, 2.0 / 150);
+        d1.setEntry(15, 8, 3.0 / 150);
+
+        MarkovArrivalProcess map2 = new MarkovArrivalProcess(d0, d1);
+
         MarkovArrivalProcess map = new MapFitter(sc).fit();
-        RealMatrix d0 = map.getD0();
-        RealMatrix d1 = map.getD1();
-        d0.add(d1).multiply(MathUtils.getOnes(d0.getRowDimension(), 1));
-        for (int i = 0; i < d0.getRowDimension(); i++) {
-            assertEquals(Arrays.stream(d0.add(d1).getRow(i)).sum(), 0, delta);
-        }
-        logger.info("samples mean: {}, fitting mean: {}",
-                sc.getMean(), map.getMean());
-        logger.info("samples var: {}, fitting var: {}",
-                sc.getVar(), map.getVariance());
-        for (int i = 1; i <= 10; i++) {
-            logger.info("{}, {}", sc.autocorrelation(i), map.autoCorrelation(i));
-        }
-        for (int i = 1; i < 5; i++) {
-            logger.info("moment {}, samples: {}, fitting: {}",
-                    i, sc.getMoment(i), map.getMoment(i));
+        for (int i = 1; i <= 100; i++) {
+            logger.info("{}, {}, {}", sc.autocorrelation(i), map.autoCorrelation(i), map2.autoCorrelation(i));
         }
     }
 }

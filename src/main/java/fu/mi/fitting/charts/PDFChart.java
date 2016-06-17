@@ -20,6 +20,10 @@ public class PDFChart extends BaseChart {
                 sc.asHistogramDataset(chartName),
                 PlotOrientation.VERTICAL,
                 true, true, true);
+//        XYPlot plot = chart.getXYPlot();
+//        plot.setDomainGridlinesVisible(false);
+//        plot.setRangeGridlinesVisible(false);
+//        plot.setBackgroundPaint(Color.white);
         return chart;
     }
 }
