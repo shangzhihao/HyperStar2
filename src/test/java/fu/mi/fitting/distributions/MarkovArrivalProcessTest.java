@@ -10,27 +10,24 @@ import org.junit.Test;
 public class MarkovArrivalProcessTest {
     @Test
     public void autoCorrelation() throws Exception {
-        double[][] d0Entry = {{-10001, 0}, {0, -101}};
-        double[][] d1Entry = {{-10000, 1}, {1, -100}};
-//        double[][] d0Entry = {{-5, 5, 0},
-//                {1, -2.5, 1},
-//                {0, 0, -1}};
-//        double[][] d1Entry = {{0, 0, 0},
-//                {0.5, 0, 0},
-//                {1, 0, 0}};
-//        double[][] d0Entry = {
-//                {-1.1728, 0, 0},
-//                {0, -3.6435, 0},
-//                {0, 0, -0.03132}};
-//        double[][] d1Entry = {
-//                {1.1311, 0.041664, 0},
-//                {0.14273, 3.4511, 0.049643},
-//                {0.010006, 0, 0.021314}};
+        double[][] d0Entry = {{-9.892,9.892,0.0,0.0,0.0,0.0},
+                {0.0,-9.892,0.0,0.0,0.0,0.0},
+                {0.0,0.0,-1,1,0.0,0.0},
+                {0.0,0.0,0.0,-1,1,0.0},
+                {0.0,0.0,0.0,0.0,-1,1},
+                {0.0,0.0,0.0,0.0,0.0,-1}};
+        double[][] d1Entry = {{0.0,0.0,0.0,0.0,0.0,0.0},
+                {6.92,0.0,2.97,0.0,0.0,0.0},
+                {0.0,0.0,0.0,0.0,0.0,0.0},
+                {0.0,0.0,0.0,0.0,0.0,0.0},
+                {0.0,0.0,0.0,0.0,0.0,0.0},
+                {0.283,0.0,0.717,0.0,0.0,0.0}};
+
         RealMatrix d0 = new Array2DRowRealMatrix(d0Entry);
         RealMatrix d1 = new Array2DRowRealMatrix(d1Entry);
         MarkovArrivalProcess map = new MarkovArrivalProcess(d0, d1);
-        for (int i = 1; i <= 20; i++) {
-            System.out.println(map.autoCorrelation(i));
+        for (int i = 1; i <= 10; i++) {
+            System.out.println(map.autoCorrelation2(i));
         }
     }
 }

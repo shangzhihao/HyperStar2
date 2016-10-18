@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * Created by shang on 5/9/2016.
@@ -87,9 +88,9 @@ public class SampleController {
             mainController.showWarn(Messages.ILLEGAL_SAMPLE_FILE);
             return;
         }
+        Controllers.getInstance().mainController.setFitRes(Optional.empty());
         Controllers.getInstance().chartsController.drawChart();
         mainController.setStatus(Messages.NONE_STATUS);
-
     }
 
     public void rePlot(ActionEvent actionEvent) {

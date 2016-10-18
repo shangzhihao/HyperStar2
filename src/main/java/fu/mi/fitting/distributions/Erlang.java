@@ -70,9 +70,10 @@ public class Erlang extends AbstractPHDistribution {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("phase", phase)
-                .add("rate", rate)
-                .toString();
+        StringBuilder res = new StringBuilder();
+        res.append("Erlang distribution:\n")
+                .append("phase=").append(phase).append('\n')
+                .append("rate=").append(String.format("%.4f", rate));
+        return res.toString();
     }
 }

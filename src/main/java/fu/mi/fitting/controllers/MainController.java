@@ -1,5 +1,6 @@
 package fu.mi.fitting.controllers;
 
+import fu.mi.fitting.distributions.PHDistribution;
 import fu.mi.fitting.parameters.Messages;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
@@ -8,6 +9,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+
+import java.util.Optional;
 
 /**
  * Created by shang on 5/6/2016.
@@ -25,7 +28,7 @@ public class MainController {
     VBox parameters;
 
     private Property<String> status = new SimpleStringProperty(Messages.NONE_STATUS);
-
+    private Optional<PHDistribution> fitRes = Optional.empty();
     @FXML
     public void initialize() {
         Controllers.getInstance().mainController = this;
@@ -50,5 +53,13 @@ public class MainController {
 
     public void setInputDisable(boolean enable) {
         parameters.setDisable(enable);
+    }
+
+    public Optional<PHDistribution> getFitRes() {
+        return fitRes;
+    }
+
+    public void setFitRes(Optional<PHDistribution> fitRes) {
+        this.fitRes = fitRes;
     }
 }

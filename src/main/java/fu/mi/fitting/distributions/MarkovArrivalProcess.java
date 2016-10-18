@@ -1,7 +1,9 @@
 package fu.mi.fitting.distributions;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.math.DoubleMath;
+import fu.mi.fitting.utils.CommonUtils;
 import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -83,7 +85,20 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
         double cov = mMean - FastMath.pow(getMean(), 2);
         logger.debug("mMean: {}, cov: {}, mean: {}, acf:{}",
                 mMean, cov, FastMath.pow(getMean(), 2), cov / getVariance());
-        return cov / (getVariance());
+        System.out.println(cov / getVariance());
+        return cov / getVariance();
+
+    }
+    public double autoCorrelation2(int k){
+        double lambda = 1/MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(d0Inverse).multiply(ones).getEntry(0,0);
+        double top = MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(d0Inverse).multiply(P.power(k))
+                .multiply(d0Inverse).multiply(ones).getEntry(0, 0)*lambda*lambda - 1;
+        double bottom = MathUtils.vectorToRowMatrix(limitProbabitlity)
+                .multiply(d0Inverse).multiply(d0Inverse).multiply(ones)
+                .getEntry(0,0)*lambda*lambda*2 - 1;
+        return top/bottom;
     }
 
     public RealVector getLimitProbabitlity() {
@@ -127,5 +142,14 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
     @Override
     public int hashCode() {
         return Objects.hashCode(D0, D1);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        res.append("Markovian Arrival Process:\n")
+                .append("D0=").append(CommonUtils.matrixToString(D0)).append('\n')
+                .append("D1=").append(CommonUtils.matrixToString(D1));
+        return res.toString();
     }
 }

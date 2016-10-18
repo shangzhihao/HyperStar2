@@ -17,5 +17,7 @@ public class Messages {
     public static final String DRAW_HISTOGRAM = "drawing histogram";
     public static final String DRAW_CDF = "drawing cdf";
     public static final String PDF_LABEL = "pdf";
-    public static final CharSequence READING_SAMPLES = "reading samples";
+    public static final String READING_SAMPLES = "reading samples";
+    public static final String NO_FIT_RESULT = "please fit the distribution first";
+    public static final String WRITE_FILE_ERROR = "failed to save result";
 }

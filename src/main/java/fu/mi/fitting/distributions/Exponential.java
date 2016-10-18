@@ -1,5 +1,6 @@
 package fu.mi.fitting.distributions;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.math.DoubleMath;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.util.FastMath;
@@ -28,5 +29,13 @@ public class Exponential extends AbstractPHDistribution {
     @Override
     public double cumulativeProbability(double x) {
         return dist.cumulativeProbability(x);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        res.append("Exponential distribution:\n")
+                .append("rate=").append(String.format("%.4f", 1/dist.getMean()));
+        return res.toString();
     }
 }

@@ -1,7 +1,9 @@
 package fu.mi.fitting.distributions;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
+import fu.mi.fitting.utils.CommonUtils;
 import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
@@ -121,6 +123,15 @@ public class HyperErlang extends AbstractPHDistribution {
         }
         res = res.multiply(BigDecimal.valueOf(branch.probability));
         return res;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        res.append("Hyper Erlang distribution:\n")
+                .append("alpha=").append(CommonUtils.vectorToString(getAlpha())).append('\n')
+                .append("Q=").append(CommonUtils.matrixToString(getD0()));
+        return res.toString();
     }
 }
 

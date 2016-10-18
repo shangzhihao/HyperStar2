@@ -30,23 +30,23 @@ public class MapFitterTest {
     @BeforeClass
     public static void setup() {
         FitParameters.getInstance().getBranchProperty().setValue("2");
-        FitParameters.getInstance().getReassignProperty().set("25");
-        sc = new LineSampleReader(new File("E:\\testTraces\\map2")).read();
+        FitParameters.getInstance().getReassignProperty().set("30");
+        sc = new LineSampleReader(new File("E:\\testTraces\\map5")).read();
     }
 
     @Test
     public void fit() throws Exception {
         List<HyperErlangBranch> branches = newArrayList();
-        branches.add(new HyperErlangBranch(0.6, new Erlang(8, 1.0 / 5)));
-        branches.add(new HyperErlangBranch(0.4, new Erlang(8, 1.0 / 30)));
+        branches.add(new HyperErlangBranch(0.5714, new Erlang(8, 1.0 / 5)));
+        branches.add(new HyperErlangBranch(0.4286, new Erlang(8, 1.0 / 30)));
         RealMatrix d0 = new HyperErlang(branches).getD0();
         int dim = d0.getColumnDimension();
         RealMatrix d1 = new Array2DRowRealMatrix(dim, dim);
 
-        d1.setEntry(7, 0, 2.0 / 25);
-        d1.setEntry(7, 8, 3.0 / 25);
-        d1.setEntry(15, 0, 2.0 / 150);
-        d1.setEntry(15, 8, 3.0 / 150);
+        d1.setEntry(7, 0, 0.4 / 5);
+        d1.setEntry(7, 8, 0.6 / 5);
+        d1.setEntry(15, 0, 0.8 / 30);
+        d1.setEntry(15, 8, 0.2 / 30);
 
         MarkovArrivalProcess map2 = new MarkovArrivalProcess(d0, d1);
 

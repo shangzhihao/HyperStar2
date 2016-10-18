@@ -1,5 +1,7 @@
 package fu.mi.fitting.controllers;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import fu.mi.fitting.distributions.MarkovArrivalProcess;
 import fu.mi.fitting.distributions.PHDistribution;
 import fu.mi.fitting.fitters.Fitter;
@@ -12,7 +14,12 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.stage.FileChooser;
 import org.apache.commons.math3.stat.StatUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Created by shang on 5/6/2016.
@@ -31,11 +38,36 @@ public class ParameterController {
     }
 
     /**
+     * executed when export button is clicked
+     *
+     * @param actionEvent click event
+     */
+    public void exportBtnAction(ActionEvent actionEvent) {
+        MainController mainController = Controllers.getInstance().mainController;
+        Optional<PHDistribution> fitRes = mainController.getFitRes();
+        if (fitRes.isPresent()) {
+            FileChooser fileChooser = new FileChooser();
+            File outputFile = fileChooser.showSaveDialog(Controllers.getInstance().stage);
+            if(outputFile == null){
+                return;
+            }
+            try {
+                Files.write(fitRes.get().toString(), outputFile, Charsets.UTF_8);
+            } catch (IOException e) {
+                mainController.showWarn(Messages.WRITE_FILE_ERROR);
+            }
+        } else {
+            mainController.showWarn(Messages.NO_FIT_RESULT);
+        }
+    }
+
+    /**
      * executed when fit button is clicked
      *
      * @param actionEvent click event
      */
     public void fitBtnAction(ActionEvent actionEvent) {
+        Controllers.getInstance().mainController.setFitRes(Optional.empty());
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null || sc.size() == 0) {
             Controllers.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
@@ -47,6 +79,7 @@ public class ParameterController {
                 Controllers.getInstance().mainController.setInputDisable(true);
                 final PHDistribution res = fitDistribution();
                 Platform.runLater(() -> drawResult(res));
+                Controllers.getInstance().mainController.setFitRes(Optional.of(res));
                 Controllers.getInstance().mainController.setInputDisable(false);
             }
         }.start();
