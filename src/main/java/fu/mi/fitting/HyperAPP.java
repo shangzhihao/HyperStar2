@@ -22,7 +22,7 @@ public class HyperAPP extends Application {
     public void start(Stage primaryStage) throws IOException {
         Controllers.getInstance().stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
-        primaryStage.setTitle("HyperStar2");
+        primaryStage.setTitle("HyperStarC");
         primaryStage.setScene(new Scene(root, 1000, 500));
         primaryStage.show();
     }

@@ -1,6 +1,7 @@
 package fu.mi.fitting.utils;
 
 import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.util.FastMath;
 import org.jblas.DoubleMatrix;
 import org.jblas.MatrixFunctions;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class MathUtils {
         RealMatrix sum = trans.multiply(ones);
         for (int i = 0; i < row; i++) {
             if (Math.abs(sum.getEntry(i, 0) - 1) > DELTA) {
-                throw new IllegalArgumentException("not a transition matrox.");
+                throw new IllegalArgumentException("not a transition matrix.");
             }
         }
         for (int i = 0; i < 14; i++) {
@@ -99,6 +100,38 @@ public class MathUtils {
         DoubleMatrix doubleMatrix = new DoubleMatrix(matrix.getData());
         DoubleMatrix res = MatrixFunctions.expm(doubleMatrix);
         return new Array2DRowRealMatrix(res.toArray2());
+    }
+
+    public static RealMatrix matrixElemProduct(RealMatrix a, RealMatrix b){
+        // TODO use exception
+        assert a.getColumnDimension() == b.getColumnDimension();
+        assert a.getRowDimension() == b.getRowDimension();
+        RealMatrix res = new Array2DRowRealMatrix(a.getRowDimension(), a.getColumnDimension());
+        for(int i=0;i<a.getRowDimension();i++){
+            for(int j=0;j<a.getColumnDimension();j++){
+                res.setEntry(i, j, a.getEntry(i,j)*b.getEntry(i,j));
+            }
+        }
+        return res;
+    }
+
+    public static double matrixElemSum(RealMatrix m){
+        double res = 0;
+        for(int i=0;i<m.getRowDimension();i++){
+            for(int j=0;j<m.getColumnDimension();j++){
+                res += m.getEntry(i,j);
+            }
+        }
+        return  res;
+    }
+    public static RealMatrix randomMatrix(int row, int col){
+        RealMatrix res = new Array2DRowRealMatrix(row, col);
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                res.setEntry(i, j, FastMath.random());
+            }
+        }
+        return res;
     }
 
 }

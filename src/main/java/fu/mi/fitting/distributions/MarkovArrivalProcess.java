@@ -85,7 +85,6 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
         double cov = mMean - FastMath.pow(getMean(), 2);
         logger.debug("mMean: {}, cov: {}, mean: {}, acf:{}",
                 mMean, cov, FastMath.pow(getMean(), 2), cov / getVariance());
-        System.out.println(cov / getVariance());
         return cov / getVariance();
 
     }
