@@ -18,7 +18,7 @@ public class FitParameters {
     private static final FitParameters INSTANCE = new FitParameters();
     // default branch, the fitter will calculate branch
     // branch of Hyper-Erlang distribution
-    private static final int defaultBranch = 6;
+    private static final int defaultBranch = 3;
     private static final int DEFAULT_REASSIGN = 20;
     private static final int DEFAULT_OPTIMIZE = 10;
     private static final int DEFAULT_SHUFFLE = 2;

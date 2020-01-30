@@ -8,6 +8,7 @@ import fu.mi.fitting.parameters.ChartsParameters;
 import fu.mi.fitting.parameters.FitParameters;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -58,6 +59,11 @@ public class ConfigurationController {
     @FXML
     TextField maxPhaseText;
     private Map<Integer, GridPane> indexToGrid = newHashMap();
+
+    @FXML
+    public CheckBox pso;
+
+
 
     @FXML
     public void initialize() {
