@@ -1,27 +1,38 @@
 # HyperStar2
 
-HyperStar2 fits a time series into a phase-type distribution or a Markov arrival process.
-The original paper is [HyperStar2](https://doi.org/10.1145/3030207.3030243).
+## Functionality
 
-## Build Requirements
+HyperStar2 is a JavaFX desktop tool for fitting time-series interval samples to phase-type models.
 
-- JDK 25 (LTS)
-- Gradle wrapper 9.3.1 (included)
+- Load samples from a text file, one numeric value per line.
+- Limit fitting data by:
+  - percentage of samples (`Size` slider),
+  - value range (`from` / `to`).
+- Plot sample-driven charts:
+  - `PDF` tab: histogram of samples,
+  - `CDF` tab: empirical cumulative distribution,
+  - `Correlation` tab: empirical autocorrelation (shown when MAP fitting is used).
+- Fit supported models from the `Configuration -> fitting` tab:
+  - `Exponential`,
+  - `Erlang` (moment-based),
+  - `Hyper-Erlang` (k-means initialization + iterative reassignment/shuffle refinement),
+  - `MarkovArrivalProcess` (MAP; built from Hyper-Erlang structure, with optional PSO for D1 optimization).
+- Overlay fitted curves on charts after `Fit`:
+  - fitted PDF over histogram,
+  - fitted CDF over empirical CDF,
+  - fitted autocorrelation over empirical autocorrelation for MAP.
+- Interact with PDF chart:
+  - left-click to add peak markers.
+- Export current fit result (`alpha/Q` or `D0/D1`) to a text file via `Export`.
 
-## Build and Test
+Paper: [HyperStar2](https://doi.org/10.1145/3030207.3030243)
 
-```bash
-./gradlew clean test
-```
+## GUI
+
+![HyperStar2 GUI](gui.png)
 
 ## Run
 
 ```bash
 ./gradlew run
 ```
-
-## Notes
-
-- Vendored `org/jfree/chart/fx` sources were removed. The project now depends on `org.jfree:org.jfree.chart.fx:2.0.2`.
-- Matrix exponential logic now uses a pure Java implementation in `MathUtils` (no `jblas` native dependency).
-- A Python reimplementation is available at [HyperStarC](https://github.com/shangzhihao/HyperStarC).
