@@ -1,7 +1,6 @@
 import com.google.common.collect.Lists;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.jblas.DoubleMatrix;
 import org.junit.Test;
 
 import java.util.List;
@@ -22,8 +21,8 @@ public class SimpleTest {
         cMatrix.setEntry(0, 1, 2);
         cMatrix.setEntry(1, 0, 3);
         cMatrix.setEntry(1, 1, 4);
-        DoubleMatrix jMatrix = new DoubleMatrix(cMatrix.getData());
-        assertArrayEquals(cMatrix.getData(), jMatrix.toArray2());
+        RealMatrix copied = new Array2DRowRealMatrix(cMatrix.getData());
+        assertArrayEquals(cMatrix.getData(), copied.getData());
     }
 
     @Test

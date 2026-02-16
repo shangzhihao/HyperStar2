@@ -23,5 +23,5 @@ The original paper is [HyperStar2](https://doi.org/10.1145/3030207.3030243).
 ## Notes
 
 - Vendored `org/jfree/chart/fx` sources were removed. The project now depends on `org.jfree:org.jfree.chart.fx:2.0.2`.
-- On macOS arm64 with Java 25, `jblas` native linkage may fail in parts of the test suite (`UnsatisfiedLinkError`).
+- Matrix exponential logic now uses a pure Java implementation in `MathUtils` (no `jblas` native dependency).
 - A Python reimplementation is available at [HyperStarC](https://github.com/shangzhihao/HyperStarC).

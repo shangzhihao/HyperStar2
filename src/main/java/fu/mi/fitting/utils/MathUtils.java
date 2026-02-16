@@ -2,8 +2,6 @@ package fu.mi.fitting.utils;
 
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.util.FastMath;
-import org.jblas.DoubleMatrix;
-import org.jblas.MatrixFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +11,13 @@ import org.slf4j.LoggerFactory;
  */
 public class MathUtils {
     private static final double DELTA = 1E-4;
+    private static final double THETA_13 = 5.371920351148152;
+    private static final double[] PADE_13 = {
+            64764752532480000.0, 32382376266240000.0, 7771770303897600.0,
+            1187353796428800.0, 129060195264000.0, 10559470521600.0,
+            670442572800.0, 33522128640.0, 1323241920.0, 40840800.0,
+            960960.0, 16380.0, 182.0, 1.0
+    };
     static Logger logger = LoggerFactory.getLogger(MathUtils.class);
 
     private MathUtils() {
@@ -97,9 +102,53 @@ public class MathUtils {
     }
 
     public static RealMatrix matrixExp(RealMatrix matrix) {
-        DoubleMatrix doubleMatrix = new DoubleMatrix(matrix.getData());
-        DoubleMatrix res = MatrixFunctions.expm(doubleMatrix);
-        return new Array2DRowRealMatrix(res.toArray2());
+        int row = matrix.getRowDimension();
+        int col = matrix.getColumnDimension();
+        if (row != col) {
+            throw new IllegalArgumentException("not a square matrix.");
+        }
+
+        if (row == 0) {
+            return matrix.copy();
+        }
+
+        double norm = matrix.getNorm();
+        int s = 0;
+        if (norm > THETA_13) {
+            s = (int) FastMath.ceil(FastMath.log(norm / THETA_13) / FastMath.log(2.0));
+        }
+
+        RealMatrix a = matrix.scalarMultiply(1.0 / FastMath.pow(2.0, s));
+        RealMatrix identity = getUnitMatrix(row);
+        RealMatrix a2 = a.multiply(a);
+        RealMatrix a4 = a2.multiply(a2);
+        RealMatrix a6 = a4.multiply(a2);
+
+        RealMatrix uInner = a6.multiply(a6.scalarMultiply(PADE_13[13])
+                        .add(a4.scalarMultiply(PADE_13[11]))
+                        .add(a2.scalarMultiply(PADE_13[9])))
+                .add(a6.scalarMultiply(PADE_13[7]))
+                .add(a4.scalarMultiply(PADE_13[5]))
+                .add(a2.scalarMultiply(PADE_13[3]))
+                .add(identity.scalarMultiply(PADE_13[1]));
+        RealMatrix u = a.multiply(uInner);
+
+        RealMatrix v = a6.multiply(a6.scalarMultiply(PADE_13[12])
+                        .add(a4.scalarMultiply(PADE_13[10]))
+                        .add(a2.scalarMultiply(PADE_13[8])))
+                .add(a6.scalarMultiply(PADE_13[6]))
+                .add(a4.scalarMultiply(PADE_13[4]))
+                .add(a2.scalarMultiply(PADE_13[2]))
+                .add(identity.scalarMultiply(PADE_13[0]));
+
+        RealMatrix p = v.add(u);
+        RealMatrix q = v.subtract(u);
+        RealMatrix result = new LUDecomposition(q).getSolver().solve(p);
+
+        for (int i = 0; i < s; i++) {
+            result = result.multiply(result);
+        }
+        return result;
     }
 
     public static RealMatrix matrixElemProduct(RealMatrix a, RealMatrix b){
