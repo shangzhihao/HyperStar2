@@ -3,8 +3,6 @@ package fu.mi.fitting.distributions;
 import fu.mi.fitting.utils.MathUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.jblas.DoubleMatrix;
-import org.jblas.MatrixFunctions;
 import org.junit.Test;
 
 import java.util.Random;
@@ -57,8 +55,7 @@ public class ErlangTest {
         alpha.setEntry(0, 0, 1);
 
         // mid = e^(x*D0)
-        DoubleMatrix expi = MatrixFunctions.expm(new DoubleMatrix(D0.getData()));
-        Array2DRowRealMatrix mid = new Array2DRowRealMatrix(expi.toArray2());
+        Array2DRowRealMatrix mid = new Array2DRowRealMatrix(MathUtils.matrixExp(D0).getData());
 
         RealMatrix d1 = new Array2DRowRealMatrix(dimnsion, 1);
         d1.setEntry(dimnsion - 1, 0, erlang.rate);
