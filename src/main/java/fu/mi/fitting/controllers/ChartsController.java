@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
 import org.jfree.data.function.Function2D;
-import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.general.DatasetUtils;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -89,13 +89,13 @@ public class ChartsController {
     }
 
     void addPDF(Function2D pdf, double start, double end) {
-        XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(pdf, start, end,
+        XYDataset pdfDataset = DatasetUtils.sampleFunction2D(pdf, start, end,
                 chartsParameters.getPDFPoints(), Messages.PDF_LABEL);
         pdfChart.addLine(pdfDataset);
     }
 
     void addCDF(Function2D cdf, double start, double end) {
-        XYDataset pdfDataset = DatasetUtilities.sampleFunction2D(cdf, start, end,
+        XYDataset pdfDataset = DatasetUtils.sampleFunction2D(cdf, start, end,
                 chartsParameters.getCDFPoints(), Messages.PDF_LABEL);
         cdfChart.addLine(pdfDataset);
     }

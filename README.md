@@ -1,5 +1,27 @@
-This tool fits a time series into a phase-type distribution or an Markov arrival process. Here is the paper [HyperStart2](https://doi.org/10.1145/3030207.3030243) describing how it works.
+# HyperStar2
 
-This repository is deprecated. It uses java8 and gradle 2.9. You may need some effort to get these codes running.
+HyperStar2 fits a time series into a phase-type distribution or a Markov arrival process.
+The original paper is [HyperStar2](https://doi.org/10.1145/3030207.3030243).
 
-I reimplement this in Python. You can find the new repository [here](https://github.com/shangzhihao/HyperStarC).
+## Build Requirements
+
+- JDK 25 (LTS)
+- Gradle wrapper 9.3.1 (included)
+
+## Build and Test
+
+```bash
+./gradlew clean test
+```
+
+## Run
+
+```bash
+./gradlew run
+```
+
+## Notes
+
+- Vendored `org/jfree/chart/fx` sources were removed. The project now depends on `org.jfree:org.jfree.chart.fx:2.0.2`.
+- On macOS arm64 with Java 25, `jblas` native linkage may fail in parts of the test suite (`UnsatisfiedLinkError`).
+- A Python reimplementation is available at [HyperStarC](https://github.com/shangzhihao/HyperStarC).
