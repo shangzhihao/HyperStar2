@@ -36,3 +36,7 @@ Paper: [HyperStar2](https://doi.org/10.1145/3030207.3030243)
 ```bash
 ./gradlew run
 ```
+
+```powershell
+.\gradlew.bat run
+```

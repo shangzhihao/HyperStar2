@@ -1,2 +1,9 @@
 .gradle/
 build/
+.idea/
+*.iml
+out/
+bin/
+target/
+.DS_Store
+Thumbs.db
