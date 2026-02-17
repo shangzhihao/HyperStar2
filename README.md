@@ -31,6 +31,16 @@ Paper: [HyperStar2](https://doi.org/10.1145/3030207.3030243)
 
 ![HyperStar2 GUI](gui.png)
 
+## Sample Data
+
+The repository includes user-facing example datasets in `samples/`:
+
+- `samples/exp_samples.txt`
+- `samples/gamma_samples.txt`
+- `samples/her.txt`
+
+To try them, run the app and load any file through the sample import/open flow (one numeric value per line).
+
 ## Run
 
 ```bash
