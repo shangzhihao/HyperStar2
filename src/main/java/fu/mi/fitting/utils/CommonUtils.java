@@ -23,7 +23,7 @@ public class CommonUtils {
     public static double strToDouble(final String str, final double defaultValue) {
         double res = defaultValue;
         try {
-            res = Integer.parseInt(str);
+            res = Double.parseDouble(str);
         } catch (Exception ignored) {
         }
         return res;

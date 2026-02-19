@@ -159,24 +159,34 @@ public class SampleCollection {
 
     public List<Double> getPeaks() {
         List<Double> sortedSamples = asDoubleList().stream().sorted().collect(toList());
+        if (sortedSamples.isEmpty()) {
+            return newArrayList();
+        }
         Double min = sortedSamples.get(0);
         Double max = sortedSamples.get(sortedSamples.size() - 1);
-        int range = sortedSamples.size() / PEAK_DETECT_BINS;
+        if (max <= min) {
+            return newArrayList();
+        }
+        double range = (max - min) / PEAK_DETECT_BINS;
+        if (range <= 0) {
+            return newArrayList();
+        }
         Map<Double, Integer> hist = newHashMap();
-        double current;
+        int bin;
         double x;
-        for (Double samle : sortedSamples) {
-            current = min;
-            while (current < max) {
-                current += range;
-                if (samle < current) {
-                    x = current - (range / 2);
-                    hist.put(x, hist.getOrDefault(x, 0) + 1);
-                }
+        for (Double sample : sortedSamples) {
+            bin = (int) FastMath.floor((sample - min) / range);
+            if (bin >= PEAK_DETECT_BINS) {
+                bin = PEAK_DETECT_BINS - 1;
             }
+            x = min + (bin + 0.5) * range;
+            hist.put(x, hist.getOrDefault(x, 0) + 1);
         }
         List<WeightedObservedPoint> points = hist.keySet().stream().map(key -> new WeightedObservedPoint
                 (1, key, hist.get(key).doubleValue())).collect(toList());
+        if (points.size() < 7) {
+            return newArrayList();
+        }
         double[] curve = PolynomialCurveFitter.create(6).fit(points);
         PolynomialFunction curveFunction = new PolynomialFunction(curve);
 
