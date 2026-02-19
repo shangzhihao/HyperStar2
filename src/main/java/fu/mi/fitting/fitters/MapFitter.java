@@ -43,7 +43,9 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         Map<Integer, Integer> tails = getClusterTails();
         PSO pso = new PSO(d0, cs, heads, tails, samples);
         RealMatrix d1;
-        boolean usePSO = Controllers.getInstance().confController.pso.isSelected();
+        boolean usePSO = Controllers.getInstance().confController != null
+                && Controllers.getInstance().confController.pso != null
+                && Controllers.getInstance().confController.pso.isSelected();
         if(usePSO){
             System.out.println("use pso to optimize D1");
             d1 = pso.optimize();
@@ -176,4 +178,3 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
     }
 
 }
-

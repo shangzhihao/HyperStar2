@@ -58,7 +58,6 @@ public class MarkovArrivalProcess extends AbstractPHDistribution {
         // matrix P = -D_0^{-1}*D_1
         P = d0Inverse.multiply(D1);
         limitProbabitlity = MathUtils.limitProbability(P);
-        MathUtils.limitProbability(MathUtils.matrixExp(D0.add(D1)));
         ones = MathUtils.getOnes(dim, 1);
     }
 

@@ -31,7 +31,7 @@ public class MapFitterTest {
     public static void setup() {
         FitParameters.getInstance().getBranchProperty().setValue("2");
         FitParameters.getInstance().getReassignProperty().set("30");
-        sc = new LineSampleReader(new File("E:\\testTraces\\map5")).read();
+        sc = new LineSampleReader(new File("samples/her.txt")).read();
     }
 
     @Test

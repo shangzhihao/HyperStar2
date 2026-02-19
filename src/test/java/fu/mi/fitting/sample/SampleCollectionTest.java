@@ -15,7 +15,7 @@ public class SampleCollectionTest {
 
     @BeforeClass
     public static void setup() {
-        sc = new LineSampleReader(new File("E:\\testTraces\\map1")).read();
+        sc = new LineSampleReader(new File("samples/exp_samples.txt")).read();
     }
 
     @Test

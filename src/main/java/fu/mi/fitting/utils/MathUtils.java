@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  * some useful math functions
  */
 public class MathUtils {
-    private static final double DELTA = 1E-4;
+    private static final double DELTA = 1E-3;
     private static final double THETA_13 = 5.371920351148152;
     private static final double[] PADE_13 = {
             64764752532480000.0, 32382376266240000.0, 7771770303897600.0,

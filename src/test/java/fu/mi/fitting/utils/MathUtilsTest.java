@@ -77,7 +77,7 @@ public class MathUtilsTest {
             RealMatrix matrix = transMatrix();
             int dim = matrix.getColumnDimension();
             RealVector limitProbability = MathUtils.limitProbability(matrix);
-            RealVector expected = matrix.operate(limitProbability);
+            RealVector expected = matrix.preMultiply(limitProbability);
             assertEquals(limitProbability.getDimension(), dim);
             for (int j = 0; j < dim; j++) {
                 assertEquals(expected.getEntry(j),
