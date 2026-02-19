@@ -1,10 +1,10 @@
 package fu.mi.fitting.fitters;
 
 import com.google.common.collect.Maps;
-import fu.mi.fitting.controllers.Controllers;
 import fu.mi.fitting.distributions.HyperErlang;
 import fu.mi.fitting.distributions.HyperErlangBranch;
 import fu.mi.fitting.distributions.MarkovArrivalProcess;
+import fu.mi.fitting.parameters.FitParameters;
 import fu.mi.fitting.pso.PSO;
 import fu.mi.fitting.sample.SampleCollection;
 import fu.mi.fitting.sample.SampleItem;
@@ -43,9 +43,7 @@ public class MapFitter extends Fitter<MarkovArrivalProcess> {
         Map<Integer, Integer> tails = getClusterTails();
         PSO pso = new PSO(d0, cs, heads, tails, samples);
         RealMatrix d1;
-        boolean usePSO = Controllers.getInstance().confController != null
-                && Controllers.getInstance().confController.pso != null
-                && Controllers.getInstance().confController.pso.isSelected();
+        boolean usePSO = FitParameters.getInstance().isUsePSO();
         if(usePSO){
             System.out.println("use pso to optimize D1");
             d1 = pso.optimize();

@@ -67,7 +67,7 @@ public class PSO {
     private Particle gBest(){
         List<Particle> particles = lBest();
         int res = 0;
-        double best = -1;
+        double best = Double.MAX_VALUE;
         double fittness = Double.MAX_VALUE;
         for (int i = 0; i < particles.size(); i++) {
             fittness = particles.get(i).getFittness();

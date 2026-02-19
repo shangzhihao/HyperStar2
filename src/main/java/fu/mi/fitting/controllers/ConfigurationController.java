@@ -102,6 +102,7 @@ public class ConfigurationController {
         maxCorText.textProperty().bindBidirectional(chartsParameters.getCorrelatinProperty());
         // parameters for erlang
         maxPhaseText.textProperty().bindBidirectional(fitParameters.getMaxPhaseProperty());
+        pso.selectedProperty().bindBidirectional(fitParameters.getUsePSOProperty());
 
         fitterChoice.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             indexToGrid.values().stream().forEach(grid -> grid.setVisible(false));

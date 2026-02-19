@@ -140,8 +140,10 @@ public class SampleCollection {
      * @return autocorrelation
      */
     // TODO test
-    // TODO check lag
     public double autocorrelation(int lag) {
+        if (lag < 1 || lag >= data.size()) {
+            throw new IllegalArgumentException("lag must be in [1, sampleSize-1]");
+        }
         List<SampleItem> x1 = data.subList(0, data.size() - lag);
         List<SampleItem> x2 = data.subList(lag, data.size());
         double mMean = IntStream.range(0, x1.size())

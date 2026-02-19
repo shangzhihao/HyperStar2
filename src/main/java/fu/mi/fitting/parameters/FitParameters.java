@@ -3,6 +3,8 @@ package fu.mi.fitting.parameters;
 import com.google.common.collect.Lists;
 import fu.mi.fitting.fitters.HyperErlangFitter;
 import fu.mi.fitting.fitters.MomErlangFitter;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -34,6 +36,7 @@ public class FitParameters {
     private StringProperty optimize = new SimpleStringProperty(String.valueOf(DEFAULT_OPTIMIZE));
     private StringProperty shuffle = new SimpleStringProperty(String.valueOf(DEFAULT_SHUFFLE));
     private StringProperty maxPhase = new SimpleStringProperty(String.valueOf(DEFAULT_MAX_PAHSE));
+    private BooleanProperty usePSO = new SimpleBooleanProperty(false);
     private FitParameters() {
     }
 
@@ -85,6 +88,14 @@ public class FitParameters {
 
     public int getKMeans() {
         return strToInt(kMeans.get(), DEFAULT_K_MEANS);
+    }
+
+    public BooleanProperty getUsePSOProperty() {
+        return usePSO;
+    }
+
+    public boolean isUsePSO() {
+        return usePSO.get();
     }
 
     public void addPeak(double position) {

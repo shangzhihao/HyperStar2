@@ -19,7 +19,8 @@ public class CorChart extends BaseChart {
         final XYSeriesCollection dataset = new XYSeriesCollection();
         XYSeries corSeries = new XYSeries("Samples Correlation");
         int point = ChartsParameters.getInstance().getCorPoints();
-        for (int i = 1; i <= point; i++) {
+        int maxLag = Math.min(point, sc.size() - 1);
+        for (int i = 1; i <= maxLag; i++) {
             corSeries.add(i, sc.autocorrelation(i));
         }
         dataset.addSeries(corSeries);

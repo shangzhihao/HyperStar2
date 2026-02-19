@@ -67,22 +67,31 @@ public class ParameterController {
      * @param actionEvent click event
      */
     public void fitBtnAction(ActionEvent actionEvent) {
-        Controllers.getInstance().mainController.setFitRes(Optional.empty());
+        MainController mainController = Controllers.getInstance().mainController;
+        mainController.setFitRes(Optional.empty());
         SampleCollection sc = SamplesParameters.getInstance().getLimitedSamples();
         if (sc == null || sc.size() == 0) {
-            Controllers.getInstance().mainController.showWarn(Messages.NONE_SAMPLE_WARN);
+            mainController.showWarn(Messages.NONE_SAMPLE_WARN);
             return;
         }
-        new Thread() {
-            @Override
-            public void run() {
-                Controllers.getInstance().mainController.setInputDisable(true);
+        mainController.setInputDisable(true);
+        Thread fitThread = new Thread(() -> {
+            try {
                 final PHDistribution res = fitDistribution();
-                Platform.runLater(() -> drawResult(res));
-                Controllers.getInstance().mainController.setFitRes(Optional.of(res));
-                Controllers.getInstance().mainController.setInputDisable(false);
+                Platform.runLater(() -> {
+                    drawResult(res);
+                    mainController.setFitRes(Optional.of(res));
+                    mainController.setInputDisable(false);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    mainController.showWarn(e.getMessage() == null ? "fit failed" : e.getMessage());
+                    mainController.setInputDisable(false);
+                });
             }
-        }.start();
+        });
+        fitThread.setDaemon(true);
+        fitThread.start();
     }
 
     private void drawResult(PHDistribution res) {

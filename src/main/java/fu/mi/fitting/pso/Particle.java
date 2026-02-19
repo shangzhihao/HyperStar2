@@ -29,7 +29,12 @@ public class Particle {
         d1 = counterToRate();
         MarkovArrivalProcess map = new MarkovArrivalProcess(pso.d0, d1);
         fittness = 0;
-        for (int i = 1; i < lag+1; i++) {
+        int maxLag = Math.min(lag, pso.samples.size() - 2);
+        if (maxLag < 1) {
+            fittness = Double.MAX_VALUE;
+            return;
+        }
+        for (int i = 1; i <= maxLag; i++) {
             fittness += FastMath.pow(pso.samples.autocorrelation(i+1)-
                     map.autoCorrelation(i+1), 2);
         }

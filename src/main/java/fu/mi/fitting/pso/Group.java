@@ -1,7 +1,5 @@
 package fu.mi.fitting.pso;
 
-import com.google.common.math.DoubleMath;
-
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -14,7 +12,7 @@ public class Group {
 
     Particle getBest() {
         int res = 0;
-        double best = -1;
+        double best = Double.MAX_VALUE;
         double fittness = Double.MAX_VALUE;
         for (int i = 0; i < particles.size(); i++) {
             fittness = particles.get(i).getFittness();

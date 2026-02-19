@@ -176,7 +176,18 @@ public class HyperErlangFitter extends Fitter {
      */
     private HyperErlang initFit() {
         List<ErlangFitter> fitters = newArrayList();
+        int sampleSize = samples.size();
+        if (sampleSize == 0) {
+            throw new IllegalArgumentException("samples should not be empty");
+        }
+        if (sampleSize == 1) {
+            Erlang erlang = (Erlang) FitterFactory.getFitterByName(MomErlangFitter.FITTER_NAME, samples).fit();
+            List<HyperErlangBranch> singleBranch = newArrayList();
+            singleBranch.add(new HyperErlangBranch(1.0, erlang));
+            return new HyperErlang(singleBranch);
+        }
         int branch = FitParameters.getInstance().getBranch();
+        branch = Math.max(1, Math.min(branch, sampleSize - 1));
         KMeansPlusPlusClusterer<SampleItem> clusterer = new KMeansPlusPlusClusterer<>(branch);
         List<CentroidCluster<SampleItem>> clusterRes = clusterer.cluster(samples.getData());
         CentroidCluster<SampleItem> cluster;
