@@ -21,6 +21,6 @@ public class ExponentialFitter extends Fitter<Exponential> {
 
     @Override
     public String getName() {
-        return null;
+        return FITTER_NAME;
     }
 }
